@@ -48,7 +48,11 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('Пользователь не найден');
 
-    user.role = UserRole.USER;
+    if (user.isEmailConfirmed) {
+      throw new BadRequestException('Email уже подтвержден');
+    }
+
+    user.isEmailConfirmed = true;
     await this.userRepository.save(user);
   }
 
