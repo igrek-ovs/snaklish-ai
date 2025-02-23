@@ -8,6 +8,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { LessonProgress } from '../lesson/lesson-progress/lesson-progress.entity';
 import { UserAnswer } from '../lesson/user-answer/user-answer.entity';
+import { UserWord } from '../dictionary/user-word/user-word.entity';
 
 export enum UserRole {
   USER = 'user',
@@ -54,4 +55,7 @@ export class User {
 
   @OneToMany(() => LessonProgress, (progress) => progress.user)
   progress: LessonProgress[];
+
+  @OneToMany(() => UserWord, (userWord) => userWord.user, { cascade: true })
+  userWords: UserWord[];
 }

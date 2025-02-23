@@ -9,6 +9,10 @@ import { ExerciseModule } from './modules/lesson/exercise/exercise.module';
 import { ExerciseOptionModule } from './modules/lesson/exercise-option/exercise-option.module';
 import { LessonProgressModule } from './modules/lesson/lesson-progress/lesson-progress.module';
 import { UserAnswerModule } from './modules/lesson/user-answer/user-answer.module';
+import { EmailVerificationModule } from './modules/email-verification/email-verification.module';
+import { WordModule } from './modules/dictionary/word/word.module';
+import { WordTranslationModule } from './modules/dictionary/word-translation/word-translation.module';
+import { UserWordModule } from './modules/dictionary/user-word/user-word.module';
 
 @Module({
   imports: [
@@ -34,7 +38,11 @@ import { UserAnswerModule } from './modules/lesson/user-answer/user-answer.modul
     ExerciseModule,
     ExerciseOptionModule,
     LessonProgressModule,
-    UserAnswerModule
+    UserAnswerModule,
+    EmailVerificationModule,
+    WordModule,
+    WordTranslationModule,
+    UserWordModule
   ],
   controllers: [],
   providers: [],
