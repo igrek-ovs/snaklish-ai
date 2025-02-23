@@ -1,6 +1,6 @@
-<div class="flex min-h-screen">
+<div class="flex justify-center min-h-screen">
     <div
-      class="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
+      class="flex flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
     >
       <div class="mx-auto w-full max-w-sm lg:w-96">
         <h2
@@ -25,12 +25,12 @@
                   Email address
                 </label>
                 <div class="mt-2 h-10">
-                  <input
-                    [id]="'email'"
-                    [type]="'email'"
-                    formControlName="email"
-                    autocomplete="email"
-                  />
+                  <app-input
+                  [id]="'email'"
+                  [type]="'email'"
+                  formControlName="email"
+                  autocomplete="email"
+                ></app-input>
                 </div>
               </div>
   
@@ -42,21 +42,22 @@
                   Password
                 </label>
                 <div class="mt-2 h-10">
-                  <input
-                    [id]="'password'"
-                    [type]="'password'"
-                    formControlName="password"
-                  />
+                  <app-input
+                  [id]="'password'"
+                  [type]="'password'"
+                  formControlName="password"
+                ></app-input>
                 </div>
               </div>
   
               <div>
-                <button
+                <app-button
                   type="submit"
+                  [isLoading]="isLoggingIn()"
                   [disabled]="!form.valid"
                 >
                   Sign in
-                </button>
+                </app-button>
               </div>
   
               <div class="mx-auto mt-2 w-fit">

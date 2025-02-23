@@ -10,6 +10,8 @@ import {
 import { Router } from '@angular/router';
 // import { ButtonComponent, InputComponent } from '../../../../shared/components';
 import { catchError, of, tap } from 'rxjs';
+import { InputComponent } from '../../../../shared/components/input/input.component';
+import { ButtonComponent } from "../../../../shared/components/button/button.component";
 
 interface ErrorsMessages {
   required: string;
@@ -33,7 +35,7 @@ interface SignInForm {
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [FormsModule, ReactiveFormsModule, InputComponent, ButtonComponent],
   templateUrl: './sign-in.component.html',
 })
 export class SignInComponent implements OnInit {
