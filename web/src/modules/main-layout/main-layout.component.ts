@@ -5,6 +5,7 @@ import {
   signal,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-layout',
@@ -22,6 +23,7 @@ export class MainLayoutComponent implements OnInit {
   public isNotificationMenuShowed = signal(false);
 
   constructor(
+    public readonly router: Router,
   ) {}
 
   ngOnInit(): void {

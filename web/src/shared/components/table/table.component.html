@@ -1,0 +1,145 @@
+@if (!isLoading() && !isDataEmpty) {
+  <table
+    cdk-table
+    [dataSource]="tableData()"
+    class="w-full table-auto border-collapse border-spacing-10 cursor-default bg-white"
+  >
+    @for (field of fieldsToDisplay; track field) {
+      @if (headers()[$index] && headers()[$index].isHidden?.(field)) {
+        <ng-container [cdkColumnDef]="field">
+          <th cdk-header-cell *cdkHeaderCellDef></th>
+          <td cdk-cell *cdkCellDef="let row"></td>
+        </ng-container>
+      } @else {
+        <ng-container [cdkColumnDef]="field">
+          <th
+            cdk-header-cell
+            *cdkHeaderCellDef
+            class="p-4 text-nowrap whitespace-nowrap transition-colors border-y-0 border-slate-200 bg-slate-50 border-x-1"
+            [ngClass]="{
+              'cursor-pointer hover:bg-slate-100':
+                !isExtraActions(field),
+              'text-center':
+                headers()[$index] && headers()[$index].type === ColumnType.Chip,
+            }"
+          >
+            <p class="font-sans font-bold leading-none text-slate-500">
+              {{
+                isExtraActions(field)
+                  ? 'Actions'
+                  : headers()[$index].displayName
+              }}
+            </p>
+          </th>
+          <td cdk-cell *cdkCellDef="let row" class="px-4 py-2 max-w-48">
+            @if (fieldActions(field, row).length) {
+              <div class="flex items-center gap-x-2 text-xl">
+                @for (act of fieldActions(field, row); track act.eventName) {
+                  <div class="flex items-center text-gray hover:text-gray-hovered">
+                    <button
+                      type="button"
+                      class="outline-none focus:outline-none"
+                      [ngClass]="composeFromRow(act.iconClass, row)"
+                      [title]="composeFromRow(act.tooltip, row)"
+                      (click)="emitAction(row, act)"
+                    >
+                      <ng-icon
+                        class="text-2xl text-inherit transition duration-75"
+                        [name]="composeFromRow(act.icon, row)"
+                      ></ng-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            } @else {
+              @switch (headers()[$index].type) {
+                @case (ColumnType.Chip) {
+                  <div class="flex justify-around">
+                    <!-- <app-chip
+                      [chipWidth]="maxChipWidth()"
+                      variant="regular"
+                      [color]="getChipColor($index, row, field)"
+                      [label]="
+                        getChipLabel($index, row, field) | truncateText: 12
+                      "
+                    ></app-chip> -->
+                  </div>
+                }
+                @case (ColumnType.Date) {
+                  <span class="text-nowrap">{{
+                    transformToDate($index, row, field)
+                  }}</span>
+                }
+                @case (ColumnType.Currency) {
+                  <span>{{ handlePriceValue($index, row, field) }}</span>
+                }
+                @default {
+                  <span
+                    class="break-words line-clamp-2"
+                    (mouseenter)="showTooltip($event, row, field)"
+                    (mouseleave)="hideTooltip()"
+                    [ngClass]="
+                      composeFromCell(
+                        headers()[$index].cellContentClass,
+                        row[field]
+                      )
+                    "
+                    [innerHTML]="highlightSubstring($index, row, field)"
+                  >
+                  </span>
+                }
+              }
+            }
+          </td>
+        </ng-container>
+      }
+    }
+
+    <tr
+      cdk-header-row
+      *cdkHeaderRowDef="fieldsToDisplay"
+      class="text-left text-md font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800 border-b dark:border-gray-700 sticky top-0 left-0"
+    ></tr>
+    <tr
+      cdk-row
+      *cdkRowDef="let row; columns: fieldsToDisplay"
+      class="text-left text-sm text-gray-900 dark:text-white border-b dark:border-gray-700"
+      [ngClass]="rowClasses()"
+      (click)="emitClickEvent(row)"
+    ></tr>
+  </table>
+} @else if (isLoading()) {
+  <div class="flex justify-center items-center w-full h-full">
+    <!-- <app-spinner size="xl"></app-spinner> -->
+  </div>
+} @else {
+  <div class="flex items-center justify-center h-full">
+    <div class="text-center">
+      <ng-icon name="tablerUserSearch" class="text-5xl text-gray-400"></ng-icon>
+      <h3 class="mt-2 text-sm font-semibold text-gray-900">
+        There is nothing to display
+      </h3>
+    </div>
+  </div>
+}
+<div
+  #tableTooltip
+  class="fixed inline-block z-10 py-2 px-3 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm dark:bg-gray-700"
+  [ngClass]="{
+    invisible: !tooltipVisible(),
+  }"
+  [style.left.px]="
+    tooltipPosition.x + tableTooltipWidth > window.innerWidth
+      ? tooltipPosition.x - tableTooltipWidth
+      : tooltipPosition.x
+  "
+  [style.top.px]="
+    tooltipPosition.y + tableTooltipHeight > window.innerHeight
+      ? tooltipPosition.y - tableTooltipHeight
+      : tooltipPosition.y
+  "
+>
+  <p class="max-w-36 hyphens-auto">
+    {{ formatTooltipContent(tooltipContent) }}
+  </p>
+</div>
