@@ -1,79 +1,100 @@
 <div
-class="antialiased bg-gray-100 dark:bg-gray-900 flex flex-col min-h-screen min-w-full overflow-hidden"
+  class="antialiased bg-gray-100 dark:bg-gray-900 flex flex-col min-h-screen min-w-full overflow-hidden"
 >
-<div class="flex flex-grow h-0">
-  <aside
-    class="w-72 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
-    aria-label="Sidenav"
-  >
-  <div class="px-4 py-2">
-    <div class="text-3xl font-bold text-gray-900">
-      SNACKLISH
-    </div>
-  </div>
-  <ul class="mt-10 space-y-2">
-    <li class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300" (click)="router.navigate([''])">
-      <div class="space-y-1">
-        <p class="font-medium">Home</p>
-        <p class="text-xs text-gray-500">Your account page.</p>
-      </div>
-    </li>
-    <li class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300">
-      <div class="space-y-1">
-        <p class="font-medium">Learn new word</p>
-        <p class="text-xs text-gray-500">Expand your vocabulary every day.</p>
-      </div>
-    </li>
-    <li class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300">
-      <div class="space-y-1">
-        <p class="font-medium">Review word</p>
-        <p class="text-xs text-gray-500">Revisit and reinforce your knowledge.</p>
-      </div>
-    </li>
-    <li class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300">
-      <div class="space-y-1">
-        <p class="font-medium">Show categories</p>
-        <p class="text-xs text-gray-500">Browse words by different topics.</p>
-      </div>
-    </li>
-    <li class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300">
-      <div class="space-y-1">
-        <p class="font-medium">Open chat</p>
-        <p class="text-xs text-gray-500">Connect with fellow learners.</p>
-      </div>
-    </li>
-    <li class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300" (click)="router.navigate(['/dictionary-list'])">
-      <div class="space-y-1">
-        <p class="font-medium">Manage dictionary</p>
-        <p class="text-xs text-gray-500">Edit your custom words and definitions.</p>
-      </div>
-    </li>
-  </ul>  
-  </aside>
-
-  <ng-template
-    cdkConnectedOverlay
-    [cdkConnectedOverlayOrigin]="triggerSide"
-    [cdkConnectedOverlayHeight]="'95%'"
-    [cdkConnectedOverlayHasBackdrop]="true"
-    cdkConnectedOverlayBackdropClass="none"
-    (backdropClick)="isSidebarShowed.set(false)"
-    [cdkConnectedOverlayOpen]="isSidebarShowed()"
-  >
+  <div class="flex flex-grow h-0">
     <aside
-      class="w-72 mt-4 -ml-4 bg-white border-r border-gray-200 md:hidden dark:bg-gray-800 dark:border-gray-700"
+      class="w-72 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
       aria-label="Sidenav"
     >
-      <!-- <app-sidebar></app-sidebar> -->
+      <div class="px-4 py-2">
+        <div class="text-3xl font-bold text-gray-900">SNACKLISH</div>
+      </div>
+      <ul class="mt-10 space-y-2">
+        <li
+          class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
+          (click)="router.navigate([''])"
+        >
+          <div class="space-y-1">
+            <p class="font-medium">Home</p>
+            <p class="text-xs text-gray-500">Your account page.</p>
+          </div>
+        </li>
+        <li
+          class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
+        >
+          <div class="space-y-1">
+            <p class="font-medium">Learn new word</p>
+            <p class="text-xs text-gray-500">
+              Expand your vocabulary every day.
+            </p>
+          </div>
+        </li>
+        <li
+          class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
+          (click)="router.navigate(['account'])"
+        >
+          <div class="space-y-1">
+            <p class="font-medium">Account</p>
+            <p class="text-xs text-gray-500">
+              Revisit and reinforce your knowledge.
+            </p>
+          </div>
+        </li>
+        <li
+          class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
+        >
+          <div class="space-y-1">
+            <p class="font-medium">Show categories</p>
+            <p class="text-xs text-gray-500">
+              Browse words by different topics.
+            </p>
+          </div>
+        </li>
+        <li
+          class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
+        >
+          <div class="space-y-1">
+            <p class="font-medium">Open chat</p>
+            <p class="text-xs text-gray-500">Connect with fellow learners.</p>
+          </div>
+        </li>
+        <li
+          class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
+          (click)="router.navigate(['/dictionary-list'])"
+        >
+          <div class="space-y-1">
+            <p class="font-medium">Manage dictionary</p>
+            <p class="text-xs text-gray-500">
+              Edit your custom words and definitions.
+            </p>
+          </div>
+        </li>
+      </ul>
     </aside>
-  </ng-template>
 
-  <main
-    class="flex-grow flex overflow-y-auto -ml-72 transition-all md:ml-0 w-full max-w-full overflow-x-hidden"
-  >
-    <div class="w-full min-h-full">
-      <router-outlet></router-outlet>
-    </div>
-  </main>
-</div>
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="triggerSide"
+      [cdkConnectedOverlayHeight]="'95%'"
+      [cdkConnectedOverlayHasBackdrop]="true"
+      cdkConnectedOverlayBackdropClass="none"
+      (backdropClick)="isSidebarShowed.set(false)"
+      [cdkConnectedOverlayOpen]="isSidebarShowed()"
+    >
+      <aside
+        class="w-72 mt-4 -ml-4 bg-white border-r border-gray-200 md:hidden dark:bg-gray-800 dark:border-gray-700"
+        aria-label="Sidenav"
+      >
+        <!-- <app-sidebar></app-sidebar> -->
+      </aside>
+    </ng-template>
+
+    <main
+      class="flex-grow flex overflow-y-auto -ml-72 transition-all md:ml-0 w-full max-w-full overflow-x-hidden"
+    >
+      <div class="w-full min-h-full">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
 </div>
