@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { TableComponent } from '../../shared/components/table/table.component';
-import { ActionConfig, ColumnDef, ColumnType } from '../../shared/components/table/header-def.model';
+import {
+  ActionConfig,
+  ColumnDef,
+  ColumnType,
+} from '../../shared/components/table/header-def.model';
 
 interface Word {
   id: number;
@@ -13,10 +17,9 @@ interface Word {
   selector: 'app-dictionary-list',
   imports: [TableComponent],
   templateUrl: './dictionary-list.component.html',
-  styles: ``
+  styles: ``,
 })
 export class DictionaryListComponent {
-
   public readonly wordActions: ActionConfig<Word>[] = [
     {
       icon: 'tablerEdit',
@@ -52,7 +55,7 @@ export class DictionaryListComponent {
       fieldName: 'origin',
       displayName: 'Origin',
       type: ColumnType.Text,
-    }
+    },
   ];
 
   public words: Word[] = [
@@ -77,8 +80,6 @@ export class DictionaryListComponent {
     { id: 19, word: 'I love you', translation: 'я тебе люблю' },
     { id: 20, word: 'see you later', translation: 'до зустрічі' }
   ];
-  
-  constructor() {
 
-  }
+  constructor() {}
 }
