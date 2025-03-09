@@ -35,7 +35,7 @@
             @if (fieldActions(field, row).length) {
               <div class="flex items-center gap-x-2 text-xl">
                 @for (act of fieldActions(field, row); track act.eventName) {
-                  <div class="flex items-center text-gray hover:text-gray-hovered">
+                  <div class="flex items-center">
                     <button
                       type="button"
                       class="outline-none focus:outline-none"

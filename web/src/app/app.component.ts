@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { provideIcons } from '@ng-icons/core';
-import { tablerEdit } from '@ng-icons/tabler-icons';
+import { tablerEdit, tablerTrash } from '@ng-icons/tabler-icons';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +10,7 @@ import { tablerEdit } from '@ng-icons/tabler-icons';
     <router-outlet />
   `,
   providers: [
-    provideIcons({ tablerEdit }),
+    provideIcons({ tablerEdit, tablerTrash }),
   ]
 })
 export class AppComponent {

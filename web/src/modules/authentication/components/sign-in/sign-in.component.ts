@@ -7,11 +7,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
-// import { ButtonComponent, InputComponent } from '../../../../shared/components';
-import { catchError, of, tap } from 'rxjs';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { ButtonComponent } from "../../../../shared/components/button/button.component";
+import { PASSWORD_REGEX } from '../../../../core/regex/password-regex';
 
 interface ErrorsMessages {
   required: string;
@@ -39,18 +37,6 @@ interface SignInForm {
   templateUrl: './sign-in.component.html',
 })
 export class SignInComponent implements OnInit {
-  private readonly errorsMessages: SignInFormErrors = {
-    email: {
-      required: 'Email is required',
-      email: 'Email is invalid',
-      pattern: 'Email is invalid',
-    },
-    password: {
-      required: 'Password is required',
-      notExist: 'Email or password is incorrect',
-    },
-  };
-
   public readonly eyeIcon: string = 'tablerEye';
   public readonly eyeOffIcon: string = 'tablerEyeOff';
 
@@ -60,82 +46,77 @@ export class SignInComponent implements OnInit {
 
   constructor(
     private readonly fb: NonNullableFormBuilder,
-    private readonly router: Router,
-    // private readonly hotToastService: HotToastService,
-    // private readonly authService: AuthenticationService
   ) {
     this.form = this.fb.group<SignInForm>({
       email: this.fb.control<string>('', [
         Validators.required,
         Validators.email,
-        // Validators.pattern(emailRegex.full),
       ]),
-      password: this.fb.control<string>('', [Validators.required]),
+      password: this.fb.control<string>('', [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.maxLength(20),
+        Validators.pattern(PASSWORD_REGEX.onlyLatin.source),
+        Validators.pattern(PASSWORD_REGEX.atLeastOneDigit.source),
+        Validators.pattern(PASSWORD_REGEX.atLeastOneUppercase.source),
+        Validators.pattern(PASSWORD_REGEX.atLeastOneLowercase.source),
+        Validators.pattern(PASSWORD_REGEX.atLeastOneSpecialCharacter.source),
+      ]),
     });
-
-    // if (this.authService.isAuthorized) {
-    //   this.router.navigate([AuthConstants.SIGNED_IN_REDIRECT_ROUTE]);
-    //   return;
-    // }
   }
 
   ngOnInit() {
-    this.form.valueChanges.subscribe(() => {
-      this.firstLook = false;
-
-      const passwordControl = this.form.get('password') as FormControl<string>;
-      if (!passwordControl.errors) return;
-      if (passwordControl.errors?.['notExist']) {
-        passwordControl.setErrors({ notExist: null });
-        passwordControl.updateValueAndValidity();
-      }
-    });
   }
 
-  public getErrorMessage(controlName: keyof SignInFormErrors) {
+  public getErrorMessage(controlName: string): string {
     const control = this.form.get(controlName);
-    if (!control?.errors) {
+
+    if (!control) {
       return '';
     }
 
-    const errorKey = Object.keys(control.errors)[0] as keyof ErrorsMessages;
-    const errorMessagesForControl = this.errorsMessages[controlName];
+    if (control.hasError('required')) {
+      return 'This field is required';
+    }
 
-    return this.firstLook ? '' : errorMessagesForControl[errorKey];
+    if (control.hasError('email')) {
+      return 'Invalid email';
+    }
+
+    if (control.hasError('minlength') || control.hasError('maxlength')) {
+      return 'Password must be between 6 and 20 characters';
+    }
+
+    if (control.hasError('pattern')) {
+      const regex = control.getError('pattern')?.requiredPattern;
+
+      if (regex === PASSWORD_REGEX.onlyLatin.source.toString()) {
+        return PASSWORD_REGEX.onlyLatin.errorMessage;
+      }
+
+      if (regex === PASSWORD_REGEX.atLeastOneDigit.source.toString()) {
+        return PASSWORD_REGEX.atLeastOneDigit.errorMessage;
+      }
+
+      if (regex === PASSWORD_REGEX.atLeastOneUppercase.source.toString()) {
+        return PASSWORD_REGEX.atLeastOneUppercase.errorMessage;
+      }
+
+      if (regex === PASSWORD_REGEX.atLeastOneLowercase.source.toString()) {
+        return PASSWORD_REGEX.atLeastOneLowercase.errorMessage;
+      }
+
+      if (regex === PASSWORD_REGEX.atLeastOneSpecialCharacter.source.toString()) {
+        return PASSWORD_REGEX.atLeastOneSpecialCharacter.errorMessage;
+      }
+
+      return regex.defaultErrorMessage;
+    }
+
+    return '';
   }
 
   public onSubmit() {
-    // if (this.form.valid) {
-    //   this.hotToastService.close();
 
-    //   const formData: Login = { ...this.form.value };
-
-    //   this.isLoggingIn.set(true);
-    //   this.authService
-    //     .login(formData)
-    //     .pipe(
-    //       tap((response: Auth | null) => {
-    //         if (response?.token && response?.refreshToken) {
-    //           const decodedToken = jwtDecode(response.token) as TokenPayload;
-    //           response.rights = decodedToken.right;
-
-    //           localStorage.setItem(tokenStorageKey, JSON.stringify(response));
-
-    //           const localRedirect =
-    //             sessionStorage.getItem(AuthConstants.LOCAL_SIGNIN_REDIRECT) ??
-    //             AuthConstants.SIGNED_IN_REDIRECT_ROUTE;
-    //           sessionStorage.removeItem(AuthConstants.LOCAL_SIGNIN_REDIRECT);
-    //           this.router.navigate([localRedirect]);
-    //         }
-    //       }),
-    //       catchError(() => {
-    //         this.hotToastService.error('Failed to sign in');
-    //         this.form.get('password')?.setErrors({ notExist: true });
-    //         return of(null);
-    //       }),
-    //       tap(() => this.isLoggingIn.set(false))
-    //     )
-    //     .subscribe();
-    // }
   }
 }

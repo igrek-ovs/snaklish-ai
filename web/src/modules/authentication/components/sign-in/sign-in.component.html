@@ -43,10 +43,11 @@
                 </label>
                 <div class="mt-2 h-10">
                   <app-input
-                  [id]="'password'"
-                  [type]="'password'"
-                  formControlName="password"
-                ></app-input>
+                    [id]="'password'"
+                    [type]="'password'"
+                    formControlName="password"
+                    [error]="getErrorMessage('password')"
+                  ></app-input>
                 </div>
               </div>
   

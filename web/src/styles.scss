@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.icon-danger {
+    @apply text-red hover:text-red-hovered;
+}
+
+.icon-default {
+    @apply text-gray hover:text-gray-hovered;
+}
