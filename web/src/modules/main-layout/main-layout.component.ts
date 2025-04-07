@@ -6,13 +6,12 @@ import {
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Router } from '@angular/router';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [
-    RouterOutlet,
-  ],
+  imports: [RouterOutlet, OverlayModule],
   templateUrl: './main-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -22,13 +21,9 @@ export class MainLayoutComponent implements OnInit {
   public isAppsMenuShowed = signal(false);
   public isNotificationMenuShowed = signal(false);
 
-  constructor(
-    public readonly router: Router,
-  ) {}
+  constructor(public readonly router: Router) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  public signOut() {
-  }
+  public signOut() {}
 }
