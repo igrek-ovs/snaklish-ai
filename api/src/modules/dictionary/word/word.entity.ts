@@ -11,13 +11,6 @@ export enum WordLevel {
   C2 = 'C2',
 }
 
-export enum WordLanguage {
-  ENGLISH = 'ENGLISH',
-  FRENCH = 'FRENCH',
-  SPANISH = 'SPANISH',
-  GERMAN = 'GERMAN',
-}
-
 @Entity('words')
 export class Word {
   @PrimaryGeneratedColumn()
@@ -28,9 +21,6 @@ export class Word {
 
   @Column({ type: 'nvarchar', length: 255, unique: true, nullable: false })
   word: string;
-
-  @Column({ type: 'enum', enum: WordLanguage, nullable: true })
-  language?: WordLanguage;
 
   @Column({ type: 'nvarchar', length: 255, nullable: true })
   transcription?: string;

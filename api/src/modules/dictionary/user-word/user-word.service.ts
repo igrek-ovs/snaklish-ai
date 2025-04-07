@@ -20,17 +20,25 @@ export class UserWordService {
 
   async addWordToUser(userId: string, dto: AddUserWordDto): Promise<UserWord> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
-    if (!user) throw new NotFoundException(`Пользователь с ID ${userId} не найден`);
+    if (!user)
+      throw new NotFoundException(`Пользователь с ID ${userId} не найден`);
 
-    const word = await this.wordRepository.findOne({ where: { id: dto.wordId } });
-    if (!word) throw new NotFoundException(`Слово с ID ${dto.wordId} не найдено`);
+    const word = await this.wordRepository.findOne({
+      where: { id: dto.wordId },
+    });
+    if (!word)
+      throw new NotFoundException(`Слово с ID ${dto.wordId} не найдено`);
 
     let userWord = await this.userWordRepository.findOne({
       where: { user, word },
     });
 
     if (!userWord) {
-      userWord = this.userWordRepository.create({ user, word, isLearnt: dto.isLearnt });
+      userWord = this.userWordRepository.create({
+        user,
+        word,
+        isLearnt: dto.isLearnt,
+      });
       await this.userWordRepository.save(userWord);
     }
 
@@ -57,13 +65,19 @@ export class UserWordService {
     });
   }
 
-  async updateUserWord(userId: string, wordId: number, dto: UpdateUserWordDto): Promise<UserWord> {
+  async updateUserWord(
+    userId: string,
+    wordId: number,
+    dto: UpdateUserWordDto,
+  ): Promise<UserWord> {
     const userWord = await this.userWordRepository.findOne({
       where: { user: { id: userId }, word: { id: wordId } },
     });
 
     if (!userWord) {
-      throw new NotFoundException(`Слово с ID ${wordId} не найдено у пользователя`);
+      throw new NotFoundException(
+        `Слово с ID ${wordId} не найдено у пользователя`,
+      );
     }
 
     userWord.isLearnt = dto.isLearnt;

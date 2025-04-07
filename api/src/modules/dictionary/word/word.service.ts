@@ -41,7 +41,6 @@ export class WordService {
       word: dto.word,
       transcription: dto.transcription,
       examples: dto.examples,
-      language: dto.language,
     });
     const savedWord = await this.wordRepository.save(word);
     return this.getById(savedWord.id);

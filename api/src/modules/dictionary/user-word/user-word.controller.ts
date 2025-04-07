@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Req, UseGuards, Param, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Req,
+  UseGuards,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { UserWordService } from './user-word.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -15,7 +24,10 @@ export class UserWordController {
 
   @ApiOperation({ summary: 'Добавить слово в список пользователя' })
   @Post()
-  async addWordToUser(@Req() req, @Body() dto: AddUserWordDto): Promise<UserWord> {
+  async addWordToUser(
+    @Req() req,
+    @Body() dto: AddUserWordDto,
+  ): Promise<UserWord> {
     return this.userWordService.addWordToUser(req.user.id, dto);
   }
 
@@ -24,7 +36,7 @@ export class UserWordController {
   async updateUserWord(
     @Req() req,
     @Param('wordId') wordId: number,
-    @Body() dto: UpdateUserWordDto
+    @Body() dto: UpdateUserWordDto,
   ): Promise<UserWord> {
     return this.userWordService.updateUserWord(req.user.id, wordId, dto);
   }

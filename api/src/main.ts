@@ -12,6 +12,16 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('My API')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT', // необязательно, просто для информации
+        name: 'Authorization',
+        in: 'header',
+      },
+      'access-token', // это ключ, по которому ты будешь ссылаться в декораторах
+    )
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api/docs', app, document);

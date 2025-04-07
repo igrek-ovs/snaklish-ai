@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import {WordLanguage} from "../word-translation.entity";
 
 export class CreateWordTranslationDto {
   @ApiProperty({ example: 1, description: 'ID слова' })
@@ -11,4 +18,14 @@ export class CreateWordTranslationDto {
   @IsNotEmpty()
   @IsString()
   translation: string;
+
+  @ApiProperty({
+    example: 'ENGLISH',
+    enum: WordLanguage,
+    description: 'Language of the word',
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(WordLanguage)
+  language?: WordLanguage;
 }

@@ -32,7 +32,9 @@ export class WordTranslationService {
   }
 
   async create(dto: CreateWordTranslationDto): Promise<WordTranslation> {
-    const word = await this.wordRepository.findOne({ where: { id: dto.wordId } });
+    const word = await this.wordRepository.findOne({
+      where: { id: dto.wordId },
+    });
 
     if (!word) {
       throw new NotFoundException(`Слово с ID ${dto.wordId} не найдено`);
@@ -41,13 +43,19 @@ export class WordTranslationService {
     const translation = this.translationRepository.create({
       word,
       translation: dto.translation,
+      language: dto.language,
     });
 
     return this.translationRepository.save(translation);
   }
 
-  async update(id: number, dto: UpdateWordTranslationDto): Promise<WordTranslation> {
-    const translation = await this.translationRepository.findOne({ where: { id } });
+  async update(
+    id: number,
+    dto: UpdateWordTranslationDto,
+  ): Promise<WordTranslation> {
+    const translation = await this.translationRepository.findOne({
+      where: { id },
+    });
 
     if (!translation) {
       throw new NotFoundException(`Перевод с ID ${id} не найден`);

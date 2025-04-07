@@ -5,8 +5,8 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { WordLanguage, WordLevel } from '../word.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { WordLevel } from '../word.entity';
 
 export class CreateWordDto {
   @ApiProperty({ example: 'A2', description: 'English word level' })
@@ -36,14 +36,4 @@ export class CreateWordDto {
   @IsOptional()
   @IsString()
   examples?: string;
-
-  @ApiProperty({
-    example: 'ENGLISH',
-    enum: WordLanguage,
-    description: 'Language of the word',
-    required: false,
-  })
-  @IsOptional()
-  @IsEnum(WordLanguage)
-  language?: WordLanguage;
 }
