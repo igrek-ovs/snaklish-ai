@@ -27,6 +27,12 @@ export class DictionaryListComponent {
       eventName: 'edit',
       iconClass: 'icon-default',
     },
+    {
+      icon: 'tablerTrash',
+      tooltip: 'Delete word',
+      eventName: 'delete',
+      iconClass: 'icon-danger',
+    },
   ];
 
   public readonly columns: ColumnDef<Word>[] = [

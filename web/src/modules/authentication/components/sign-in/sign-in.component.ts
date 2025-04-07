@@ -17,6 +17,7 @@ import {
 import { catchError, EMPTY, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { HotToastService } from '@ngxpert/hot-toast';
+import { PASSWORD_REGEX } from '../../../../core/regex/password-regex';
 
 interface ErrorsMessages {
   required: string;
@@ -56,7 +57,16 @@ export class SignInComponent implements OnInit {
         Validators.required,
         Validators.email,
       ]),
-      password: this.fb.control<string>('', [Validators.required]),
+      password: this.fb.control<string>('', [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.maxLength(20),
+        Validators.pattern(PASSWORD_REGEX.onlyLatin.source),
+        Validators.pattern(PASSWORD_REGEX.atLeastOneDigit.source),
+        Validators.pattern(PASSWORD_REGEX.atLeastOneUppercase.source),
+        Validators.pattern(PASSWORD_REGEX.atLeastOneLowercase.source),
+        Validators.pattern(PASSWORD_REGEX.atLeastOneSpecialCharacter.source),
+      ]),
     });
   }
 
@@ -74,14 +84,48 @@ export class SignInComponent implements OnInit {
   public getErrorMessage(controlName: string) {
     const control = this.form.get(controlName);
 
-    if (control?.hasError('required')) {
-      return 'required';
-    } else if (control?.hasError('minlength')) {
-      return 'length';
-    } else if (control?.hasError('maxlength')) {
-      return 'length';
-    } else if (control?.hasError('invalidCredentials')) {
-      return 'invalidCredentials';
+    if (!control) {
+      return '';
+    }
+
+    if (control.hasError('required')) {
+      return 'This field is required';
+    }
+
+    if (control.hasError('email')) {
+      return 'Invalid email';
+    }
+
+    if (control.hasError('minlength') || control.hasError('maxlength')) {
+      return 'Password must be between 6 and 20 characters';
+    }
+
+    if (control.hasError('pattern')) {
+      const regex = control.getError('pattern')?.requiredPattern;
+
+      if (regex === PASSWORD_REGEX.onlyLatin.source.toString()) {
+        return PASSWORD_REGEX.onlyLatin.errorMessage;
+      }
+
+      if (regex === PASSWORD_REGEX.atLeastOneDigit.source.toString()) {
+        return PASSWORD_REGEX.atLeastOneDigit.errorMessage;
+      }
+
+      if (regex === PASSWORD_REGEX.atLeastOneUppercase.source.toString()) {
+        return PASSWORD_REGEX.atLeastOneUppercase.errorMessage;
+      }
+
+      if (regex === PASSWORD_REGEX.atLeastOneLowercase.source.toString()) {
+        return PASSWORD_REGEX.atLeastOneLowercase.errorMessage;
+      }
+
+      if (
+        regex === PASSWORD_REGEX.atLeastOneSpecialCharacter.source.toString()
+      ) {
+        return PASSWORD_REGEX.atLeastOneSpecialCharacter.errorMessage;
+      }
+
+      return regex.defaultErrorMessage;
     }
 
     return '';
