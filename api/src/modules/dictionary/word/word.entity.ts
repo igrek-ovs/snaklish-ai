@@ -11,6 +11,13 @@ export enum WordLevel {
   C2 = 'C2',
 }
 
+export enum WordLanguage {
+  ENGLISH = 'ENGLISH',
+  FRENCH = 'FRENCH',
+  SPANISH = 'SPANISH',
+  GERMAN = 'GERMAN',
+}
+
 @Entity('words')
 export class Word {
   @PrimaryGeneratedColumn()
@@ -22,7 +29,21 @@ export class Word {
   @Column({ type: 'nvarchar', length: 255, unique: true, nullable: false })
   word: string;
 
-  @OneToMany(() => WordTranslation, (translation) => translation.word, { cascade: true })
+  @Column({ type: 'enum', enum: WordLanguage, nullable: true })
+  language?: WordLanguage;
+
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
+  transcription?: string;
+
+  @Column({ type: 'text', nullable: true })
+  examples?: string;
+
+  @Column({ type: 'blob', nullable: true })
+  img?: Buffer;
+
+  @OneToMany(() => WordTranslation, (translation) => translation.word, {
+    cascade: true,
+  })
   translations: WordTranslation[];
 
   @OneToMany(() => UserWord, (userWord) => userWord.word, { cascade: true })
