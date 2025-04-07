@@ -12,6 +12,12 @@ interface Login {
   password: string;
 }
 
+interface SignUp {
+  name: string;
+  email: string;
+  password: string;
+}
+
 export const TOKEN_DATA = 'tokenData';
 
 @Injectable({
@@ -24,5 +30,9 @@ export class AuthenticationService {
 
   public login(payload: Login) {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, payload);
+  }
+
+  public signUp(payload: SignUp) {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/register`, payload);
   }
 }

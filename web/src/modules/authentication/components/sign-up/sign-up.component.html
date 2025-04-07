@@ -19,6 +19,23 @@
           >
             <div>
               <label
+                for="Name"
+                class="inline-block text-sm font-medium leading-6 text-gray-900"
+              >
+                Name
+              </label>
+              <div class="mt-2 h-10">
+                <app-input
+                  [id]="'name'"
+                  formControlName="name"
+                  autocomplete="name"
+                  [error]="getErrorMessage('name')"
+                ></app-input>
+              </div>
+            </div>
+
+            <div>
+              <label
                 for="email"
                 class="inline-block text-sm font-medium leading-6 text-gray-900"
               >
@@ -30,6 +47,7 @@
                   [type]="'email'"
                   formControlName="email"
                   autocomplete="email"
+                  [error]="getErrorMessage('email')"
                 ></app-input>
               </div>
             </div>
@@ -52,6 +70,23 @@
             </div>
 
             <div>
+              <label
+                for="password"
+                class="inline-block text-sm font-medium leading-6 text-gray-900"
+              >
+                Confirm Password
+              </label>
+              <div class="mt-2 h-10">
+                <app-input
+                  [id]="'confirmPassword'"
+                  [type]="'password'"
+                  formControlName="confirmPassword"
+                  [error]="getErrorMessage('confirmPassword')"
+                ></app-input>
+              </div>
+            </div>
+
+            <div>
               <app-button
                 type="submit"
                 [isLoading]="isLoading()"
@@ -63,10 +98,10 @@
 
             <div class="mx-auto mt-2 w-fit">
               <a
-                href="/sign-up"
+                href="/sign-in"
                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
               >
-                Don`t have an account? Sign up
+                Log in
               </a>
             </div>
           </form>
