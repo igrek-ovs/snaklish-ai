@@ -63,7 +63,8 @@ export class SignInComponent implements OnInit {
         Validators.maxLength(20),
         Validators.pattern(PASSWORD_REGEX.onlyLatin.source),
         Validators.pattern(PASSWORD_REGEX.atLeastOneDigit.source),
-        Validators.pattern(PASSWORD_REGEX.atLeastOneUppercase.source),
+        //TODO: add this regex when the backend is ready
+        //Validators.pattern(PASSWORD_REGEX.atLeastOneUppercase.source),
         Validators.pattern(PASSWORD_REGEX.atLeastOneLowercase.source),
         Validators.pattern(PASSWORD_REGEX.atLeastOneSpecialCharacter.source),
       ]),
