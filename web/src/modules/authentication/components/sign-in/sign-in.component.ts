@@ -8,10 +8,15 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-// import { ButtonComponent, InputComponent } from '../../../../shared/components';
-import { catchError, of, tap } from 'rxjs';
 import { InputComponent } from '../../../../shared/components/input/input.component';
-import { ButtonComponent } from "../../../../shared/components/button/button.component";
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import {
+  AuthenticationService,
+  TOKEN_DATA,
+} from '../../../../core/services/authentication.service';
+import { catchError, EMPTY, tap } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
+import { HotToastService } from '@ngxpert/hot-toast';
 
 interface ErrorsMessages {
   required: string;
@@ -27,11 +32,6 @@ interface SignInFormErrors {
   password: ErrorsMessages;
 }
 
-interface SignInForm {
-  email: FormControl<string>;
-  password: FormControl<string>;
-}
-
 @Component({
   selector: 'app-sign-in',
   standalone: true,
@@ -39,50 +39,29 @@ interface SignInForm {
   templateUrl: './sign-in.component.html',
 })
 export class SignInComponent implements OnInit {
-  private readonly errorsMessages: SignInFormErrors = {
-    email: {
-      required: 'Email is required',
-      email: 'Email is invalid',
-      pattern: 'Email is invalid',
-    },
-    password: {
-      required: 'Password is required',
-      notExist: 'Email or password is incorrect',
-    },
-  };
-
   public readonly eyeIcon: string = 'tablerEye';
   public readonly eyeOffIcon: string = 'tablerEyeOff';
 
   public form: FormGroup;
-  public isLoggingIn = signal(false);
-  public firstLook: boolean = true;
+  public isLoading = signal(false);
 
   constructor(
     private readonly fb: NonNullableFormBuilder,
     private readonly router: Router,
-    // private readonly hotToastService: HotToastService,
-    // private readonly authService: AuthenticationService
+    private readonly authenticationService: AuthenticationService,
+    private readonly hotToastService: HotToastService
   ) {
-    this.form = this.fb.group<SignInForm>({
+    this.form = this.fb.group({
       email: this.fb.control<string>('', [
         Validators.required,
         Validators.email,
-        // Validators.pattern(emailRegex.full),
       ]),
       password: this.fb.control<string>('', [Validators.required]),
     });
-
-    // if (this.authService.isAuthorized) {
-    //   this.router.navigate([AuthConstants.SIGNED_IN_REDIRECT_ROUTE]);
-    //   return;
-    // }
   }
 
   ngOnInit() {
     this.form.valueChanges.subscribe(() => {
-      this.firstLook = false;
-
       const passwordControl = this.form.get('password') as FormControl<string>;
       if (!passwordControl.errors) return;
       if (passwordControl.errors?.['notExist']) {
@@ -92,50 +71,53 @@ export class SignInComponent implements OnInit {
     });
   }
 
-  public getErrorMessage(controlName: keyof SignInFormErrors) {
+  public getErrorMessage(controlName: string) {
     const control = this.form.get(controlName);
-    if (!control?.errors) {
-      return '';
+
+    if (control?.hasError('required')) {
+      return 'required';
+    } else if (control?.hasError('minlength')) {
+      return 'length';
+    } else if (control?.hasError('maxlength')) {
+      return 'length';
+    } else if (control?.hasError('invalidCredentials')) {
+      return 'invalidCredentials';
     }
 
-    const errorKey = Object.keys(control.errors)[0] as keyof ErrorsMessages;
-    const errorMessagesForControl = this.errorsMessages[controlName];
-
-    return this.firstLook ? '' : errorMessagesForControl[errorKey];
+    return '';
   }
 
   public onSubmit() {
-    // if (this.form.valid) {
-    //   this.hotToastService.close();
+    if (this.form.valid) {
+      this.hotToastService.close();
 
-    //   const formData: Login = { ...this.form.value };
+      const formData = this.form.value;
+      this.authenticationService
+        .login(formData)
 
-    //   this.isLoggingIn.set(true);
-    //   this.authService
-    //     .login(formData)
-    //     .pipe(
-    //       tap((response: Auth | null) => {
-    //         if (response?.token && response?.refreshToken) {
-    //           const decodedToken = jwtDecode(response.token) as TokenPayload;
-    //           response.rights = decodedToken.right;
+        .pipe(
+          this.hotToastService.observe({
+            loading: 'Authenticating...',
+            success: 'Logged in successfully',
+            error: 'Invalid email or password',
+          }),
+          tap((response) => {
+            if (response?.accessToken && response?.refreshToken) {
+              localStorage.setItem(TOKEN_DATA, JSON.stringify(response));
+            }
 
-    //           localStorage.setItem(tokenStorageKey, JSON.stringify(response));
-
-    //           const localRedirect =
-    //             sessionStorage.getItem(AuthConstants.LOCAL_SIGNIN_REDIRECT) ??
-    //             AuthConstants.SIGNED_IN_REDIRECT_ROUTE;
-    //           sessionStorage.removeItem(AuthConstants.LOCAL_SIGNIN_REDIRECT);
-    //           this.router.navigate([localRedirect]);
-    //         }
-    //       }),
-    //       catchError(() => {
-    //         this.hotToastService.error('Failed to sign in');
-    //         this.form.get('password')?.setErrors({ notExist: true });
-    //         return of(null);
-    //       }),
-    //       tap(() => this.isLoggingIn.set(false))
-    //     )
-    //     .subscribe();
-    // }
+            this.router.navigate(['/dictionary-list']);
+          }),
+          catchError(() => {
+            this.form.get('password')?.setErrors({ invalidCredentials: true });
+            return EMPTY;
+          })
+        )
+        .subscribe();
+    } else {
+      this.hotToastService.error(
+        'Invalid email or password. Please try again.'
+      );
+    }
   }
 }
