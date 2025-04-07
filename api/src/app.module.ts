@@ -13,6 +13,7 @@ import { EmailVerificationModule } from './modules/email-verification/email-veri
 import { WordModule } from './modules/dictionary/word/word.module';
 import { WordTranslationModule } from './modules/dictionary/word-translation/word-translation.module';
 import { UserWordModule } from './modules/dictionary/user-word/user-word.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -21,15 +22,15 @@ import { UserWordModule } from './modules/dictionary/user-word/user-word.module'
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',  // 🔄 Меняем с PostgreSQL на MySQL
+        type: 'mysql', // 🔄 Меняем с PostgreSQL на MySQL
         host: configService.get('DB_HOST'),
         port: +configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         entities: [join(process.cwd(), 'dist/**/*.entity.js')],
-        synchronize: false, // ❌ В продакшене НЕ включаем!
-        timezone: 'Z', // ⏰ Чтоб MySQL хранил время в UTC
+        synchronize: false,
+        timezone: 'Z',
       }),
     }),
     UserModule,
@@ -42,7 +43,12 @@ import { UserWordModule } from './modules/dictionary/user-word/user-word.module'
     EmailVerificationModule,
     WordModule,
     WordTranslationModule,
-    UserWordModule
+    UserWordModule,
+    MulterModule.register({
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
   ],
   controllers: [],
   providers: [],

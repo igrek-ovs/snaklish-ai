@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Word } from './word.entity';
@@ -32,14 +36,25 @@ export class WordService {
   }
 
   async create(dto: CreateWordDto): Promise<Word> {
-    const word = this.wordRepository.create({ level: dto.level, word: dto.word });
+    const word = this.wordRepository.create({
+      level: dto.level,
+      word: dto.word,
+      transcription: dto.transcription,
+      examples: dto.examples,
+      language: dto.language,
+    });
     const savedWord = await this.wordRepository.save(word);
-
     return this.getById(savedWord.id);
   }
 
   async update(id: number, dto: UpdateWordDto): Promise<Word> {
-    await this.wordRepository.update(id, dto);
+    const word = await this.wordRepository.findOne({ where: { id } });
+    if (!word) {
+      throw new NotFoundException(`Слово с ID ${id} не найдено`);
+    }
+
+    const updatedWord = this.wordRepository.merge(word, dto);
+    await this.wordRepository.save(updatedWord);
     return this.getById(id);
   }
 
@@ -48,5 +63,22 @@ export class WordService {
     if (result.affected === 0) {
       throw new NotFoundException(`Слово с ID ${id} не найдено`);
     }
+  }
+
+  async addImage(id: number, imageBuffer: Buffer): Promise<Word> {
+    const word = await this.wordRepository.findOne({ where: { id } });
+
+    if (!word) {
+      throw new NotFoundException(`Слово с ID ${id} не найдено`);
+    }
+
+    if (!imageBuffer || imageBuffer.length === 0) {
+      throw new BadRequestException('Изображение не предоставлено');
+    }
+
+    word.img = imageBuffer;
+    await this.wordRepository.save(word);
+
+    return word;
   }
 }
