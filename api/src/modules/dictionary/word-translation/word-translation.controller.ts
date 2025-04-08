@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { WordTranslationService } from './word-translation.service';
 import { WordTranslation } from './word-translation.entity';
@@ -24,7 +32,9 @@ export class WordTranslationController {
 
   @ApiOperation({ summary: 'Создать перевод слова' })
   @Post()
-  async create(@Body() dto: CreateWordTranslationDto): Promise<WordTranslation> {
+  async create(
+    @Body() dto: CreateWordTranslationDto,
+  ): Promise<WordTranslation> {
     return this.translationService.create(dto);
   }
 

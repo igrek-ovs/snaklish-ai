@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from '../../user/user.entity';
-import { Word } from '../word/word.entity';
+import { WordTranslation } from '../word-translation/word-translation.entity';
 
 @Entity('user_words')
 export class UserWord {
@@ -10,8 +10,10 @@ export class UserWord {
   @ManyToOne(() => User, (user) => user.userWords, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToOne(() => Word, (word) => word.userWords, { onDelete: 'CASCADE' })
-  word: Word;
+  @ManyToOne(() => WordTranslation, (translation) => translation.userWords, {
+    onDelete: 'CASCADE',
+  })
+  translation: WordTranslation;
 
   @Column({ type: 'boolean', default: false })
   isLearnt: boolean;

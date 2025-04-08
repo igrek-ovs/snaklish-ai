@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migration:generate": "npm run typeorm -- migration:generate src/migrations/NewFieldsForWordEntity -d src/config/ormconfig.ts",
+    "migration:generate": "npm run typeorm -- migration:generate src/migrations/NewMigrationForIsLearnt -d src/config/ormconfig.ts",
     "migration:run": "npm run typeorm -- migration:run -d src/config/ormconfig.ts",
     "migration:revert": "npm run typeorm -- migration:revert -d src/config/ormconfig.ts",
     "build": "nest build",

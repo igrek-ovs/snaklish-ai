@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Word } from '../word/word.entity';
+import { UserWord } from '../user-word/user-word.entity';
 
 export enum WordLanguage {
   FRENCH = 'FRENCH',
@@ -20,4 +27,7 @@ export class WordTranslation {
 
   @Column({ type: 'enum', enum: WordLanguage, nullable: true })
   language: WordLanguage;
+
+  @OneToMany(() => UserWord, (userWord) => userWord.translation)
+  userWords: UserWord[];
 }

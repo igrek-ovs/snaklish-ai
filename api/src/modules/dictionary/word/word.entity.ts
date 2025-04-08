@@ -35,7 +35,4 @@ export class Word {
     cascade: true,
   })
   translations: WordTranslation[];
-
-  @OneToMany(() => UserWord, (userWord) => userWord.word, { cascade: true })
-  userWords: UserWord[];
 }
