@@ -15,7 +15,6 @@ import {
   TOKEN_DATA,
 } from '../../../../core/services/authentication.service';
 import { catchError, EMPTY, tap } from 'rxjs';
-import { jwtDecode } from 'jwt-decode';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { PASSWORD_REGEX } from '../../../../core/regex/password-regex';
 
@@ -40,8 +39,8 @@ interface SignInFormErrors {
   templateUrl: './sign-in.component.html',
 })
 export class SignInComponent implements OnInit {
-  public readonly eyeIcon: string = 'tablerEye';
-  public readonly eyeOffIcon: string = 'tablerEyeOff';
+  public readonly eyeIcon = 'tablerEye';
+  public readonly eyeOffIcon = 'tablerEyeOff';
 
   public form: FormGroup;
   public isLoading = signal(false);

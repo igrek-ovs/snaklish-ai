@@ -6,104 +6,104 @@
     [class]="labelStyleClass()"
     >{{ label() }}</label
   >
-  @if (
-    loverBoundary() !== undefined && value.length < loverBoundary()! && isDirty
-  ) {
-    <p class="text-sm text-error-main">
-      {{ value.length + '/' + loverBoundary() }}
-    </p>
+  @if ( loverBoundary() !== undefined && value.length < loverBoundary()! &&
+  isDirty ) {
+  <p class="text-sm text-error-main">
+    {{ value.length + "/" + loverBoundary() }}
+  </p>
   } @else if (upperBoundary() !== undefined && isDirty) {
-    <p
-      class="text-sm text-gray"
-      [ngClass]="{ '!text-error-main': value.length > upperBoundary()! }"
-    >
-      {{ value.length + '/' + upperBoundary() }}
-    </p>
+  <p
+    class="text-sm text-gray"
+    [ngClass]="{ '!text-error-main': value.length > upperBoundary()! }"
+  >
+    {{ value.length + "/" + upperBoundary() }}
+  </p>
   }
 </div>
 <div class="mt-2 relative">
-  @if (!isTextarea()) {
-    @if (isSearchable()) {
-      <div
-        class="absolute inset-y-0 start-0 flex items-center ps-3 text-gray-400 pointer-events-none"
-        [ngClass]="{
-          'text-primary-main': focused,
-        }"
-      >
-        icon
-        <!-- <ng-icon name="tablerSearch" class="text-lg"></ng-icon> -->
-      </div>
-    }
-    <input
-      [id]="id()"
-      [name]="id()"
-      [(ngModel)]="value"
-      [disabled]="isDisabled()"
-      (ngModelChange)="valueChanged($event)"
-      [type]="type()"
-      [min]="min()"
-      [max]="max()"
-      [autocomplete]="autocomplete()"
-      [ngClass]="{
-        'border-error-main !border': isInvalid && !focused,
+  @if (!isTextarea()) { @if (isSearchable()) {
+  <div
+    class="absolute inset-y-0 start-0 flex items-center ps-3 text-gray-400 pointer-events-none"
+    [ngClass]="{
+            'text-primary-main': focused,
+          }"
+  ></div>
+  }
+  <input
+    [id]="id()"
+    [name]="id()"
+    [(ngModel)]="value"
+    [disabled]="isDisabled()"
+    (ngModelChange)="valueChanged($event)"
+    [type]="type() === 'password' && isShownPassword() ? 'text' : type()"
+    [min]="min()"
+    [max]="max()"
+    [autocomplete]="autocomplete()"
+    [ngClass]="{
+        'ring-error-main': isInvalid && !focused,
       }"
-      [step]="step()"
-      (focus)="onFocusIn()"
-      (blur)="onFocusOut()"
-      class="focus:caret-primary-main focus:outline-none focus:ring-2 focus:ring-primary-main modal-text block w-full px-3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 invalid:ring-red-500 no-spin-buttons"
-      [class]="styleClass()"
-      [attr.class]="isSearchable() ? 'ps-10' : ''"
-      [placeholder]="placeholder()"
-    />
-    @if (isCurrency()) {
-      <div
-        class="absolute top-1.5 right-0 flex items-center pr-3 pointer-events-none"
-      >
-        <div class="h-6 border-l border-slate-200 mr-2"></div>
-        <p class="text-slate-400">
-          {{ currencyCode !== 'EUR' ? 'EUR' : currencyCode }}
-        </p>
-      </div>
-    } @else if (isTime()) {
-      <div
-        class="absolute top-1.5 right-0 flex items-center pr-3 pointer-events-none"
-      >
-        <div class="h-6 border-l border-slate-200 mr-2"></div>
-        <p class="text-slate-400">MOS</p>
-      </div>
-    }
-    @if (isSearchable() && value.trim()) {
-      <button
-        class="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 bg-transparent hover:text-gray-500 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:text-white"
-        type="button"
-        (click)="value = ''; valueChanged('')"
-        title="Clear"
-      >
-        icon
-        <!-- <ng-icon name="tablerX" class="text-lg"></ng-icon> -->
-      </button>
-    }
-  } @else {
-    <textarea
-      [id]="id()"
-      [name]="id()"
-      [(ngModel)]="value"
-      (ngModelChange)="valueChanged($event)"
-      [autocomplete]="autocomplete()"
-      [ngClass]="{
-        'border-error-main !border': isInvalid && !focused,
+    [step]="step()"
+    (focus)="onFocusIn()"
+    (blur)="onFocusOut()"
+    class="focus:caret-primary-main focus:outline-none focus:ring-2 focus:ring-primary-main modal-text block w-full px-3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 invalid:ring-red-500 no-spin-buttons"
+    [class]="styleClass()"
+    [attr.class]="isSearchable() ? 'ps-10' : ''"
+    [placeholder]="placeholder()"
+  />
+  @if(type() === 'password') {
+  <button
+    (click)="togglePasswordVisibility()"
+    class="absolute right-1.5 top-5 -translate-y-1/2"
+  >
+    <ng-icon
+      [name]="isShownPassword() ? 'tablerEye' : 'tablerEyeOff'"
+      class="text-gray-400 text-lg"
+    ></ng-icon>
+  </button>
+  } @if (isCurrency()) {
+  <div
+    class="absolute top-1.5 right-0 flex items-center pr-3 pointer-events-none"
+  >
+    <div class="h-6 border-l border-slate-200 mr-2"></div>
+    <p class="text-slate-400">
+      {{ currencyCode !== "EUR" ? "EUR" : currencyCode }}
+    </p>
+  </div>
+  } @else if (isTime()) {
+  <div
+    class="absolute top-1.5 right-0 flex items-center pr-3 pointer-events-none"
+  >
+    <div class="h-6 border-l border-slate-200 mr-2"></div>
+    <p class="text-slate-400">MOS</p>
+  </div>
+  } @if (isSearchable() && value.trim()) {
+  <button
+    class="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 bg-transparent hover:text-gray-500 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:text-white"
+    type="button"
+    (click)="value = ''; valueChanged('')"
+    title="Clear"
+  ></button>
+  } } @else {
+  <textarea
+    [id]="id()"
+    [name]="id()"
+    [(ngModel)]="value"
+    (ngModelChange)="valueChanged($event)"
+    [autocomplete]="autocomplete()"
+    [ngClass]="{
+        'ring-error-main': isInvalid && !focused,
       }"
-      (focus)="onFocusIn()"
-      (blur)="onFocusOut()"
-      class="resize-none block w-full px-3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 invalid:ring-red-500"
-      [class]="styleClass()"
-      [placeholder]="placeholder()"
-    ></textarea>
+    (focus)="onFocusIn()"
+    (blur)="onFocusOut()"
+    class="resize-none block w-full px-3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 invalid:ring-red-500"
+    [class]="styleClass()"
+    [placeholder]="placeholder()"
+  ></textarea>
   }
   <ng-content></ng-content>
   @if (isInvalid && !focused) {
-    <p class="mt-2 text-xs text-error-main text-ellipsis">
-      {{ errorMessage }}
-    </p>
+  <p class="mt-2 text-xs text-error-main text-ellipsis">
+    {{ errorMessage }}
+  </p>
   }
 </div>
