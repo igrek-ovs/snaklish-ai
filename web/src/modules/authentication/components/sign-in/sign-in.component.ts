@@ -39,9 +39,6 @@ interface SignInFormErrors {
   templateUrl: './sign-in.component.html',
 })
 export class SignInComponent implements OnInit {
-  public readonly eyeIcon = 'tablerEye';
-  public readonly eyeOffIcon = 'tablerEyeOff';
-
   public form: FormGroup;
   public isLoading = signal(false);
 
@@ -132,36 +129,34 @@ export class SignInComponent implements OnInit {
   }
 
   public onSubmit() {
-    if (this.form.valid) {
-      this.hotToastService.close();
-
-      const formData = this.form.value;
-      this.authenticationService
-        .login(formData)
-
-        .pipe(
-          this.hotToastService.observe({
-            loading: 'Authenticating...',
-            success: 'Logged in successfully',
-            error: 'Invalid email or password',
-          }),
-          tap((response) => {
-            if (response?.accessToken && response?.refreshToken) {
-              localStorage.setItem(TOKEN_DATA, JSON.stringify(response));
-            }
-
-            this.router.navigate(['/dictionary-list']);
-          }),
-          catchError(() => {
-            this.form.get('password')?.setErrors({ invalidCredentials: true });
-            return EMPTY;
-          })
-        )
-        .subscribe();
-    } else {
-      this.hotToastService.error(
-        'Invalid email or password. Please try again.'
-      );
+    if (!this.form.valid) {
+      return;
     }
+
+    this.hotToastService.close();
+
+    const formData = this.form.value;
+    this.authenticationService
+      .login(formData)
+
+      .pipe(
+        this.hotToastService.observe({
+          loading: 'Authenticating...',
+          success: 'Logged in successfully',
+          error: 'Invalid email or password',
+        }),
+        tap((response) => {
+          if (response?.accessToken && response?.refreshToken) {
+            localStorage.setItem(TOKEN_DATA, JSON.stringify(response));
+          }
+
+          this.router.navigate(['/dictionary-list']);
+        }),
+        catchError(() => {
+          this.form.get('password')?.setErrors({ invalidCredentials: true });
+          return EMPTY;
+        })
+      )
+      .subscribe();
   }
 }

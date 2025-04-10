@@ -83,7 +83,7 @@
         class="w-72 mt-4 -ml-4 bg-white border-r border-gray-200 md:hidden dark:bg-gray-800 dark:border-gray-700"
         aria-label="Sidenav"
       >
-        <!-- <app-sidebar></app-sidebar> -->
+        <!-- <app-navbar></app-navbar> -->
       </aside>
     </ng-template>
 
@@ -91,6 +91,7 @@
       class="flex-grow flex overflow-y-auto -ml-72 transition-all md:ml-0 w-full max-w-full overflow-x-hidden"
     >
       <div class="w-full min-h-full">
+        <app-navbar></app-navbar>
         <router-outlet></router-outlet>
       </div>
     </main>

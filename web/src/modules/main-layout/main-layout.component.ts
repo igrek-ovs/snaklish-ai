@@ -7,11 +7,12 @@ import {
 import { RouterOutlet } from '@angular/router';
 import { Router } from '@angular/router';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, OverlayModule],
+  imports: [RouterOutlet, OverlayModule, NavbarComponent],
   templateUrl: './main-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

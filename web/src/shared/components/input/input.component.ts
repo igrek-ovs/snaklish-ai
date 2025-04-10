@@ -158,6 +158,5 @@ export class InputComponent implements ControlValueAccessor, OnInit {
 
   public togglePasswordVisibility() {
     this.isShownPassword.set(!this.isShownPassword());
-    this.cdr.markForCheck();
   }
 }
