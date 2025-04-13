@@ -16,6 +16,7 @@ import {
 import { catchError, EMPTY, tap } from 'rxjs';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Router } from '@angular/router';
+import { confirmPasswordValidator } from '../../../../core/validators/confirm-password.validator';
 
 @Component({
   selector: 'app-sign-up',
@@ -51,7 +52,10 @@ export class SignUpComponent {
         Validators.pattern(PASSWORD_REGEX.atLeastOneLowercase.source),
         Validators.pattern(PASSWORD_REGEX.atLeastOneSpecialCharacter.source),
       ]),
-      confirmPassword: this.fb.control<string>('', [Validators.required]),
+      confirmPassword: this.fb.control<string>('', [
+        Validators.required,
+        confirmPasswordValidator('password', 'confirmPassword'),
+      ]),
     });
   }
 
@@ -60,6 +64,10 @@ export class SignUpComponent {
 
     if (!control) {
       return '';
+    }
+
+    if (control.hasError('passwordMismatch')) {
+      return 'Password mismatch';
     }
 
     if (control.hasError('required')) {

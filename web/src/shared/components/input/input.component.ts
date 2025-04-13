@@ -8,31 +8,31 @@ import {
   Injector,
   input,
   OnInit,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// import {
-//   ControlValueAccessor,
-//   FormsModule,
-//   NG_VALUE_ACCESSOR,
-//   NgControl,
-//   ReactiveFormsModule,
-// } from '@angular/forms';
 import { NgClass } from '@angular/common';
-import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, NgControl, ReactiveFormsModule } from '@angular/forms';
-// import { NgIcon, provideIcons } from '@ng-icons/core';
-// import { tablerX, tablerSearch } from '@ng-icons/tabler-icons';
+import {
+  ControlValueAccessor,
+  FormsModule,
+  NG_VALUE_ACCESSOR,
+  NgControl,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { tablerEye, tablerEyeOff } from '@ng-icons/tabler-icons';
 
 @Component({
   selector: 'app-input',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, CommonModule, NgClass],
+  imports: [ReactiveFormsModule, FormsModule, CommonModule, NgClass, NgIcon],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
       useExisting: forwardRef(() => InputComponent),
     },
-    // provideIcons({ tablerX, tablerSearch }),
+    provideIcons({ tablerEye, tablerEyeOff }),
   ],
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss'],
@@ -60,6 +60,8 @@ export class InputComponent implements ControlValueAccessor, OnInit {
   public isTime = input<boolean>(false);
   public loverBoundary = input<number | undefined>(undefined);
   public upperBoundary = input<number | undefined>(undefined);
+
+  public isShownPassword = signal<boolean>(false);
 
   public value = '';
 
@@ -152,5 +154,9 @@ export class InputComponent implements ControlValueAccessor, OnInit {
     this.writeValue(value);
     this.onChange(value);
     this.markAsTouched();
+  }
+
+  public togglePasswordVisibility() {
+    this.isShownPassword.set(!this.isShownPassword());
   }
 }

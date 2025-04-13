@@ -4,6 +4,7 @@ import { NotFoundComponent } from '../modules/not-found/not-found.component';
 import { MainLayoutComponent } from '../modules/main-layout/main-layout.component';
 import { DictionaryListComponent } from '../modules/dictionary-list/dictionary-list.component';
 import { AcountManagementComponent } from '../modules/acount-management/acount-management.component';
+import { ProfileComponent } from '../modules/profile/profile.component';
 
 export const routes: Routes = [
   ...authenticationRoutes,
@@ -13,6 +14,7 @@ export const routes: Routes = [
     children: [
       { path: 'dictionary-list', component: DictionaryListComponent },
       { path: 'account', component: AcountManagementComponent },
+      { path: 'profile', component: ProfileComponent },
     ],
   },
   { path: '404', component: NotFoundComponent },
