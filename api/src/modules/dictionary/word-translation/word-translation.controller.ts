@@ -6,12 +6,16 @@ import {
   Delete,
   Param,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { WordTranslationService } from './word-translation.service';
 import { WordTranslation } from './word-translation.entity';
 import { CreateWordTranslationDto } from './dto/create-word-translation.dto';
 import { UpdateWordTranslationDto } from './dto/update-word-translation.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { Roles } from '../../auth/decorators/roles.decorator';
 
 @ApiTags('Переводы слов')
 @Controller('word-translations')
@@ -30,6 +34,8 @@ export class WordTranslationController {
     return this.translationService.getById(id);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Создать перевод слова' })
   @Post()
   async create(
@@ -38,6 +44,8 @@ export class WordTranslationController {
     return this.translationService.create(dto);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Обновить перевод' })
   @Put(':id')
   async update(
@@ -47,6 +55,8 @@ export class WordTranslationController {
     return this.translationService.update(id, dto);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Удалить перевод' })
   @Delete(':id')
   async delete(@Param('id') id: number): Promise<void> {

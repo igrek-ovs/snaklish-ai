@@ -6,9 +6,14 @@ import {
   HttpStatus,
   UnauthorizedException,
   UseGuards,
-  Req
+  Req,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { UserDto } from '../user/dto/user.dto';
@@ -16,7 +21,7 @@ import { Request } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './login.dto';
 
-@ApiTags('Auth') // Группировка методов в Swagger
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(

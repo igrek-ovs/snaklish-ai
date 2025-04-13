@@ -6,7 +6,8 @@ import {
   Delete,
   Param,
   Body,
-  Req, UseGuards,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { GetUserResultDto } from './dto/get-user-result.dto';
@@ -15,14 +16,15 @@ import { UserDto } from './dto/user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
-
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+@ApiBearerAuth()
 @ApiTags('Пользователи')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: 'Получить текущего пользователя' })
-  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Get('me')
   async getMe(@Req() req): Promise<GetUserResultDto | null> {
@@ -35,24 +37,39 @@ export class UserController {
     return this.userService.getAll();
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Создать пользователя' })
   @Post()
   async create(@Body() userDto: UserDto): Promise<GetUserResultDto> {
     return this.userService.create(userDto);
   }
 
-  @ApiOperation({ summary: 'Обновить пользователя' })
-  @Put(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<GetUserResultDto> {
-    return this.userService.update(id, updateUserDto);
+  @ApiOperation({ summary: 'Обновить данные текущего пользователя' })
+  @UseGuards(AuthGuard('jwt'))
+  @Put('me')
+  async update(
+    @Req() req,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<GetUserResultDto> {
+    return this.userService.update(req.user.id, updateUserDto);
   }
 
-  @ApiOperation({ summary: 'Обновить пароль пользователя' })
-  @Put(':id/password')
-  async changePassword(@Param('id') id: string, @Body() changePasswordDto: ChangePasswordDto): Promise<GetUserResultDto> {
-    return this.userService.changePassword(id, changePasswordDto.password);
+  @ApiOperation({ summary: 'Обновить пароль текущего пользователя' })
+  @UseGuards(AuthGuard('jwt'))
+  @Put('me/password')
+  async changePassword(
+    @Req() req,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ): Promise<GetUserResultDto> {
+    return this.userService.changePassword(
+      req.user.id,
+      changePasswordDto.password,
+    );
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Удалить пользователя' })
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<void> {

@@ -24,29 +24,33 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('Неверный email или пароль');
 
     const passwordMatches = await bcrypt.compare(password, user.passwordHash);
-    if (!passwordMatches) throw new UnauthorizedException('Неверный email или пароль');
+    if (!passwordMatches)
+      throw new UnauthorizedException('Неверный email или пароль');
 
     return this.createTokens(user.id, user.role);
   }
 
   async createTokens(userId: string, role: UserRole) {
-    const accessToken = await this.createAccessToken(userId, role);
+    const accessToken = this.createAccessToken(userId, role);
 
-    const refreshToken = await this.refreshTokenService.generateRefreshToken(userId);
+    const refreshToken =
+      await this.refreshTokenService.generateRefreshToken(userId);
 
     return { accessToken, refreshToken };
   }
 
-  async createAccessToken(userId: string, role: string): Promise<string> {
+  createAccessToken(userId: string, role: string): string {
     return this.jwtService.sign(
-      { userId, role }, // ✅ Добавили роль в payload
+      { userId, role },
       { secret: process.env.JWT_SECRET, expiresIn: '15m' },
     );
   }
 
   async refreshToken(oldRefreshToken: string) {
-    const user = await this.refreshTokenService.validateRefreshToken(oldRefreshToken);
-    if (!user) throw new UnauthorizedException('Недействительный refresh токен');
+    const user =
+      await this.refreshTokenService.validateRefreshToken(oldRefreshToken);
+    if (!user)
+      throw new UnauthorizedException('Недействительный refresh токен');
 
     const newAccessToken = this.createAccessToken(user.id, user.role);
 

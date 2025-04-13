@@ -1,7 +1,8 @@
 import {
   Column,
   CreateDateColumn,
-  Entity, OneToMany,
+  Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,19 +18,34 @@ export enum UserRole {
 
 @Entity('users')
 export class User {
-  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000', description: 'Уникальный идентификатор пользователя' })
+  @ApiProperty({
+    example: '550e8400-e29b-41d4-a716-446655440000',
+    description: 'Уникальный идентификатор пользователя',
+  })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiProperty({ example: 'Иван Иванов', description: 'Имя пользователя', maxLength: 100 })
+  @ApiProperty({
+    example: 'Иван Иванов',
+    description: 'Имя пользователя',
+    maxLength: 100,
+  })
   @Column({ length: 100, nullable: false })
   name: string;
 
-  @ApiProperty({ example: 'user@example.com', description: 'Email пользователя (уникальный)', maxLength: 150 })
+  @ApiProperty({
+    example: 'user@example.com',
+    description: 'Email пользователя (уникальный)',
+    maxLength: 150,
+  })
   @Column({ unique: true, length: 150, nullable: false })
   email: string;
 
-  @ApiProperty({ example: 'hashedpassword123', description: 'Хеш пароля', writeOnly: true })
+  @ApiProperty({
+    example: 'hashedpassword123',
+    description: 'Хеш пароля',
+    writeOnly: true,
+  })
   @Column({ nullable: false })
   passwordHash: string;
 
@@ -37,16 +53,30 @@ export class User {
   @Column({ default: false })
   isEmailConfirmed: boolean;
 
-  @ApiProperty({ example: '2025-02-16T12:00:00.000Z', description: 'Дата создания пользователя', type: 'string', format: 'date-time' })
+  @ApiProperty({
+    example: '2025-02-16T12:00:00.000Z',
+    description: 'Дата создания пользователя',
+    type: 'string',
+    format: 'date-time',
+  })
   @CreateDateColumn({ type: 'datetime', nullable: true })
   createdAt: Date;
 
-  @ApiProperty({ example: '2025-02-16T12:00:00.000Z', description: 'Дата последнего обновления', type: 'string', format: 'date-time' })
+  @ApiProperty({
+    example: '2025-02-16T12:00:00.000Z',
+    description: 'Дата последнего обновления',
+    type: 'string',
+    format: 'date-time',
+  })
   @UpdateDateColumn({ type: 'datetime', nullable: true })
   updatedAt: Date;
 
-
-  @ApiProperty({ example: 'user', description: 'Роль пользователя', enum: UserRole, default: UserRole.USER })
+  @ApiProperty({
+    example: 'user',
+    description: 'Роль пользователя',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
 

@@ -1,10 +1,17 @@
-import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User, UserRole } from './user.entity';
+import { User } from './user.entity';
+import { GetUserResultDto } from './dto/get-user-result.dto';
 
 @Injectable()
 export class UserService {
@@ -13,9 +20,14 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(userDto: UserDto): Promise<User> {
-    const existingUser = await this.userRepository.findOne({ where: { email: userDto.email } });
+  private readonly logger = new Logger(UserService.name);
+
+  async create(userDto: UserDto): Promise<GetUserResultDto> {
+    const existingUser = await this.userRepository.findOne({
+      where: { email: userDto.email },
+    });
     if (existingUser) {
+      this.logger.error('User with this email already exists');
       throw new ConflictException('Пользователь с таким email уже существует');
     }
 
@@ -25,24 +37,61 @@ export class UserService {
       passwordHash: hashedPassword,
     });
 
-    return this.userRepository.save(newUser);
+    const savedUser = await this.userRepository.save(newUser);
+
+    return {
+      id: savedUser.id,
+      name: savedUser.name,
+      email: savedUser.email,
+      isEmailConfirmed: savedUser.isEmailConfirmed,
+      role: savedUser.role,
+    };
   }
 
-  async update(id: string, newUser: UpdateUserDto): Promise<User> {
+  async update(id: string, newUser: UpdateUserDto): Promise<GetUserResultDto> {
     const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) throw new NotFoundException('Пользователь не найден');
+    if (!user) {
+      this.logger.error('User not found');
+      throw new NotFoundException('Пользователь не найден');
+    }
+
+    if (newUser.email && newUser.email !== user.email) {
+      user.isEmailConfirmed = false;
+    }
 
     Object.assign(user, newUser);
-    return this.userRepository.save(user);
+    const updatedUser = await this.userRepository.save(user);
+
+    return {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isEmailConfirmed: updatedUser.isEmailConfirmed,
+      role: updatedUser.role,
+    };
   }
 
-  async changePassword(id: string, password: string): Promise<User> {
+  async changePassword(
+    id: string,
+    password: string,
+  ): Promise<GetUserResultDto> {
     const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) throw new NotFoundException('Пользователь не найден');
+    if (!user) {
+      this.logger.error('User not found');
+      throw new NotFoundException('Пользователь не найден');
+    }
 
     user.passwordHash = await bcrypt.hash(password, 10);
-    return this.userRepository.save(user);
-    }
+    const updatedUser = await this.userRepository.save(user);
+
+    return {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isEmailConfirmed: updatedUser.isEmailConfirmed,
+      role: updatedUser.role,
+    };
+  }
 
   async confirmUserEmail(userId: string): Promise<void> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -64,18 +113,37 @@ export class UserService {
   }
 
   async getById(id: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) return null;
+
+    return user;
   }
 
   async getByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) return null;
+
+    return user;
   }
 
-  async getAll(): Promise<User[]> {
-    return this.userRepository.find();
+  async getAll(): Promise<GetUserResultDto[]> {
+    const users = await this.userRepository.find();
+
+    if (!users) return [];
+
+    return users.map((user) => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      isEmailConfirmed: user.isEmailConfirmed,
+      role: user.role,
+    }));
   }
 
-  async getUserByEmailAndPassword(email: string, password: string): Promise<User> {
+  async getUserByEmailAndPassword(
+    email: string,
+    password: string,
+  ): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { email },
       select: ['id', 'name', 'email', 'passwordHash', 'role'],
@@ -84,7 +152,8 @@ export class UserService {
     if (!user) throw new NotFoundException('Неверный email или пароль');
 
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
-    if (!isPasswordValid) throw new BadRequestException('Неверный email или пароль');
+    if (!isPasswordValid)
+      throw new BadRequestException('Неверный email или пароль');
 
     return user;
   }
