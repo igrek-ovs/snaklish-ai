@@ -35,4 +35,19 @@ export class AuthenticationService {
   public signUp(payload: SignUp) {
     return this.http.post<LoginResponse>(`${this.apiUrl}/register`, payload);
   }
+
+  public refreshToken(refreshToken: string) {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/refresh`, {
+      refreshToken,
+    });
+  }
+
+  public saveTokenData(tokenData: LoginResponse): void {
+    localStorage.setItem(TOKEN_DATA, JSON.stringify(tokenData));
+  }
+
+  public getTokenData(): LoginResponse | null {
+    const tokenData = localStorage.getItem(TOKEN_DATA);
+    return tokenData ? JSON.parse(tokenData) : null;
+  }
 }

@@ -52,6 +52,7 @@
   />
   @if(type() === 'password') {
   <button
+    type="button"
     (click)="togglePasswordVisibility()"
     class="absolute right-1.5 top-5 -translate-y-1/2"
   >
@@ -102,8 +103,13 @@
   }
   <ng-content></ng-content>
   @if (isInvalid && !focused) {
-  <p class="mt-2 text-xs text-error-main text-ellipsis">
+  <p class="text-xs text-error-main text-ellipsis">
     {{ errorMessage }}
   </p>
+  } @if(type() === 'password' && !value.length && !focused) {
+  <span
+    class="absolute top-1.5 left-1.5 text-gray-400 italic pointer-events-none select-none"
+    >••••••••</span
+  >
   }
 </div>

@@ -1,0 +1,56 @@
+<div class="size-full bg-white m-6 rounded-xl">
+  @if (!editMode()) {
+  <div class="flex flex-col items-center justify-center pt-16 space-y-6">
+    <div class="flex items-start gap-x-2">
+      <span class="font-semibold">Email:</span>
+      <span>{{ user()?.email }}</span>
+    </div>
+    <div class="flex items-start gap-x-2">
+      <span class="font-semibold">Name:</span>
+      <span>{{ user()?.name }}</span>
+    </div>
+    <div class="flex items-start gap-x-2">
+      <span class="font-semibold">Role:</span>
+      <span>{{ user()?.role }}</span>
+    </div>
+    <div class="flex items-start gap-x-2">
+      <span class="font-semibold">Password:</span>
+      <span>********</span>
+    </div>
+    <div class="flex mt-4 space-x-3 md:mt-6">
+      <button
+        type="button"
+        class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        (click)="editMode.set(!editMode())"
+      >
+        Edit profile
+      </button>
+    </div>
+  </div>
+  } @else {
+  <form class="pt-16 max-w-sm mx-auto space-y-6" [formGroup]="form">
+    <div>
+      <app-input
+        [label]="'Email'"
+        [id]="'email'"
+        [formControlName]="'email'"
+      ></app-input>
+    </div>
+    <div>
+      <app-input
+        [label]="'Name'"
+        [id]="'name'"
+        [formControlName]="'name'"
+      ></app-input>
+    </div>
+    <div class="flex items-start gap-x-3">
+      <app-button type="button" color="outline" (click)="discard()"
+        >Discard</app-button
+      >
+      <app-button type="button" (click)="onSubmit()">Save</app-button>
+    </div>
+  </form>
+
+  <app-change-password></app-change-password>
+  }
+</div>
