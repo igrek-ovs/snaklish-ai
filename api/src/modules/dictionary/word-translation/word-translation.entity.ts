@@ -10,7 +10,7 @@ import { UserWord } from '../user-word/user-word.entity';
 
 export enum WordLanguage {
   FRENCH = 'FRENCH',
-  SPANISH = 'SPANISH',
+  UKRAINIAN = 'UKRAINIAN',
   GERMAN = 'GERMAN',
 }
 
