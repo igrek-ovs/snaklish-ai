@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RefreshToken } from './refresh-token.entity';
@@ -22,7 +26,9 @@ export class RefreshTokenService {
 
     const refreshSecret = process.env.JWT_REFRESH_SECRET;
     if (!refreshSecret) {
-      throw new Error('JWT_REFRESH_SECRET is not defined in environment variables');
+      throw new Error(
+        'JWT_REFRESH_SECRET is not defined in environment variables',
+      );
     }
 
     const token = jwt.sign({ userId }, refreshSecret, { expiresIn: '7d' });
@@ -39,20 +45,24 @@ export class RefreshTokenService {
     return token;
   }
 
-  async validateRefreshToken(token: string): Promise<RefreshTokenPayloadDto | null> {
-    const refreshTokenEntity = await this.refreshTokenRepository.findOne({
-      where: { token: await bcrypt.hash(token, 10) },
+  async validateRefreshToken(
+    token: string,
+  ): Promise<RefreshTokenPayloadDto | null> {
+    const refreshTokens = await this.refreshTokenRepository.find({
       relations: ['user'],
     });
 
-    if (!refreshTokenEntity || !refreshTokenEntity.user) {
-      return null;
+    for (const tokenEntity of refreshTokens) {
+      const isMatch = await bcrypt.compare(token, tokenEntity.token);
+      if (isMatch && tokenEntity.user) {
+        return {
+          id: tokenEntity.user.id,
+          role: tokenEntity.user.role,
+        };
+      }
     }
 
-    return {
-      id: refreshTokenEntity.user.id,
-      role: refreshTokenEntity.user.role,
-    };
+    return null;
   }
 
   async removeRefreshToken(userId: string): Promise<void> {

@@ -20,6 +20,7 @@ import { UserDto } from '../user/dto/user.dto';
 import { Request } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './login.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -53,11 +54,11 @@ export class AuthController {
   @ApiOperation({ summary: 'Обновление access токена' })
   @ApiResponse({ status: 200, description: 'Успешное обновление' })
   @ApiResponse({ status: 401, description: 'Недействительный refresh токен' })
-  async refreshToken(@Body('refreshToken') refreshToken: string) {
-    if (!refreshToken) {
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    if (!refreshTokenDto.refreshToken) {
       throw new UnauthorizedException('Refresh token is required');
     }
-    return this.authService.refreshToken(refreshToken);
+    return this.authService.refreshToken(refreshTokenDto.refreshToken);
   }
 
   @Post('logout')
