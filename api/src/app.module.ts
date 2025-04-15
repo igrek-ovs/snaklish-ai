@@ -14,6 +14,7 @@ import { WordModule } from './modules/dictionary/word/word.module';
 import { WordTranslationModule } from './modules/dictionary/word-translation/word-translation.module';
 import { UserWordModule } from './modules/dictionary/user-word/user-word.module';
 import { MulterModule } from '@nestjs/platform-express';
+import {CategoryModule} from "./modules/dictionary/category/category.module";
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { MulterModule } from '@nestjs/platform-express';
     WordModule,
     WordTranslationModule,
     UserWordModule,
+    CategoryModule,
     MulterModule.register({
       limits: {
         fileSize: 5 * 1024 * 1024,

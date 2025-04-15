@@ -1,12 +1,14 @@
 import {
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   Length,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { WordLevel } from '../word.entity';
+import { Type } from 'class-transformer';
 
 export class CreateWordDto {
   @ApiProperty({ example: 'A2', description: 'English word level' })
@@ -36,4 +38,14 @@ export class CreateWordDto {
   @IsOptional()
   @IsString()
   examples?: string;
+
+  @ApiProperty({
+    example: '1',
+    description: 'Id of the category',
+    required: true,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  categoryId: number;
 }

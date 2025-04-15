@@ -1,6 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  RelationId,
+  JoinColumn,
+} from 'typeorm';
 import { WordTranslation } from '../word-translation/word-translation.entity';
-import { UserWord } from '../user-word/user-word.entity';
+import { Category } from '../category/category.entity';
 
 export enum WordLevel {
   A1 = 'A1',
@@ -35,4 +43,11 @@ export class Word {
     cascade: true,
   })
   translations: WordTranslation[];
+
+  @ManyToOne(() => Category, (category) => category.words, { nullable: true })
+  @JoinColumn({ name: 'categoryId' })
+  category: Category;
+
+  @RelationId((word: Word) => word.category)
+  categoryId: number;
 }
