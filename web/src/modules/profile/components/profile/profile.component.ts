@@ -6,7 +6,6 @@ import {
 } from '@angular/core';
 import { UserService } from '../../../../core/services/user.service';
 import { catchError, of, tap } from 'rxjs';
-import { UserDto } from '../../../../core/contracts/data-contracts';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import {
   FormGroup,
@@ -28,7 +27,7 @@ import { ChangePasswordComponent } from '../change-password/change-password.comp
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileComponent implements OnInit {
-  public user = signal<UserDto | null>(null);
+  public user = signal<any | null>(null);
   public editMode = signal<boolean>(false);
   public form: FormGroup;
 
@@ -76,7 +75,7 @@ export class ProfileComponent implements OnInit {
       this.userService
         .updateUser({ ...this.user(), ...formData })
         .pipe(
-          tap((user: UserDto) => {
+          tap((user: any) => {
             this.user.set(user);
             this.editMode.set(false);
           }),
