@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../enviroments/enviroment';
 import { HttpClient } from '@angular/common/http';
+import { TOKEN_DATA } from './authentication.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,5 +21,9 @@ export class UserService {
 
   public changePassword(req: any) {
     return this.httpClient.put<any>(`${this.apiUrl}/me/password`, req);
+  }
+
+  public signOut() {
+    localStorage.removeItem(TOKEN_DATA);
   }
 }
