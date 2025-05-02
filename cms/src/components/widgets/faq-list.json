@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_widgets_faq_lists",
+  "info": {
+    "displayName": "Faq List",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "faqList": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.faq-tab"
+    },
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    }
+  }
+}
