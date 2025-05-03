@@ -24,4 +24,8 @@ export class NavbarComponent implements OnInit {
       )
       .subscribe();
   }
+
+  public signOut() {
+    this.userService.signOut();
+  }
 }

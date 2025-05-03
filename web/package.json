@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "api": "npx swagger-typescript-api generate -p http://localhost:3000/swagger-json -o ./src/core/contracts --modular --no-client --clean-output"
+    "api": "npx swagger-typescript-api generate -p http://localhost:3000/swagger-json -o ./src/core/contracts --modular --no-client --clean-output --no-format"
   },
   "private": true,
   "dependencies": {

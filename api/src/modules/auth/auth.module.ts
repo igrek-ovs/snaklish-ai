@@ -15,7 +15,7 @@ import { UserModule } from '../user/user.module'; // ✅ Добавляем!
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '15m' },
+      signOptions: { expiresIn: '30s' },
     }),
     RefreshTokenModule, // ✅ Уже импортируем RefreshTokenModule, он сам экспортит сервис
     UserModule, // ✅ Теперь UserService доступен

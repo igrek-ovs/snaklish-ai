@@ -10,6 +10,12 @@
         <div class="text-3xl font-bold text-gray-900">SNACKLISH</div>
       </div>
       <ul class="mt-10 space-y-2">
+        <li  class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300" [routerLink]="AppRoutes.Overview">
+          <div class="space-y-1">
+            <p class="font-medium">Overview</p>
+            <p class="text-xs text-gray-500"></p>
+          </div>
+        </li>
         <li
           class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
           (click)="router.navigate([''])"

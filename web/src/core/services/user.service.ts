@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../enviroments/enviroment';
 import { HttpClient } from '@angular/common/http';
-import {
-  ChangePasswordDto,
-  UpdateUserDto,
-  UserDto,
-} from '../contracts/data-contracts';
+import { TOKEN_DATA } from './authentication.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,17 +12,18 @@ export class UserService {
   constructor(private readonly httpClient: HttpClient) {}
 
   public getUser() {
-    return this.httpClient.get<UserDto>(`${this.apiUrl}/me`);
+    return this.httpClient.get<any>(`${this.apiUrl}/me`);
   }
 
-  public updateUser(req: UpdateUserDto) {
-    return this.httpClient.put<UserDto>(`${this.apiUrl}/me`, req);
+  public updateUser(req: any) {
+    return this.httpClient.put<any>(`${this.apiUrl}/me`, req);
   }
 
-  public changePassword(req: ChangePasswordDto) {
-    return this.httpClient.put<ChangePasswordDto>(
-      `${this.apiUrl}/me/password`,
-      req
-    );
+  public changePassword(req: any) {
+    return this.httpClient.put<any>(`${this.apiUrl}/me/password`, req);
+  }
+
+  public signOut() {
+    localStorage.removeItem(TOKEN_DATA);
   }
 }

@@ -1,0 +1,19 @@
+{
+  "kind": "singleType",
+  "collectionName": "overview_pages",
+  "info": {
+    "singularName": "overview-page",
+    "pluralName": "overview-pages",
+    "displayName": "Overview Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "Faq": {
+      "type": "component",
+      "repeatable": false,
+      "component": "widgets.faq-list"
+    }
+  }
+}
