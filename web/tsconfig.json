@@ -16,7 +16,17 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022"
+    "module": "ES2022",
+    "baseUrl": "./",
+    "paths": {
+      "@core/*": ["src/core/*"],
+      "@shared/*": ["src/shared/*"],
+      "@src/*": ["src/*"],
+      "@state/*": ["src/state/*"],
+      "@state": ["src/state"],
+      "@selfcare/cms": ["../../packages/cms/src"],
+      "@selfcare/ui": ["../../packages/ui/src"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

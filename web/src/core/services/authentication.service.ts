@@ -50,4 +50,15 @@ export class AuthenticationService {
     const tokenData = localStorage.getItem(TOKEN_DATA);
     return tokenData ? JSON.parse(tokenData) : null;
   }
+
+  public isAuthorized(): boolean {
+    const tokenData = this.getTokenData();
+    if (!tokenData) {
+      return false;
+    }
+    const { accessToken } = tokenData;
+    const payload = JSON.parse(atob(accessToken.split('.')[1]));
+    const expirationDate = new Date(payload.exp * 1000);
+    return expirationDate > new Date();
+  }
 }

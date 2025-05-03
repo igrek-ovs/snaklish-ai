@@ -1,17 +1,22 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { UserService } from '../../../core/services/user.service';
 import { tap } from 'rxjs';
+import { LocaleService } from '@core/services';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
-  imports: [],
+imports: [NgFor, NgIf],
   templateUrl: './navbar.component.html',
-  styles: ``,
 })
 export class NavbarComponent implements OnInit {
   public userInitials = signal<string>('');
+  public locales: { name: string; code: string }[] = [];
+  public currentLocale = '' as string;
 
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService, private readonly localeService: LocaleService) {
+    this.currentLocale = this.localeService.currentLocale;
+  }
 
   ngOnInit(): void {
     this.userService
@@ -23,9 +28,21 @@ export class NavbarComponent implements OnInit {
         })
       )
       .subscribe();
+
+      this.localeService.locales$.subscribe((list) => {
+        this.locales = list;
+      });
+  
+      this.localeService.trackLocale().subscribe();
   }
 
   public signOut() {
     this.userService.signOut();
+  }
+
+  public onLocaleChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const newLocale = select.value;
+    this.localeService.changeLocale(newLocale);
   }
 }

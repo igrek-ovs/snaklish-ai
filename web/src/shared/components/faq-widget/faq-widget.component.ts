@@ -1,28 +1,44 @@
-import { Component, input, OnChanges, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SvgComponent } from '../svg/svg.component';
+
+interface LocalFaqItem {
+  id: number;
+  question: string;
+  answer: string;
+  isAnswerHidden: boolean;
+}
 
 @Component({
   selector: 'app-faq-widget',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, SvgComponent],
   templateUrl: './faq-widget.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FaqWidgetComponent implements OnChanges {
-    public title = input<string>('');
-    public subtitle = input<string>('');
-    public faqList = input<any>([]);
+export class FaqWidgetComponent {
+  public title = input<string>();
+  public subtitle = input<string>();
+  public faqList = input<Array<{ id: number; question: string; answer: string }>>([]);
 
-    public copyFaqList = signal<any[]>([]);
-    
-    ngOnChanges() {
-      this.copyFaqList.set(this.faqList());
-    }
+  public localFaqList = signal<LocalFaqItem[]>([]);
 
-    public toggleAnswerVisibility(id: number) {
-      const updated = this.copyFaqList().map((faq: any) => ({
+  constructor() {
+    effect(() => {
+      const enriched = this.faqList().map(faq => ({
         ...faq,
-        isAnswerHidden: faq.id === id ? !faq.isAnswerHidden : faq.isAnswerHidden
+        isAnswerHidden: true,
       }));
-    
-      this.copyFaqList.set(updated);
-    }
+      this.localFaqList.set(enriched);
+    });
+  }
+
+  public toggleAnswerVisibility(id: number) {
+    this.localFaqList.update(list =>
+      list.map(item => ({
+        ...item,
+        isAnswerHidden: item.id === id ? !item.isAnswerHidden : item.isAnswerHidden,
+      }))
+    );
+  }
 }

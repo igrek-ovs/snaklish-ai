@@ -1,0 +1,1 @@
+export const LOCALE_LOCALSTORAGE_KEY = 'locale';
