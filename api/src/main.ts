@@ -9,7 +9,6 @@ import { winstonOptions } from './config/logger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    // Используем Winston в качестве глобального логгера
     logger: WinstonModule.createLogger(winstonOptions),
   });
 

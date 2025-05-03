@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -25,6 +26,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
+import { SearchWordsDto } from './dto/search-words.dto';
 
 @ApiBearerAuth()
 @ApiTags('Слова')
@@ -36,6 +38,13 @@ export class WordController {
   @Get()
   async getAll(): Promise<Word[]> {
     return this.wordService.getAll();
+  }
+
+  @ApiOperation({ summary: 'Advanced search for words' })
+  @Get('search')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  async search(@Query() query: SearchWordsDto) {
+    return this.wordService.advancedSearch(query);
   }
 
   @ApiOperation({ summary: 'Получить слово по ID' })

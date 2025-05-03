@@ -9,6 +9,7 @@ export const winstonOptions = {
         winston.format.colorize(),
         winston.format.printf(({ timestamp, level, message, context }) => {
           const ctx = context ? ` | ${context}` : '';
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           return `[${timestamp}] ${level}: ${message}${ctx}`;
         }),
       ),

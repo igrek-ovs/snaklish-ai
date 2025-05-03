@@ -8,7 +8,7 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { WordTranslationService } from './word-translation.service';
 import { WordTranslation } from './word-translation.entity';
 import { CreateWordTranslationDto } from './dto/create-word-translation.dto';
@@ -17,6 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
 
+@ApiBearerAuth()
 @ApiTags('Переводы слов')
 @Controller('word-translations')
 export class WordTranslationController {

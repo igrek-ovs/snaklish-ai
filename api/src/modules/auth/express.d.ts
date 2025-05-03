@@ -1,7 +1,9 @@
+import { Request as ExpressRequest } from 'express';
+
 declare module 'express' {
-  export interface Request {
+  export interface Request extends ExpressRequest {
     user?: {
-      userId: string;
+      id: string;
       role: UserRole;
     };
   }

@@ -73,7 +73,7 @@ export class AuthController {
       throw new UnauthorizedException('Неавторизованный доступ');
     }
 
-    const userId = req.user.userId;
+    const userId = req.user.id;
     await this.authService.logout(userId);
     return { message: 'Logout successful' };
   }
