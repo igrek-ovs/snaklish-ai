@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  Logger,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
@@ -8,6 +13,8 @@ import { UserDto } from '../user/dto/user.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
@@ -15,28 +22,64 @@ export class AuthService {
   ) {}
 
   async register(user: UserDto) {
-    const createdUser = await this.userService.create(user);
-    return this.createTokens(createdUser.id, createdUser.role);
+    try {
+      const createdUser = await this.userService.create(user);
+      this.logger.log(`User registered with ID: ${createdUser.id}`);
+
+      return this.createTokens(createdUser.id, createdUser.role);
+    } catch (error) {
+      this.logger.error(
+        `Failed to register user: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException('Failed to register user');
+    }
   }
 
   async login(email: string, password: string) {
-    const user = await this.userService.getByEmail(email);
-    if (!user) throw new UnauthorizedException('Неверный email или пароль');
+    try {
+      const user = await this.userService.getByEmail(email);
+      if (!user) {
+        this.logger.warn(`Login failed: user with email ${email} not found`);
+        throw new UnauthorizedException('Invalid email or password');
+      }
 
-    const passwordMatches = await bcrypt.compare(password, user.passwordHash);
-    if (!passwordMatches)
-      throw new UnauthorizedException('Неверный email или пароль');
+      const passwordMatches = await bcrypt.compare(password, user.passwordHash);
+      if (!passwordMatches) {
+        this.logger.warn(`Login failed: invalid password for email ${email}`);
+        throw new UnauthorizedException('Invalid email or password');
+      }
 
-    return this.createTokens(user.id, user.role);
+      this.logger.log(`User logged in with email: ${email}`);
+      return this.createTokens(user.id, user.role);
+    } catch (error) {
+      if (error instanceof UnauthorizedException) throw error;
+
+      this.logger.error(
+        `Login failed for email ${email}: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException('Failed to log in');
+    }
   }
 
   async createTokens(userId: string, role: UserRole) {
-    const accessToken = this.createAccessToken(userId, role);
+    try {
+      const accessToken = this.createAccessToken(userId, role);
+      const refreshToken =
+        await this.refreshTokenService.generateRefreshToken(userId);
 
-    const refreshToken =
-      await this.refreshTokenService.generateRefreshToken(userId);
-
-    return { accessToken, refreshToken };
+      this.logger.log(
+        `Tokens generated for user ID: ${userId} (role: ${role})`,
+      );
+      return { accessToken, refreshToken };
+    } catch (error) {
+      this.logger.error(
+        `Failed to create tokens for user ID ${userId}: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException('Failed to create tokens');
+    }
   }
 
   createAccessToken(userId: string, role: string): string {
@@ -47,17 +90,40 @@ export class AuthService {
   }
 
   async refreshToken(oldRefreshToken: string) {
-    const user =
-      await this.refreshTokenService.validateRefreshToken(oldRefreshToken);
-    if (!user)
-      throw new UnauthorizedException('Недействительный refresh токен');
+    try {
+      const user =
+        await this.refreshTokenService.validateRefreshToken(oldRefreshToken);
 
-    const newAccessToken = this.createAccessToken(user.id, user.role);
+      if (!user) {
+        this.logger.warn('Invalid refresh token attempt');
+        throw new UnauthorizedException('Invalid refresh token');
+      }
 
-    return { accessToken: newAccessToken };
+      const newAccessToken = this.createAccessToken(user.id, user.role);
+      this.logger.log(`Refresh token validated for user ID: ${user.id}`);
+
+      return { accessToken: newAccessToken };
+    } catch (error) {
+      if (error instanceof UnauthorizedException) throw error;
+
+      this.logger.error(
+        `Failed to refresh token: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException('Failed to refresh token');
+    }
   }
 
   async logout(userId: string) {
-    await this.refreshTokenService.removeRefreshToken(userId);
+    try {
+      await this.refreshTokenService.removeRefreshToken(userId);
+      this.logger.log(`User logged out with ID: ${userId}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to log out user ID ${userId}: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException('Failed to log out');
+    }
   }
 }

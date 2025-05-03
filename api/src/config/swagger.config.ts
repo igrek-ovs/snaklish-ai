@@ -3,10 +3,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export function setupSwagger(app: INestApplication): void {
   const config = new DocumentBuilder()
-    .setTitle('My API') // Название API
-    .setDescription('Документация API') // Описание
-    .setVersion('1.0') // Версия API
-    .addBearerAuth() // Добавляет авторизацию через Bearer токен
+    .setTitle('My API')
+    .setDescription('Документация API')
+    .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

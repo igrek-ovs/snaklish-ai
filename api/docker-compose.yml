@@ -6,12 +6,25 @@ services:
     container_name: my_mysql_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: password  # <-- Оставляем только пароль для root
-      MYSQL_DATABASE: my_database    # <-- Опционально создаёт БД при старте
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: my_database
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
+  mongodb:  # <-- новый сервис
+    image: mongo:latest
+    container_name: my_mongo_db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
 volumes:
   mysql_data:
+  mongo_data:  # <-- новый volume для MongoDB

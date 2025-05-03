@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Logger,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserWord } from './user-word.entity';
@@ -9,6 +14,8 @@ import { UpdateUserWordDto } from './dto/update-user-word.dto';
 
 @Injectable()
 export class UserWordService {
+  private readonly logger = new Logger(UserWordService.name);
+
   constructor(
     @InjectRepository(UserWord)
     private userWordRepository: Repository<UserWord>,
@@ -19,53 +26,114 @@ export class UserWordService {
   ) {}
 
   async addWordToUser(userId: string, dto: AddUserWordDto): Promise<UserWord> {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-    if (!user)
-      throw new NotFoundException(`Пользователь с ID ${userId} не найден`);
+    try {
+      const user = await this.userRepository.findOne({ where: { id: userId } });
+      if (!user) {
+        this.logger.warn(`User with ID ${userId} not found`);
+        throw new NotFoundException(`User with ID ${userId} not found`);
+      }
 
-    const translation = await this.translationRepository.findOne({
-      where: { id: dto.translationId },
-      relations: ['word'], // если нужно сохранить доступ к слову
-    });
-    if (!translation)
-      throw new NotFoundException(
-        `Перевод с ID ${dto.translationId} не найден`,
-      );
-
-    let userWord = await this.userWordRepository.findOne({
-      where: { user, translation },
-    });
-
-    if (!userWord) {
-      userWord = this.userWordRepository.create({
-        user,
-        translation,
-        isLearnt: dto.isLearnt,
+      const translation = await this.translationRepository.findOne({
+        where: { id: dto.translationId },
+        relations: ['word'],
       });
-      await this.userWordRepository.save(userWord);
-    }
+      if (!translation) {
+        this.logger.warn(`Translation with ID ${dto.translationId} not found`);
+        throw new NotFoundException(
+          `Translation with ID ${dto.translationId} not found`,
+        );
+      }
 
-    return userWord;
+      let userWord = await this.userWordRepository.findOne({
+        where: { user, translation },
+      });
+
+      if (!userWord) {
+        userWord = this.userWordRepository.create({
+          user,
+          translation,
+          isLearnt: dto.isLearnt,
+        });
+        await this.userWordRepository.save(userWord);
+        this.logger.log(
+          `Added new word to user: userId=${userId}, translationId=${dto.translationId}`,
+        );
+      } else {
+        this.logger.log(
+          `Word already exists for user: userId=${userId}, translationId=${dto.translationId}`,
+        );
+      }
+
+      return userWord;
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+
+      this.logger.error(
+        `Failed to add word to userId=${userId}: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException('Failed to add word to user');
+    }
   }
 
   async getAllLearnedWords(userId: string): Promise<UserWord[]> {
-    return this.userWordRepository.find({
-      where: { user: { id: userId }, isLearnt: true },
-      relations: ['translation', 'translation.word'], // включаем слово через перевод
-    });
+    try {
+      const words = await this.userWordRepository.find({
+        where: { user: { id: userId }, isLearnt: true },
+        relations: ['translation', 'translation.word'],
+      });
+      this.logger.log(
+        `Fetched ${words.length} learned words for userId=${userId}`,
+      );
+      return words;
+    } catch (error) {
+      this.logger.error(
+        `Failed to fetch learned words for userId=${userId}: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException(
+        'Failed to fetch learned words for user',
+      );
+    }
   }
 
   async getAllUnlearnedWords(userId: string): Promise<UserWord[]> {
-    return this.userWordRepository.find({
-      where: { user: { id: userId }, isLearnt: false },
-      relations: ['translation', 'translation.word'],
-    });
+    try {
+      const words = await this.userWordRepository.find({
+        where: { user: { id: userId }, isLearnt: false },
+        relations: ['translation', 'translation.word'],
+      });
+      this.logger.log(
+        `Fetched ${words.length} unlearned words for userId=${userId}`,
+      );
+      return words;
+    } catch (error) {
+      this.logger.error(
+        `Failed to fetch unlearned words for userId=${userId}: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException(
+        'Failed to fetch unlearned words for user',
+      );
+    }
   }
 
   async getUserPoints(userId: string): Promise<number> {
-    return this.userWordRepository.count({
-      where: { user: { id: userId }, isLearnt: true },
-    });
+    try {
+      const count = await this.userWordRepository.count({
+        where: { user: { id: userId }, isLearnt: true },
+      });
+      this.logger.log(
+        `User points (learned words count) for userId=${userId}: ${count}`,
+      );
+      return count;
+    } catch (error) {
+      this.logger.error(
+        `Failed to count user points for userId=${userId}: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException('Failed to get user points');
+    }
   }
 
   async updateUserWord(
@@ -73,40 +141,71 @@ export class UserWordService {
     translationId: number,
     dto: UpdateUserWordDto,
   ): Promise<UserWord> {
-    const userWord = await this.userWordRepository.findOne({
-      where: { user: { id: userId }, translation: { id: translationId } },
-    });
+    try {
+      const userWord = await this.userWordRepository.findOne({
+        where: { user: { id: userId }, translation: { id: translationId } },
+      });
 
-    if (!userWord) {
-      throw new NotFoundException(
-        `Перевод с ID ${translationId} не найден у пользователя`,
+      if (!userWord) {
+        this.logger.warn(
+          `UserWord not found for userId=${userId}, translationId=${translationId}`,
+        );
+        throw new NotFoundException(
+          `Translation with ID ${translationId} not found for user`,
+        );
+      }
+
+      userWord.isLearnt = dto.isLearnt;
+      await this.userWordRepository.save(userWord);
+      this.logger.log(
+        `UserWord updated: userId=${userId}, translationId=${translationId}, isLearnt=${dto.isLearnt}`,
       );
+
+      return userWord;
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+
+      this.logger.error(
+        `Failed to update UserWord for userId=${userId}, translationId=${translationId}: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException('Failed to update user word');
     }
-
-    userWord.isLearnt = dto.isLearnt;
-    await this.userWordRepository.save(userWord);
-
-    return userWord;
   }
 
-  // Дополнительный метод для получения слов по языку
   async getWordsByLanguage(
     userId: string,
     language: string,
     isLearnt?: boolean,
   ): Promise<UserWord[]> {
-    const where: any = {
-      user: { id: userId },
-      translation: { language },
-    };
+    try {
+      const where: any = {
+        user: { id: userId },
+        translation: { language },
+      };
 
-    if (isLearnt) {
-      where.isLearnt = isLearnt;
+      if (isLearnt !== undefined) {
+        where.isLearnt = isLearnt;
+      }
+
+      const words = await this.userWordRepository.find({
+        where,
+        relations: ['translation', 'translation.word'],
+      });
+
+      this.logger.log(
+        `Fetched ${words.length} words for userId=${userId} by language=${language} (isLearnt=${isLearnt})`,
+      );
+
+      return words;
+    } catch (error) {
+      this.logger.error(
+        `Failed to fetch words by language for userId=${userId}, language=${language}: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException(
+        'Failed to fetch words by language',
+      );
     }
-
-    return this.userWordRepository.find({
-      where,
-      relations: ['translation', 'translation.word'],
-    });
   }
 }
