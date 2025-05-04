@@ -10,6 +10,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { RouterLink } from '@angular/router';
 import { AppRoutes } from '../../core/enums/app-routes.enum';
+import { LocaleService } from '@core/services';
+import { distinctUntilChanged, filter, map, tap, withLatestFrom } from 'rxjs/operators';
 
 @Component({
   selector: 'app-main-layout',
@@ -26,9 +28,17 @@ export class MainLayoutComponent implements OnInit {
 
   public AppRoutes = AppRoutes;
 
-  constructor(public readonly router: Router) {}
+  constructor(public readonly router: Router, private readonly localeService: LocaleService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.router.events.pipe(
+      distinctUntilChanged(),
+      map((params: any) => params['locale']),
+      withLatestFrom(this.localeService.locales$),
+      filter(([localeParam, locales]) => !!localeParam && locales.includes(localeParam)),
+      tap(([localeParam]) => this.localeService.changeLocale(localeParam))
+    ).subscribe();
+  }
 
   public signOut() {}
 }

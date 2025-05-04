@@ -433,6 +433,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
 export interface ApiOverviewPageOverviewPage extends Struct.SingleTypeSchema {
   collectionName: 'overview_pages';
   info: {
+    description: '';
     displayName: 'Overview Page';
     pluralName: 'overview-pages';
     singularName: 'overview-page';
@@ -440,17 +441,26 @@ export interface ApiOverviewPageOverviewPage extends Struct.SingleTypeSchema {
   options: {
     draftAndPublish: true;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    Faq: Schema.Attribute.Component<'widgets.faq-list', false>;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    Faq: Schema.Attribute.Component<'widgets.faq-list', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::overview-page.overview-page'
-    > &
-      Schema.Attribute.Private;
+    >;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

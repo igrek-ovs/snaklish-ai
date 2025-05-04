@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import {
@@ -8,12 +8,24 @@ import {
 } from '@angular/common/http';
 import { provideHotToastConfig } from '@ngxpert/hot-toast';
 import { authInterceptor } from '../core/interceptors/auth.interceptor';
+import { initializeApp } from '../core/app.initializer';
+import { LocaleService } from '../core/services/locale.service';
+import { provideStore, Store } from '@ngrx/store';
+import { AuthenticationService } from '../core/services/authentication.service';
+import { localeInterceptor } from '@core/locale.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [LocaleService, Store, AuthenticationService],
+      multi: true,
+    },
+    provideStore({}),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, localeInterceptor])),
     provideHotToastConfig({
       duration: 3000,
       dismissible: true,

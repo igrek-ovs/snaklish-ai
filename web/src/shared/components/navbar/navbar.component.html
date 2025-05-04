@@ -33,12 +33,11 @@
         <li class="flex gap-x-3 items-center">
           <a href="" (click)="signOut()">Sign Out</a>
         </li>
-        <li class="flex gap-x-3 items-center">
-          <select>
-            <option value="option1">English</option>
-            <option value="option1">Ukrainian</option>
-            <option value="option2">Spanish</option>
-            <option value="option3">French</option>
+        <li>
+          <select *ngIf="locales?.length" (change)="onLocaleChange($event)">
+            <option *ngFor="let locale of locales" [value]="locale.code" [selected]="locale.code === currentLocale">
+              {{ locale.name }}
+            </option>
           </select>
         </li>
       </ul>

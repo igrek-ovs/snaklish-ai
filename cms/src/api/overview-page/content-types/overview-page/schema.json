@@ -4,16 +4,27 @@
   "info": {
     "singularName": "overview-page",
     "pluralName": "overview-pages",
-    "displayName": "Overview Page"
+    "displayName": "Overview Page",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
   },
   "attributes": {
     "Faq": {
       "type": "component",
       "repeatable": false,
-      "component": "widgets.faq-list"
+      "component": "widgets.faq-list",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     }
   }
 }
