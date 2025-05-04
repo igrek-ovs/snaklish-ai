@@ -10,6 +10,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { LessonProgress } from '../lesson/lesson-progress/lesson-progress.entity';
 import { UserAnswer } from '../lesson/user-answer/user-answer.entity';
 import { UserWord } from '../dictionary/user-word/user-word.entity';
+import {Chat} from "../openai/chat.entity";
 
 export enum UserRole {
   USER = 'user',
@@ -88,4 +89,7 @@ export class User {
 
   @OneToMany(() => UserWord, (userWord) => userWord.user, { cascade: true })
   userWords: UserWord[];
+
+  @OneToMany(() => Chat, (chat) => chat.user)
+  chats: Chat[];
 }

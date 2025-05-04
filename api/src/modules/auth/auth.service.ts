@@ -85,7 +85,7 @@ export class AuthService {
   createAccessToken(userId: string, role: string): string {
     return this.jwtService.sign(
       { userId, role },
-      { secret: process.env.JWT_SECRET, expiresIn: '30s' },
+      { secret: process.env.JWT_SECRET, expiresIn: '1h' },
     );
   }
 
