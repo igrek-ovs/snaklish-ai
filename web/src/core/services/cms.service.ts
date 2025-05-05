@@ -12,8 +12,10 @@ export class CmsService {
   constructor(private readonly http: HttpClient) { }
 
   public getOverviewPageContent() {
-    return this.http.get(`${this.cmsApiUrl}/api/overview-page?populate[Faq][populate]=faqList`).pipe(
-      map((res: any) => res.data.Faq)
+    return this.http.get(`${this.cmsApiUrl}/api/overview-page?` +
+         `populate[Faq][populate]=faqList&` +
+         `populate[linkWidget][populate]=linkList`).pipe(
+      map((res: any) => res.data)
     )
   }
 

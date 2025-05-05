@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_widgets_link_widgets",
+  "info": {
+    "displayName": "Link Widget"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "isImportant": {
+      "type": "boolean"
+    },
+    "linkList": {
+      "type": "component",
+      "repeatable": true,
+      "component": "widgets.link-item-widget"
+    }
+  }
+}

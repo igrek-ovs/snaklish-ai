@@ -11,4 +11,5 @@ export class SvgComponent {
   name = input<string>();
   class = input<string>('size-5');
   size = input<string>('size-5');
+  fill = input<string>('currentColor');
 }

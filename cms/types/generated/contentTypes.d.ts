@@ -486,6 +486,7 @@ export interface ApiOverviewPageOverviewPage extends Struct.SingleTypeSchema {
           localized: true;
         };
       }>;
+    linkWidget: Schema.Attribute.Component<'widgets.link-widget', false>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

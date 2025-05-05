@@ -4,6 +4,13 @@ export interface Translation {
   language: string;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+  description: string;
+  img: string | null;
+}
+
 export interface Word {
   id: number;
   level: string;
@@ -12,4 +19,6 @@ export interface Word {
   examples: string;
   img: string | null;
   translations: Translation[];
+  categoryId: number;
+  category: Category;
 }

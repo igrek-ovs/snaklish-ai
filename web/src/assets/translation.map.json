@@ -1,9 +1,29 @@
 {
-    "components": {
-      "navbar": {
-        "profile": "Profile",
-        "login": "Login",
-        "signOut": "Sign Out"
-      }
+  "components": {
+    "navbar": {
+      "profile": "Profile",
+      "login": "Log in",
+      "signOut": "Sign Out"
+    },
+    "sidebar": {
+      "title": "SNACKLISH",
+      "overview": "Overview",
+      "overviewDescription": "Your overview page.",
+      "home": "Home",
+      "homeDescription": "Your account page.",
+      "learnWord": "Learn new word",
+      "learnWordDescription": "Expand your vocabulary every day.",
+      "account": "Account",
+      "accountDescription": "Revisit and reinforce your knowledge.",
+      "categories": "Show categories",
+      "categoriesDescription": "Browse words by different topics.",
+      "chat": "Open chat",
+      "chatDescription": "Connect with fellow learners.",
+      "manageDictionary": "Manage dictionary",
+      "manageDictionaryDescription": "Edit your custom words and definitions."
     }
+  },
+  "shared": {
+    "menu": "menu"
   }
+}

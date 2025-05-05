@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_widgets_link_item_widgets",
+  "info": {
+    "displayName": "Link Item Widget"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "isNewTab": {
+      "type": "boolean"
+    }
+  }
+}

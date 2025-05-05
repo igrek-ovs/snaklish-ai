@@ -26,11 +26,38 @@ export interface WidgetsFaqList extends Struct.ComponentSchema {
   };
 }
 
+export interface WidgetsLinkItemWidget extends Struct.ComponentSchema {
+  collectionName: 'components_widgets_link_item_widgets';
+  info: {
+    displayName: 'Link Item Widget';
+  };
+  attributes: {
+    isNewTab: Schema.Attribute.Boolean;
+    title: Schema.Attribute.String;
+    url: Schema.Attribute.String;
+  };
+}
+
+export interface WidgetsLinkWidget extends Struct.ComponentSchema {
+  collectionName: 'components_widgets_link_widgets';
+  info: {
+    displayName: 'Link Widget';
+  };
+  attributes: {
+    isImportant: Schema.Attribute.Boolean;
+    linkList: Schema.Attribute.Component<'widgets.link-item-widget', true>;
+    subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'shared.faq-tab': SharedFaqTab;
       'widgets.faq-list': WidgetsFaqList;
+      'widgets.link-item-widget': WidgetsLinkItemWidget;
+      'widgets.link-widget': WidgetsLinkWidget;
     }
   }
 }

@@ -25,6 +25,11 @@
           "localized": true
         }
       }
+    },
+    "linkWidget": {
+      "type": "component",
+      "repeatable": false,
+      "component": "widgets.link-widget"
     }
   }
 }

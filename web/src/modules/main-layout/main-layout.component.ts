@@ -16,11 +16,12 @@ import { TranslatePipe } from "../../core/pipes/translate.pipe";
 import { AsyncPipe } from '@angular/common';
 import { environment } from '@src/enviroments/enviroment';
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
+import { SvgComponent } from '@shared/components/svg/svg.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, OverlayModule, NavbarComponent, RouterLink, TranslatePipe, AsyncPipe, SidebarComponent, OverlayModule],
+  imports: [RouterOutlet, OverlayModule, NavbarComponent, RouterLink, TranslatePipe, AsyncPipe, SidebarComponent, OverlayModule, SvgComponent],
   templateUrl: './main-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
