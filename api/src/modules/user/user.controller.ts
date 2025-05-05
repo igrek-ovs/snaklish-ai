@@ -37,8 +37,8 @@ export class UserController {
     return this.userService.getAll();
   }
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
+  // @UseGuards(AuthGuard('jwt'), RolesGuard)
+  // @Roles('admin')
   @ApiOperation({ summary: 'Создать пользователя' })
   @Post()
   async create(@Body() userDto: UserDto): Promise<GetUserResultDto> {

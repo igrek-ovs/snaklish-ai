@@ -39,13 +39,13 @@ export class LocaleService {
   public initializeLocalization() {
     const locales$ = this.cmsService.getLocaleList().pipe(tap((list) => this.localesList$.next(list)));
 
-    // const localeMap$ = this.cmsService
-    //   .getLocaleMap()
-    //   .pipe(tap((localeMap) => this.translationMap$.next(localeMap)));
+    const localeMap$ = this.cmsService
+      .getLocaleMap()
+      .pipe(tap((localeMap) => this.translationMap$.next(localeMap)));
 
     return forkJoin([
       locales$,
-      // localeMap$,
+      localeMap$,
       // this.cmsService.getFooter(),
       // this.cmsService.getHeaderLogo(),
       // this.cmsService.getAuthenticationLogo(),
@@ -69,15 +69,15 @@ export class LocaleService {
     return this.locale$.pipe(
       skip(1),
       tap((locale) => localStorage.setItem(LOCALE_LOCALSTORAGE_KEY, locale)),
-      // switchMap(() => this.reloadLocaleMap()),
+      switchMap(() => this.reloadLocaleMap()),
       // switchMap(() => this.cmsService.reloadLocaleFeatures())
     );
   }
 
   public reloadLocaleMap() {
-    // return this.cmsService
-    //   .getLocaleMap()
-    //   .pipe(tap((localeMap) => this.translationMap$.next(localeMap)));
+    return this.cmsService
+      .getLocaleMap()
+      .pipe(tap((localeMap) => this.translationMap$.next(localeMap)));
   }
 
   public changeLocale(localeCode: string) {

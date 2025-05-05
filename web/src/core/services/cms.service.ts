@@ -13,7 +13,6 @@ export class CmsService {
 
   public getOverviewPageContent() {
     return this.http.get(`${this.cmsApiUrl}/api/overview-page?populate[Faq][populate]=faqList`).pipe(
-      tap(console.log),
       map((res: any) => res.data.Faq)
     )
   }
@@ -22,12 +21,18 @@ export class CmsService {
     return this.http.get<any>(`${this.cmsApiUrl}/api/locales`);
   }
 
-  // public getLocaleMap() {
-  //   return (
-  //     this.http
-  //       .get(`${this.cmsApiUrl}/translation-map`)
-  //       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //       .pipe(map((res: any) => res.data.translationMap))
-  //   );
-  // }
+  public getLocaleMap() {
+    return (
+      this.http
+        .get(`${this.cmsApiUrl}/api/translation-map`)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .pipe(map((res: any) => res.data.translationMap))
+    );
+  }
+
+  public getHeaderLogo() {
+    return this.http.get(`${this.cmsApiUrl}/api/header-logo?populate=*`).pipe(
+      map((res: any) => res.data)
+    )
+  }
 }

@@ -1,4 +1,24 @@
+<div class="w-full h-10 bg-white dark:bg-gray-800 flex items-center justify-center md:justify-start border-b border-gray-200 dark:border-gray-700 shadow-sm">
+  <button
+    class="p-2 md:hidden …"
+    aria-label="Toggle sidebar"
+    cdkOverlayOrigin
+    #triggerSide="cdkOverlayOrigin"
+    (click)="isSidebarShowed.set(!isSidebarShowed())"
+  >
+    Menu
+  </button>
+  <img
+    class="size-9 hidden md:block m-auto"
+    [src]="logoDesktopUrl()"
+    alt="logo"
+  />
+  <div class="block md:hidden">
+    <span>{{ 'components.sidebar.title' | appTranslate | async }}</span>
+  </div>
+</div>
 <div
+(click)="isSidebarShowed.set(false)"
   class="antialiased bg-gray-100 dark:bg-gray-900 flex flex-col min-h-screen min-w-full overflow-hidden"
 >
   <div class="flex flex-grow h-0">
@@ -7,13 +27,22 @@
       aria-label="Sidenav"
     >
       <div class="px-4 py-2">
-        <div class="text-3xl font-bold text-gray-900">SNACKLISH</div>
+        <div class="text-3xl font-bold text-gray-900">
+          {{ 'components.sidebar.title' | appTranslate | async }}
+        </div>
       </div>
       <ul class="mt-10 space-y-2">
-        <li  class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300" [routerLink]="AppRoutes.Overview">
+        <li
+          class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
+          [routerLink]="AppRoutes.Overview"
+        >
           <div class="space-y-1">
-            <p class="font-medium">Overview</p>
-            <p class="text-xs text-gray-500"></p>
+            <p class="font-medium">
+              {{ 'components.sidebar.overview' | appTranslate | async }}
+            </p>
+            <p class="text-xs text-gray-500">
+              {{ 'components.sidebar.overviewDescription' | appTranslate | async }}
+            </p>
           </div>
         </li>
         <li
@@ -21,17 +50,23 @@
           (click)="router.navigate([''])"
         >
           <div class="space-y-1">
-            <p class="font-medium">Home</p>
-            <p class="text-xs text-gray-500">Your account page.</p>
+            <p class="font-medium">
+              {{ 'components.sidebar.home' | appTranslate | async }}
+            </p>
+            <p class="text-xs text-gray-500">
+              {{ 'components.sidebar.homeDescription' | appTranslate | async }}
+            </p>
           </div>
         </li>
         <li
           class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
         >
           <div class="space-y-1">
-            <p class="font-medium">Learn new word</p>
+            <p class="font-medium">
+              {{ 'components.sidebar.learnWord' | appTranslate | async }}
+            </p>
             <p class="text-xs text-gray-500">
-              Expand your vocabulary every day.
+              {{ 'components.sidebar.learnWordDescription' | appTranslate | async }}
             </p>
           </div>
         </li>
@@ -40,9 +75,11 @@
           (click)="router.navigate(['account'])"
         >
           <div class="space-y-1">
-            <p class="font-medium">Account</p>
+            <p class="font-medium">
+              {{ 'components.sidebar.account' | appTranslate | async }}
+            </p>
             <p class="text-xs text-gray-500">
-              Revisit and reinforce your knowledge.
+              {{ 'components.sidebar.accountDescription' | appTranslate | async }}
             </p>
           </div>
         </li>
@@ -50,9 +87,11 @@
           class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
         >
           <div class="space-y-1">
-            <p class="font-medium">Show categories</p>
+            <p class="font-medium">
+              {{ 'components.sidebar.categories' | appTranslate | async }}
+            </p>
             <p class="text-xs text-gray-500">
-              Browse words by different topics.
+              {{ 'components.sidebar.categoriesDescription' | appTranslate | async }}
             </p>
           </div>
         </li>
@@ -60,8 +99,12 @@
           class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
         >
           <div class="space-y-1">
-            <p class="font-medium">Open chat</p>
-            <p class="text-xs text-gray-500">Connect with fellow learners.</p>
+            <p class="font-medium">
+              {{ 'components.sidebar.chat' | appTranslate | async }}
+            </p>
+            <p class="text-xs text-gray-500">
+              {{ 'components.sidebar.chatDescription' | appTranslate | async }}
+            </p>
           </div>
         </li>
         <li
@@ -69,29 +112,24 @@
           (click)="router.navigate(['/dictionary-list'])"
         >
           <div class="space-y-1">
-            <p class="font-medium">Manage dictionary</p>
+            <p class="font-medium">
+              {{ 'components.sidebar.manageDictionary' | appTranslate | async }}
+            </p>
             <p class="text-xs text-gray-500">
-              Edit your custom words and definitions.
+              {{ 'components.sidebar.manageDictionaryDescription' | appTranslate | async }}
             </p>
           </div>
         </li>
       </ul>
     </aside>
 
-    <ng-template
-      cdkConnectedOverlay
-      [cdkConnectedOverlayHasBackdrop]="true"
-      cdkConnectedOverlayBackdropClass="none"
-      (backdropClick)="isSidebarShowed.set(false)"
-      [cdkConnectedOverlayOpen]="isSidebarShowed()"
-    >
-      <aside
-        class="w-72 mt-4 -ml-4 bg-white border-r border-gray-200 md:hidden dark:bg-gray-800 dark:border-gray-700"
-        aria-label="Sidenav"
-      >
-        <!-- <app-navbar></app-navbar> -->
-      </aside>
-    </ng-template>
+  <aside
+    class="fixed top-0 left-0 h-screen w-fit bg-white border-r transform transition-transform duration-200 z-50 md:hidden"
+    [class.-translate-x-full]="!isSidebarShowed()"
+    [class.translate-x-0]="isSidebarShowed()"
+  >
+    <app-sidebar></app-sidebar>
+  </aside>
 
     <main
       class="flex-grow flex overflow-y-auto -ml-72 transition-all md:ml-0 w-full max-w-full overflow-x-hidden"

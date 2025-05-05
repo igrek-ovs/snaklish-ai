@@ -430,6 +430,36 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiHeaderLogoHeaderLogo extends Struct.SingleTypeSchema {
+  collectionName: 'header_logos';
+  info: {
+    displayName: 'Header Logo';
+    pluralName: 'header-logos';
+    singularName: 'header-logo';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::header-logo.header-logo'
+    > &
+      Schema.Attribute.Private;
+    logoDesktop: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiOverviewPageOverviewPage extends Struct.SingleTypeSchema {
   collectionName: 'overview_pages';
   info: {
@@ -462,6 +492,44 @@ export interface ApiOverviewPageOverviewPage extends Struct.SingleTypeSchema {
       'api::overview-page.overview-page'
     >;
     publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTranslationMapTranslationMap
+  extends Struct.SingleTypeSchema {
+  collectionName: 'translation_maps';
+  info: {
+    displayName: 'Translation Map';
+    pluralName: 'translation-maps';
+    singularName: 'translation-map';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::translation-map.translation-map'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    translationMap: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -979,7 +1047,9 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::author.author': ApiAuthorAuthor;
       'api::category.category': ApiCategoryCategory;
+      'api::header-logo.header-logo': ApiHeaderLogoHeaderLogo;
       'api::overview-page.overview-page': ApiOverviewPageOverviewPage;
+      'api::translation-map.translation-map': ApiTranslationMapTranslationMap;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

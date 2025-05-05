@@ -1,0 +1,9 @@
+{
+    "components": {
+      "navbar": {
+        "profile": "Profile",
+        "login": "Login",
+        "signOut": "Sign Out"
+      }
+    }
+  }

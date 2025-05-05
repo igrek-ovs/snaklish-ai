@@ -7,6 +7,7 @@ import { AcountManagementComponent } from '../modules/acount-management/acount-m
 import { ProfileComponent } from '../modules/profile/components/profile/profile.component';
 import { OverviewComponent } from '../modules/overview/overview.component';
 import { AppRoutes } from '../core/enums/app-routes.enum';
+import { authGuard } from '../core/guards/auth.guard';
 
 export const routes: Routes = [
   ...authenticationRoutes,
@@ -19,6 +20,7 @@ export const routes: Routes = [
       { path: 'profile', component: ProfileComponent },
       { path: AppRoutes.Overview, component: OverviewComponent },
     ],
+    canActivate: [authGuard],
   },
   { path: '404', component: NotFoundComponent },
   { path: '**', component: NotFoundComponent },

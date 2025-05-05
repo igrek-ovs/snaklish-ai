@@ -1,0 +1,24 @@
+{
+  "kind": "singleType",
+  "collectionName": "header_logos",
+  "info": {
+    "singularName": "header-logo",
+    "pluralName": "header-logos",
+    "displayName": "Header Logo"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "logoDesktop": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}

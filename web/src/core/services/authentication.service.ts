@@ -25,7 +25,7 @@ export const TOKEN_DATA = 'tokenData';
 })
 export class AuthenticationService {
   private readonly apiUrl = `${environment.apiUrl}/auth`;
-
+  
   constructor(private http: HttpClient) {}
 
   public login(payload: Login) {

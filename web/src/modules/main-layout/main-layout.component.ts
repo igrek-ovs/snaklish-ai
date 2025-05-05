@@ -10,13 +10,17 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { RouterLink } from '@angular/router';
 import { AppRoutes } from '../../core/enums/app-routes.enum';
-import { LocaleService } from '@core/services';
+import { CmsService, LocaleService } from '@core/services';
 import { distinctUntilChanged, filter, map, tap, withLatestFrom } from 'rxjs/operators';
+import { TranslatePipe } from "../../core/pipes/translate.pipe";
+import { AsyncPipe } from '@angular/common';
+import { environment } from '@src/enviroments/enviroment';
+import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, OverlayModule, NavbarComponent, RouterLink],
+  imports: [RouterOutlet, OverlayModule, NavbarComponent, RouterLink, TranslatePipe, AsyncPipe, SidebarComponent, OverlayModule],
   templateUrl: './main-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -25,10 +29,12 @@ export class MainLayoutComponent implements OnInit {
   public isUserMenuShowed = signal(false);
   public isAppsMenuShowed = signal(false);
   public isNotificationMenuShowed = signal(false);
+  public logoDesktopUrl = signal('');
+  public logoMobileUrl = signal('');
 
   public AppRoutes = AppRoutes;
 
-  constructor(public readonly router: Router, private readonly localeService: LocaleService) {}
+  constructor(public readonly router: Router, private readonly localeService: LocaleService, private readonly cmsService: CmsService) {}
 
   ngOnInit(): void {
     this.router.events.pipe(
@@ -38,7 +44,12 @@ export class MainLayoutComponent implements OnInit {
       filter(([localeParam, locales]) => !!localeParam && locales.includes(localeParam)),
       tap(([localeParam]) => this.localeService.changeLocale(localeParam))
     ).subscribe();
-  }
 
-  public signOut() {}
+    this.cmsService.getHeaderLogo().pipe(
+      tap((logo) => {
+        this.logoDesktopUrl.set(environment.cms.apiUrl + logo.logoDesktop.url);
+        this.logoMobileUrl.set(environment.cms.apiUrl + logo.logoMobile.url);
+      })
+    ).subscribe();
+  }
 }
