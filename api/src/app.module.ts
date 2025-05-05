@@ -21,6 +21,7 @@ import { AuditLogService } from './modules/audit-log/audit-log.service';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuditLogInterceptor } from './common/interceptors/journaling.incterceptor';
 import { AuditLogModule } from './modules/audit-log/audit-log.module';
+import { OpenaiModule } from './modules/openai/openai.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { AuditLogModule } from './modules/audit-log/audit-log.module';
     UserWordModule,
     CategoryModule,
     AuditLogModule,
+    OpenaiModule,
     MulterModule.register({
       limits: {
         fileSize: 5 * 1024 * 1024,
