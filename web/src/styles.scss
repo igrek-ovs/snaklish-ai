@@ -4,10 +4,26 @@
 @tailwind components;
 @tailwind utilities;
 
-.icon-danger {
-    @apply text-red hover:text-red-hovered;
-}
-
 .icon-default {
-    @apply text-gray hover:text-gray-hovered;
-}
+    @apply text-gray;
+  
+    &:hover {
+      @apply text-gray-hovered;
+    }
+  }
+  
+  .icon-add {
+    @apply text-success-main;
+  
+    &:hover {
+      @apply text-success-alternative;
+    }
+  }
+  
+  .icon-delete {
+    @apply text-red;
+  
+    &:hover {
+      @apply text-red-hovered;
+    }
+  }

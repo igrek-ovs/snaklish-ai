@@ -22,3 +22,11 @@ export interface Word {
   categoryId: number;
   category: Category;
 }
+
+export interface AddWordRequest {
+  level: string;
+  word: string;
+  transcription: string;
+  examples: string;
+  categoryId: number;
+}

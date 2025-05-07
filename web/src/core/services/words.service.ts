@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../enviroments/enviroment';
-import { Word } from '../models/word.model';
+import { AddWordRequest, Word } from '../models/word.model';
+import { delay } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,12 @@ export class WordsService {
   constructor(private readonly http: HttpClient) {}
 
   public getWords() {
-    return this.http.get<Word[]>(this.apiUrl);
+    return this.http.get<Word[]>(this.apiUrl).pipe(
+      delay(1500) //mock delay
+    );
+  }
+
+  public addWord(req: AddWordRequest) {
+    return this.http.post<AddWordRequest>(this.apiUrl, req);
   }
 }
