@@ -14,7 +14,7 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { CdkTableModule, DataSource } from '@angular/cdk/table';
-import { DatePipe, NgClass } from '@angular/common';
+import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import { BehaviorSubject, map, of, switchMap, tap, timer } from 'rxjs';
 import {
   ActionConfig,
@@ -40,6 +40,8 @@ const WINDOW = new InjectionToken<Window>('Global window object', {
   factory: () => window,
 });
 import { CurrencyPipe } from '@angular/common';
+import { TranslatePipe } from "../../../core/pipes/translate.pipe";
+import { ButtonComponent } from "../button/button.component";
 
 // @UntilDestroy()
 @Component({
@@ -50,10 +52,10 @@ import { CurrencyPipe } from '@angular/common';
     CdkTableModule,
     NgClass,
     NgIcon,
-    // ChipComponent,
-    // TruncateTextPipe,
-    // SpinnerComponent,
-  ],
+    TranslatePipe,
+    AsyncPipe,
+    ButtonComponent
+],
   templateUrl: './table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -74,6 +76,8 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
   public headers = input.required<ColumnDef<T>[]>();
   public extraActions = input<ActionConfig<T>[]>([]);
   public isLoading = input<boolean>(false);
+  public isEmptyState = input<boolean>(false);
+  public cb = input<() => void>(() => {});
 
   public rowClasses = input<string>('');
 

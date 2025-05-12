@@ -8,6 +8,7 @@ import { ProfileComponent } from '../modules/profile/components/profile/profile.
 import { OverviewComponent } from '../modules/overview/overview.component';
 import { AppRoutes } from '../core/enums/app-routes.enum';
 import { authGuard } from '../core/guards/auth.guard';
+import { DictionaryWordComponent } from '@src/modules/dictionary-word/dictionary-word.component';
 
 export const routes: Routes = [
   ...authenticationRoutes,
@@ -15,7 +16,8 @@ export const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
-      { path: 'dictionary-list', component: DictionaryListComponent },
+      { path: AppRoutes.DictionaryList, component: DictionaryListComponent },
+      { path: AppRoutes.DictionaryList + '/:id', component: DictionaryWordComponent },
       { path: 'account', component: AcountManagementComponent },
       { path: 'profile', component: ProfileComponent },
       { path: AppRoutes.Overview, component: OverviewComponent },

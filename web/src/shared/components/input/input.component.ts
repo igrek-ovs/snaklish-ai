@@ -20,7 +20,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { tablerEye, tablerEyeOff } from '@ng-icons/tabler-icons';
+import { tablerEye, tablerEyeOff, tablerX, tablerSearch } from '@ng-icons/tabler-icons';
 
 @Component({
   selector: 'app-input',
@@ -32,7 +32,7 @@ import { tablerEye, tablerEyeOff } from '@ng-icons/tabler-icons';
       multi: true,
       useExisting: forwardRef(() => InputComponent),
     },
-    provideIcons({ tablerEye, tablerEyeOff }),
+    provideIcons({ tablerEye, tablerEyeOff, tablerX, tablerSearch }),
   ],
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss'],

@@ -21,9 +21,25 @@
       "chatDescription": "Connect with fellow learners.",
       "manageDictionary": "Manage dictionary",
       "manageDictionaryDescription": "Edit your custom words and definitions."
+    },
+    "dictionaryList": {
+      "addNewWordButton": "Add new word",
+      "addNewCategoryButton": "Add new category"
     }
   },
   "shared": {
-    "menu": "menu"
+    "menu": "menu",
+    "search": "Search",
+    "word": "Word",
+    "transcription": "Transcription",
+    "level": "Level",
+    "examples": "Examples",
+    "actions": "Actions",
+    "thereIsNothingToDisplay": "There is nothing to display",
+    "noData": "No data",
+    "getStartedByCreatingNewEntry": "Get started by creating a new entry",
+    "newEntry": "New entry",
+    "searchBy": "Search by",
+    "clearFilters": "Clear filters"
   }
 }

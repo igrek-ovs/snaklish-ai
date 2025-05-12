@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../enviroments/enviroment';
-import { AddWordRequest, Word } from '../models/word.model';
-import { delay } from 'rxjs';
+import { AddWordRequest, AddWordResponse, DeleteWordRequest, EditWordRequest, EditWordResponse, SetWordImageRequest, SetWordImageResponse, Word, WordSearchRequest, WordSearchResponse } from '../models/word.model';
+import { delay, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +19,48 @@ export class WordsService {
   }
 
   public addWord(req: AddWordRequest) {
-    return this.http.post<AddWordRequest>(this.apiUrl, req);
+    return this.http.post<AddWordResponse>(this.apiUrl, req);
+  }
+
+  public deleteWord(id: number) {
+    return this.http.delete<DeleteWordRequest>(`${this.apiUrl}/${id}`);
+  }
+
+  public editWord(id: number, req: EditWordRequest) {
+    return this.http.put<EditWordResponse>(`${this.apiUrl}/${id}`, req);
+  }
+
+  public searchWord(req: WordSearchRequest): Observable<WordSearchResponse[]> {
+    let params = new HttpParams();
+  
+    if (req.id != null) {
+      params = params.set('id', req.id.toString());
+    }
+    if (req.word) {
+      params = params.set('word', req.word);
+    }
+    if (req.transcription) {
+      params = params.set('transcription', req.transcription);
+    }
+    if (req.translation) {
+      params = params.set('translation', req.translation);
+    }
+    if (req.category) {
+      params = params.set('category', req.category);
+    }
+  
+    return this.http
+      .get<WordSearchResponse[]>(`${this.apiUrl}/search`, { params })
+      .pipe(
+        tap(res => console.log('search result', res))
+      );
+  }
+
+  public getWordById(id: number) {
+    return this.http.get<Word>(`${this.apiUrl}/${id}`);
+  }
+
+  public uploadWordImage(req: SetWordImageRequest, id: number) {
+    return this.http.post<SetWordImageResponse>(`${this.apiUrl}/${id}/image`, req);
   }
 }

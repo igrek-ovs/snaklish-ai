@@ -15,7 +15,7 @@ import { distinctUntilChanged, filter, map, tap, withLatestFrom } from 'rxjs/ope
 import { TranslatePipe } from "../../core/pipes/translate.pipe";
 import { AsyncPipe } from '@angular/common';
 import { environment } from '@src/enviroments/enviroment';
-import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
+import { SidebarComponent } from "@shared/components/sidebar/sidebar.component";
 import { SvgComponent } from '@shared/components/svg/svg.component';
 
 @Component({

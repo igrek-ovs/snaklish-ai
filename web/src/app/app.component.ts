@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LocaleService } from '@core/services';
 import { provideIcons } from '@ng-icons/core';
-import { tablerEdit, tablerTrash } from '@ng-icons/tabler-icons';
+import { tablerEdit, tablerTrash, tablerEye } from '@ng-icons/tabler-icons';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
-  providers: [provideIcons({ tablerEdit, tablerTrash })],
+  providers: [provideIcons({ tablerEdit, tablerTrash, tablerEye })],
   template: ` <router-outlet /> `,
 })
 export class AppComponent {

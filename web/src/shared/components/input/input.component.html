@@ -21,13 +21,19 @@
   }
 </div>
 <div class="mt-2 relative">
-  @if (!isTextarea()) { @if (isSearchable()) {
+  @if (!isTextarea()) { 
+    @if (isSearchable()) {
   <div
     class="absolute inset-y-0 start-0 flex items-center ps-3 text-gray-400 pointer-events-none"
     [ngClass]="{
             'text-primary-main': focused,
           }"
-  ></div>
+  >
+    <ng-icon
+      name="tablerSearch"
+      class="text-gray-400 text-lg"
+    ></ng-icon>        
+  </div>
   }
   <input
     [id]="id()"
@@ -77,13 +83,19 @@
     <div class="h-6 border-l border-slate-200 mr-2"></div>
     <p class="text-slate-400">MOS</p>
   </div>
-  } @if (isSearchable() && value.trim()) {
+  } 
+  @if (isSearchable() && value.trim()) {
   <button
-    class="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 bg-transparent hover:text-gray-500 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:text-white"
+    class="absolute right-1.5 top-1/2 -translate-y-1/2 z-50 text-gray-400 bg-transparent hover:text-gray-500 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:text-white"
     type="button"
     (click)="value = ''; valueChanged('')"
     title="Clear"
-  ></button>
+  >
+    <ng-icon
+      name="tablerX"
+      class="text-gray-400 text-lg"
+    ></ng-icon>
+  </button>
   } } @else {
   <textarea
     [id]="id()"
