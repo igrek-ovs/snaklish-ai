@@ -3,4 +3,5 @@ export enum AppRoutes {
     SignIn = 'sign-in',
     DictionaryList = 'dictionary-list',
     UsersList = 'users-list',
+    LearnWords = 'learn-words',
 }

@@ -18,18 +18,19 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { ButtonComponent } from "../../shared/components/button/button.component";
 import { AppRoutes } from '@core/enums/app-routes.enum';
 import { WordTranslationsService } from '@core/services/word-translations.service';
-import { LocaleService } from '@core/services';
+import { LocaleService, UserService } from '@core/services';
 import { NgIcon } from '@ng-icons/core';
 import { provideIcons } from '@ng-icons/core';
 import { tablerPlus, tablerPencil } from '@ng-icons/tabler-icons';
-import { EMPTY } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { SpinnerComponent } from '@shared/components/spinner/spinner.component';
 import { InputComponent } from "../../shared/components/input/input.component";
+import { UserRoles } from '@core/enums/user-roles.enum';
 
 @Component({
   selector: 'app-dictionary-word',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgIf, ButtonComponent, NgIcon, SpinnerComponent, InputComponent],
+  imports: [CommonModule, ReactiveFormsModule, NgIf, ButtonComponent, NgIcon, SpinnerComponent, InputComponent, CommonModule],
   providers: [provideIcons({ tablerPlus, tablerPencil })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dictionary-word.component.html',
@@ -44,16 +45,29 @@ export class DictionaryWordComponent implements OnInit {
   public isEditMode = signal<boolean>(false);
   public currentLocale = signal<string | null>(null);
 
+  public userRole$: Observable<string | null>;
+  public isAdmin = signal<boolean>(false);
+
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly wordsService: WordsService,
     private readonly fb: NonNullableFormBuilder,
     private readonly wordTranslationsService: WordTranslationsService,
-    private readonly localeService: LocaleService
+    private readonly localeService: LocaleService,
+    private readonly userService: UserService,
   ) {
     this.wordTranslationForm = this.fb.group({
       translation: this.fb.control<string | null>(null, Validators.required),
+    });
+
+    this.userRole$ = this.userService.userRole$;
+    this.userRole$.subscribe((role) => {
+      if (role === UserRoles.Admin) {
+        this.isAdmin.set(true);
+      } else {
+        this.isAdmin.set(false);
+      }
     });
   }
 
@@ -74,7 +88,7 @@ export class DictionaryWordComponent implements OnInit {
           switchMap(() => this.wordTranslationsService.getTranslations()),
           map(list =>
             list.find(
-              t =>
+              (t: any) =>
                 t.word.id === w.id &&
                 t.language === this.localeService.currentLocaleBackend
             )

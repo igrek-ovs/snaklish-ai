@@ -39,14 +39,14 @@
               }
               <div>
                 @if (!wordTranslation()) {
-                  <button title="Add translation" (click)="saveWordTranslation()">
+                  <button [ngClass]="{ hidden: !isAdmin()}" title="Add translation" (click)="saveWordTranslation()">
                     <ng-icon
                       name="tablerPlus"
                       class="mt-1.5 text-gray-400 text-lg hover:text-gray-500">
                     </ng-icon>
                   </button>
                 } @else {
-                  <button type="button" title="Edit translation" (click)="isEditMode.set(!isEditMode())">
+                  <button [ngClass]="{ hidden: !isAdmin()}" type="button" title="Edit translation" (click)="isEditMode.set(!isEditMode())">
                     <ng-icon
                       name="tablerPencil"
                       class="mt-1.5 text-gray-400 text-lg hover:text-gray-500">
@@ -68,7 +68,7 @@
           </span>
           <div class="flex gap-x-2">
             <app-button type="button" color="outline" (click)="backToDictionary()">Back</app-button>
-            <app-button type="submit">Save</app-button>
+            <app-button [ngClass]="{ hidden: !isAdmin()}" type="submit">Save</app-button>
           </div>
         </div>
       </div>
