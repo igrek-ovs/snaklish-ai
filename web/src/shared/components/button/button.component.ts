@@ -17,6 +17,8 @@ const BUTTON_COLORS = {
     'bg-transparent border border-primary-main text-gray-600 hover:opacity-80 hover:text-primary-main',
   danger:
     'bg-red-600 text-white focus-visible:outline-red-500 hover:bg-red-500',
+  icon:
+    'bg-transparent text-primary-main hover:bg-primary-alternative hover:text-white',
 };
 const BUTTON_VARIANTS_MERGE = variants({
   base: 'min-h-9 disabled:bg-opacity-50 hover:shadow-md disabled:cursor-not-allowed',

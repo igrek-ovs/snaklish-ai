@@ -10,18 +10,20 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { RouterLink } from '@angular/router';
 import { AppRoutes } from '../../core/enums/app-routes.enum';
-import { CmsService, LocaleService } from '@core/services';
+import { CmsService, LocaleService, UserService } from '@core/services';
 import { distinctUntilChanged, filter, map, tap, withLatestFrom } from 'rxjs/operators';
 import { TranslatePipe } from "../../core/pipes/translate.pipe";
-import { AsyncPipe } from '@angular/common';
-import { environment } from '@src/enviroments/enviroment';
+import { AsyncPipe, CommonModule, NgIf } from '@angular/common';
 import { SidebarComponent } from "@shared/components/sidebar/sidebar.component";
 import { SvgComponent } from '@shared/components/svg/svg.component';
+import { Observable } from 'rxjs';
+import { UserRoles } from '@core/enums/user-roles.enum';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, OverlayModule, NavbarComponent, RouterLink, TranslatePipe, AsyncPipe, SidebarComponent, OverlayModule, SvgComponent],
+  imports: [RouterOutlet, OverlayModule, NavbarComponent, RouterLink, TranslatePipe, AsyncPipe, SidebarComponent, OverlayModule, SvgComponent, NgIf, CommonModule],
+  providers: [],
   templateUrl: './main-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -33,9 +35,26 @@ export class MainLayoutComponent implements OnInit {
   public logoDesktopUrl = signal('');
   public logoMobileUrl = signal('');
 
+  public userRole$: Observable<string | null>;
+  public isAdmin = signal<boolean>(false);
+
   public AppRoutes = AppRoutes;
 
-  constructor(public readonly router: Router, private readonly localeService: LocaleService, private readonly cmsService: CmsService) {}
+  constructor(
+    public readonly router: Router, 
+    private readonly localeService: LocaleService, 
+    private readonly cmsService: CmsService,
+    private readonly userService: UserService,
+  ) {
+    this.userRole$ = this.userService.userRole$;
+    this.userRole$.subscribe((role) => {
+      if (role === UserRoles.Admin) {
+        this.isAdmin.set(true);
+      } else {
+        this.isAdmin.set(false);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.router.events.pipe(
@@ -48,8 +67,10 @@ export class MainLayoutComponent implements OnInit {
 
     this.cmsService.getHeaderLogo().pipe(
       tap((logo) => {
-        this.logoDesktopUrl.set(environment.cms.apiUrl + logo.logoDesktop.url);
-        this.logoMobileUrl.set(environment.cms.apiUrl + logo.logoMobile.url);
+        const desktopUrl = logo.logoDesktop.url;
+        const mobileUrl = logo.logoMobile.url;
+        this.logoDesktopUrl.set(desktopUrl ?? '');
+        this.logoMobileUrl.set(mobileUrl ?? '');
       })
     ).subscribe();
   }

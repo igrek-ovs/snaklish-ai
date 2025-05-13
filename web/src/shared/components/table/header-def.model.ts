@@ -1,5 +1,5 @@
 import { FieldPath } from "../../../core/models/field-path";
-// import { ChipColorsEnum } from '@/shared/components/chip/chip.component';
+import { ChipColorsEnum } from "../chip/chip.component";
 
 export const EXTRA_ACTIONS_COLUMN_NAME = 'Extra actions';
 
@@ -51,7 +51,7 @@ export type DateColumn<T> = BasicColumn<T> & {
 
 export type ChipColumn<T> = BasicColumn<T> & {
   type: ColumnType.Chip;
-  // colors: [ChipColorsEnum, ChipColorsEnum];
+  colors: [ChipColorsEnum, ChipColorsEnum];
   labels: string[];
 };
 

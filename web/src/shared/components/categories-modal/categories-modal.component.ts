@@ -2,11 +2,14 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Component, Inject } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { AddNewCategoryRequest } from '@core/models';
-import { CategoriesService } from '@core/services/categories.service';
+import { InputComponent } from "../input/input.component";
+import { tablerX } from '@ng-icons/tabler-icons';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 
 @Component({
   selector: 'app-categories-modal',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, InputComponent, NgIcon],
+  providers: [provideIcons({ tablerX })],
   templateUrl: './categories-modal.component.html',
 })
 export class CategoriesModalComponent {
@@ -16,7 +19,6 @@ export class CategoriesModalComponent {
     public readonly dialogRef: DialogRef,
     @Inject(DIALOG_DATA) public readonly data: AddNewCategoryRequest,
     private readonly fb: NonNullableFormBuilder,
-    private readonly categoryService: CategoriesService,
   ) {
     this.form = this.fb.group({
       name: this.fb.control<string>(data.name),

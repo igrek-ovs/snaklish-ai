@@ -9,6 +9,7 @@ import { OverviewComponent } from '../modules/overview/overview.component';
 import { AppRoutes } from '../core/enums/app-routes.enum';
 import { authGuard } from '../core/guards/auth.guard';
 import { DictionaryWordComponent } from '@src/modules/dictionary-word/dictionary-word.component';
+import { UsersListComponent } from '@src/modules/users-list/users-list.component';
 
 export const routes: Routes = [
   ...authenticationRoutes,
@@ -21,6 +22,7 @@ export const routes: Routes = [
       { path: 'account', component: AcountManagementComponent },
       { path: 'profile', component: ProfileComponent },
       { path: AppRoutes.Overview, component: OverviewComponent },
+      { path: AppRoutes.UsersList, component: UsersListComponent },
     ],
     canActivate: [authGuard],
   },

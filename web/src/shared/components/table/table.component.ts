@@ -42,6 +42,7 @@ const WINDOW = new InjectionToken<Window>('Global window object', {
 import { CurrencyPipe } from '@angular/common';
 import { TranslatePipe } from "../../../core/pipes/translate.pipe";
 import { ButtonComponent } from "../button/button.component";
+import { ChipComponent } from '../chip/chip.component';
 
 // @UntilDestroy()
 @Component({
@@ -54,14 +55,14 @@ import { ButtonComponent } from "../button/button.component";
     NgIcon,
     TranslatePipe,
     AsyncPipe,
-    ButtonComponent
+    ButtonComponent,
+    ChipComponent
 ],
   templateUrl: './table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableComponent<T> implements OnInit, AfterViewChecked {
-  // @ViewChildren(ChipComponent) chips: QueryList<ChipComponent> =
-  //   new QueryList();
+  @ViewChildren(ChipComponent) chips: QueryList<ChipComponent> = new QueryList();
 
   @ViewChild('tableTooltip') tableTooltip: ElementRef | undefined = undefined;
 
@@ -126,13 +127,13 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked() {
-    // if (this.chips && this.chips.length) {
-    //   const widths = this.chips
-    //     .toArray()
-    //     .map((chip) => chip.chipElement.nativeElement.offsetWidth);
-    //   const maxChipWidth = Math.max(...widths);
-    //   this.maxChipWidth.set(`${maxChipWidth}px`);
-    // }
+    if (this.chips && this.chips.length) {
+      const widths = this.chips
+        .toArray()
+        .map((chip) => chip.chipElement.nativeElement.offsetWidth);
+      const maxChipWidth = Math.max(...widths);
+      this.maxChipWidth.set(`${maxChipWidth}px`);
+    }
 
     if (this.tableTooltip) {
       this.tableTooltipWidth = this.tableTooltip.nativeElement.offsetWidth;
@@ -172,9 +173,9 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
   }
 
   public getChipColor(index: number, row: T, field: string) {
-    // const val = row[field as keyof T] as boolean;
-    // const header = this.headers()[index] as ChipColumn<T>;
-    // return val ? header.colors?.[0] : header.colors?.[1];
+    const val = row[field as keyof T] as boolean;
+    const header = this.headers()[index] as ChipColumn<T>;
+    return val ? header.colors?.[0] : header.colors?.[1];
   }
 
   public getChipLabel(index: number, row: T, field: string) {

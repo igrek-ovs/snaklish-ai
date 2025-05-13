@@ -1,0 +1,20 @@
+<div>
+    <nav class="p-1.5 bg-white border-y border-gray-200 dark:bg-gray-800 dark:border-gray-700 flex flex-col gap-y-3">
+        <ul class="flex gap-x-6 flex-wrap items-center -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+        </ul>
+    </nav>
+
+    <app-table
+        [data]="users()"
+        [headers]="headers"
+    >
+    </app-table>
+</div>
+
+<!-- (action)="handleAction($event)" 
+[data]="words()" 
+[headers]="headers" 
+[extraActions]="wordActions" 
+[isLoading]="isLoading()"
+[isEmptyState]="true"
+[cb]="addNewWord" -->

@@ -60,7 +60,9 @@ export class WordsService {
     return this.http.get<Word>(`${this.apiUrl}/${id}`);
   }
 
-  public uploadWordImage(req: SetWordImageRequest, id: number) {
-    return this.http.post<SetWordImageResponse>(`${this.apiUrl}/${id}/image`, req);
+  public uploadWordImage(file: File, id: number): Observable<any> {
+    const fd = new FormData();
+    fd.append('image', file, file.name);
+    return this.http.post<any>(`${this.apiUrl}/${id}/image`, fd);
   }
 }

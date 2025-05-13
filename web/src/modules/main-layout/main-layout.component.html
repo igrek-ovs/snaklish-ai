@@ -19,7 +19,7 @@
   </div>
 </div>
 <div
-(click)="isSidebarShowed.set(false)"
+  (click)="isSidebarShowed.set(false)"
   class="antialiased bg-gray-100 dark:bg-gray-900 flex flex-col min-h-screen min-w-full overflow-hidden"
 >
   <div class="flex flex-grow h-0">
@@ -33,6 +33,11 @@
         </div>
       </div>
       <ul class="mt-10 space-y-2">
+        <li class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300">
+          <span *ngIf="userRole$ | async as role">
+            Your role: {{ role }}
+          </span>
+        </li>
         <li
           class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
           [routerLink]="AppRoutes.Overview"
@@ -118,6 +123,22 @@
             </p>
             <p class="text-xs text-gray-500">
               {{ 'components.sidebar.manageDictionaryDescription' | appTranslate | async }}
+            </p>
+          </div>
+        </li>
+        <li
+          [ngClass]="{
+            'hidden': !isAdmin()
+          }"  
+          class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
+          (click)="router.navigate(['/' + AppRoutes.UsersList])"
+        >
+          <div class="space-y-1">
+            <p class="font-medium">
+              Users
+            </p>
+            <p class="text-xs text-gray-500">
+              List of users
             </p>
           </div>
         </li>

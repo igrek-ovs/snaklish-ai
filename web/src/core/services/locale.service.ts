@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, map, of, skip, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, forkJoin, map, skip, switchMap, tap } from 'rxjs';
 import { LOCALE_LOCALSTORAGE_KEY, LocaleResponse } from '../models';
 import { CmsService } from './cms.service';
+import { WordLanguage } from '@core/enums/word-language.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,18 @@ export class LocaleService {
     return this.locale$.value;
   }
 
+  public get currentLocaleBackend(): string {
+    if (this.locale$.value === 'fr') {
+      return WordLanguage.FRENCH;
+    } else if (this.locale$.value === 'de') {
+      return WordLanguage.GERMAN;
+    } else if (this.locale$.value === 'uk') {
+      return WordLanguage.UKRAINIAN;
+    }
+
+    return WordLanguage.ENGLISH;
+  }
+
   constructor(private readonly cmsService: CmsService) {}
 
   public initializeLocalization() {
@@ -46,9 +59,6 @@ export class LocaleService {
     return forkJoin([
       locales$,
       localeMap$,
-      // this.cmsService.getFooter(),
-      // this.cmsService.getHeaderLogo(),
-      // this.cmsService.getAuthenticationLogo(),
     ]);
   }
 
@@ -70,7 +80,6 @@ export class LocaleService {
       skip(1),
       tap((locale) => localStorage.setItem(LOCALE_LOCALSTORAGE_KEY, locale)),
       switchMap(() => this.reloadLocaleMap()),
-      // switchMap(() => this.cmsService.reloadLocaleFeatures())
     );
   }
 

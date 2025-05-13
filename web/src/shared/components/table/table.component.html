@@ -55,14 +55,14 @@
               @switch (headers()[$index].type) {
                 @case (ColumnType.Chip) {
                   <div class="flex justify-around">
-                    <!-- <app-chip
+                    <app-chip
                       [chipWidth]="maxChipWidth()"
                       variant="regular"
                       [color]="getChipColor($index, row, field)"
                       [label]="
-                        getChipLabel($index, row, field) | truncateText: 12
+                        getChipLabel($index, row, field)
                       "
-                    ></app-chip> -->
+                    ></app-chip>
                   </div>
                 }
                 @case (ColumnType.Date) {

@@ -1,14 +1,16 @@
 <div>
     <nav class="p-1.5 bg-white border-y border-gray-200 dark:bg-gray-800 dark:border-gray-700 flex flex-col gap-y-3">
-        <ul class="flex gap-x-6 flex-wrap items-center -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            <li>
-                <app-button (click)="addNewWord()">{{ "components.dictionaryList.addNewWordButton" | appTranslate | async }}</app-button>
-            </li>
-            <li>
-                <app-button (click)="addNewCategory()">{{ "components.dictionaryList.addNewCategoryButton" | appTranslate | async }}</app-button>
-            </li>
-        </ul>
-        <div class="h-[1px] w-full bg-gray-200"></div>
+        @if (isAdmin()) {
+            <ul class="flex gap-x-6 flex-wrap items-center -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+                    <li>
+                        <app-button (click)="addNewWord()">{{ "components.dictionaryList.addNewWordButton" | appTranslate | async }}</app-button>
+                    </li>
+                    <li>
+                        <app-button (click)="addNewCategory()">{{ "components.dictionaryList.addNewCategoryButton" | appTranslate | async }}</app-button>
+                    </li>
+            </ul>
+            <div class="h-[1px] w-full bg-gray-200"></div>
+        }
         <ul>
             <li>
                 <div class="w-full my-2 h-fit">

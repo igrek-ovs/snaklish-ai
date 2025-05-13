@@ -2,7 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { TableComponent } from '../../shared/components/table/table.component';
 import { AddNewCategoryRequest, AddWordRequest, Word, WordSearchRequest } from '../../core/models/word.model';
 import { WordsService } from '../../core/services/words.service';
-import { filter, finalize, Observable, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, filter, finalize, Observable, switchMap, tap } from 'rxjs';
 import { ActionConfig, ActionFiredEvent, ColumnDef, ColumnType } from '@shared/components/table/header-def.model';
 import { ButtonComponent } from "../../shared/components/button/button.component";
 import { Dialog, DEFAULT_DIALOG_CONFIG } from '@angular/cdk/dialog';
@@ -19,6 +19,8 @@ import { WordSearchBy } from '@core/enums/word-search-by';
 import { WordActions } from '@core/enums/word-actions';
 import { Router } from '@angular/router';
 import { AppRoutes } from '@core/enums/app-routes.enum';
+import { UserRoles } from '@core/enums/user-roles.enum';
+import { UserService } from '@core/services';
 
 @Component({
   selector: 'app-dictionary-list',
@@ -39,20 +41,23 @@ export class DictionaryListComponent implements OnInit {
 
   public form: FormGroup;
 
+  public userRole$: Observable<string | null>;
+  public isAdmin = signal<boolean>(true);
+
   public readonly wordActions: ActionConfig<Word>[] = [
     {
       icon: 'tablerEdit',
       tooltip: 'Edit word',
       eventName: WordActions.EDIT,
       iconClass: 'icon-default',
-      isAvailable: () => true
+      isAvailable: () => this.isAdmin()
     },
     {
       icon: 'tablerTrash',
       tooltip: 'Delete word',
       eventName: WordActions.DELETE,
       iconClass: 'icon-delete',
-      isAvailable: () => true
+      isAvailable: () => this.isAdmin()
     },
     {
       icon: 'tablerEye',
@@ -68,6 +73,7 @@ export class DictionaryListComponent implements OnInit {
       fieldName: 'id',
       displayName: 'ID',
       type: ColumnType.Text,
+      isHidden: () => !this.isAdmin()
     },
     {
       fieldName: 'word',
@@ -105,6 +111,7 @@ export class DictionaryListComponent implements OnInit {
     private readonly categoriesService: CategoriesService,
     private readonly fb: NonNullableFormBuilder,
     private readonly router: Router,
+    private readonly userService: UserService,
   ) {
     this.form = this.fb.group({
       search: this.fb.control<string>(''),
@@ -113,10 +120,19 @@ export class DictionaryListComponent implements OnInit {
 
     this.addNewWord = this.addNewWord.bind(this);
 
-    this.loadWords();
+    this.userRole$ = this.userService.userRole$;
+    this.userRole$.subscribe((role) => {
+      if (role === UserRoles.Admin) {
+        this.isAdmin.set(true);
+      } else {
+        this.isAdmin.set(false);
+      }
+    });
   }
 
   ngOnInit(): void {
+    this.loadWords();
+
     this.form.valueChanges.pipe(
       tap(() => this.isLoading.set(true)),
       switchMap(({ search, searchBy }) => {
@@ -152,7 +168,10 @@ export class DictionaryListComponent implements OnInit {
     }
 
     const dialogRef = this.dialog.open(ManageWordDialogComponent, {
-      data: req,
+      data: {
+        word: req,
+        img: null,
+      },
     });
 
     (dialogRef.closed as Observable<AddWordRequest>)
@@ -164,10 +183,14 @@ export class DictionaryListComponent implements OnInit {
           loading:   'Adding word…',
           success:   'Word added successfully',
           error:     'Error adding word',
-        })
+        }),
       )),
       tap(() => this.isLoading.set(false)),
-      tap(() => this.loadWords())
+      tap(() => this.loadWords()),
+      catchError(() => {
+        this.loadWords();
+        return EMPTY;
+      })
     ).subscribe();
 
   }
@@ -207,7 +230,11 @@ export class DictionaryListComponent implements OnInit {
 
     else if (action === WordActions.EDIT) {
       const dialogRef = this.dialog.open(ManageWordDialogComponent, {
-        data: event.item,
+        data: {
+          word: event.item,
+          img: event.item.img,
+          wordId: event.item.id,
+        },
       });
 
       dialogRef.closed.pipe(
@@ -221,7 +248,11 @@ export class DictionaryListComponent implements OnInit {
           })
         )),
         tap(() => this.isLoading.set(false)),
-        tap(() => this.loadWords())
+        tap(() => this.loadWords()),
+        catchError(() => {
+          this.loadWords();
+          return EMPTY;
+        })
       ).subscribe();
     }
 
