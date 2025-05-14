@@ -120,6 +120,14 @@ export class DictionaryListComponent implements OnInit {
       type: ColumnType.Text,
     },
     {
+      fieldName: 'category',
+      displayName: 'Category',
+      type: ColumnType.Text,
+      formatter: (item: any) => {
+        return item.name.charAt(0).toUpperCase() + item.name.slice(1);
+      }
+    },
+    {
       fieldName: 'examples',
       displayName: 'Examples',
       type: ColumnType.Text,
@@ -194,7 +202,10 @@ export class DictionaryListComponent implements OnInit {
     this.isLoading.set(true);
   
     this.wordsService.getWords(this.currentPage()).pipe(
-      tap(res => {this.words.set(res.items); this.totalItems.set(res.total)}),
+      tap(res => {
+        this.words.set(res.items); 
+        this.totalItems.set(res.total);
+      }),
       finalize(() => {
         this.isLoading.set(false);
       })
