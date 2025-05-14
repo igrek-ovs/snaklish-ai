@@ -18,11 +18,13 @@ import { SidebarComponent } from "@shared/components/sidebar/sidebar.component";
 import { SvgComponent } from '@shared/components/svg/svg.component';
 import { Observable } from 'rxjs';
 import { UserRoles } from '@core/enums/user-roles.enum';
+import { BreadcrumbsComponent } from '@shared/components/breadcrumbs/breadcrumbs.component';
+import { environment } from '@src/enviroments/enviroment';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, OverlayModule, NavbarComponent, RouterLink, TranslatePipe, AsyncPipe, SidebarComponent, OverlayModule, SvgComponent, NgIf, CommonModule],
+  imports: [RouterOutlet, OverlayModule, NavbarComponent, RouterLink, TranslatePipe, AsyncPipe, SidebarComponent, OverlayModule, SvgComponent, NgIf, CommonModule, BreadcrumbsComponent],
   providers: [],
   templateUrl: './main-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -67,10 +69,8 @@ export class MainLayoutComponent implements OnInit {
 
     this.cmsService.getHeaderLogo().pipe(
       tap((logo) => {
-        const desktopUrl = logo.logoDesktop.url;
-        const mobileUrl = logo.logoMobile.url;
-        this.logoDesktopUrl.set(desktopUrl ?? '');
-        this.logoMobileUrl.set(mobileUrl ?? '');
+        const desktopUrl = environment.cms.apiUrl + logo.logoDesktop.url;
+        this.logoDesktopUrl.set(desktopUrl);
       })
     ).subscribe();
   }

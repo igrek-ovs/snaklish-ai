@@ -13,6 +13,20 @@ export interface SharedFaqTab extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedWhyBlock extends Struct.ComponentSchema {
+  collectionName: 'components_shared_why_blocks';
+  info: {
+    displayName: 'Why Block';
+  };
+  attributes: {
+    description: Schema.Attribute.String;
+    icon: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    link: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+    url: Schema.Attribute.String;
+  };
+}
+
 export interface WidgetsFaqList extends Struct.ComponentSchema {
   collectionName: 'components_widgets_faq_lists';
   info: {
@@ -55,6 +69,7 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'shared.faq-tab': SharedFaqTab;
+      'shared.why-block': SharedWhyBlock;
       'widgets.faq-list': WidgetsFaqList;
       'widgets.link-item-widget': WidgetsLinkItemWidget;
       'widgets.link-widget': WidgetsLinkWidget;

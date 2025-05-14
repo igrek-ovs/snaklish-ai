@@ -5,10 +5,11 @@ import { LocaleService } from '@core/services';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { TranslatePipe } from "../../../core/pipes/translate.pipe";
 import { SvgComponent } from "../svg/svg.component";
+import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 
 @Component({
   selector: 'app-navbar',
-imports: [NgFor, NgIf, TranslatePipe, AsyncPipe, SvgComponent],
+  imports: [NgFor, NgIf, TranslatePipe, AsyncPipe, SvgComponent, BreadcrumbsComponent],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent implements OnInit {

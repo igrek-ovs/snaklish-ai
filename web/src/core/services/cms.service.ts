@@ -19,6 +19,12 @@ export class CmsService {
     )
   }
 
+  public getFaqPageContent() {
+    return this.http.get(`${this.cmsApiUrl}/api/faq-page?populate[whyBlocks][populate]=icon`).pipe(
+      map((res: any) => res.data)
+    )
+  }
+
   public getLocaleList() {
     return this.http.get<any>(`${this.cmsApiUrl}/api/locales`);
   }

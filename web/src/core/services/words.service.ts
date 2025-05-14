@@ -50,10 +50,7 @@ export class WordsService {
     }
   
     return this.http
-      .get<WordSearchResponse[]>(`${this.apiUrl}/search`, { params })
-      .pipe(
-        tap(res => console.log('search result', res))
-      );
+      .get<WordSearchResponse[]>(`${this.apiUrl}/search`, { params });
   }
 
   public getWordById(id: number) {

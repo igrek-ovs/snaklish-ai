@@ -1,0 +1,67 @@
+<div class="sticky top-0 z-30 w-full bg-white">
+    <div class="wrapper mx-auto">
+        <div class="overflow-x-auto" style="scrollbar-width: none">
+            <div class="bg-white h-16 flex whitespace-nowrap text-mobileMd tablet:text-tabletMd cursor-pointer desktop:text-desktopMd">
+            <button
+                *ngFor="let tab of tabList; let isLast = last"
+                class="flex flex-1 h-full items-center justify-center px-4 border-b-2 border-b-grayed-400 hover:border-b-grayed-600 hover:bg-primary-100 font-light"
+                [class.font-semibold]="selectedTab?.title === tab.title"
+                [class.border-b-black]="selectedTab?.title === tab.title"
+                [class.bg-gray-100]="selectedTab?.title === tab.title"
+                (click)="selectTab(tab)"
+            >
+                {{ tab.title }}
+            </button>
+            </div>
+        </div>
+        </div>
+</div>
+
+<div
+  #scrollContainer
+  class="flex flex-col overflow-x-hidden h-screen"
+>
+    <div class="mt-12 space-y-6 flex flex-col mx-auto">
+        <div [id]="'Overview'">
+        <app-faq-widget
+            title="Overview"
+            [faqList]="faqSectionOverview.faqList"
+        ></app-faq-widget>
+        </div>
+        <div [id]="'Details'">
+        <app-faq-widget
+            title="Details"
+            [faqList]="faqSectionDetails.faqList"
+        ></app-faq-widget>
+        </div>
+        <div [id]="'FAQ'">
+        <app-faq-widget
+            title="FAQ"
+            [faqList]="faqSectionFaq.faqList"
+        ></app-faq-widget>
+        </div>
+    </div>
+</div>
+
+    <div class="mx-auto wrapper flex flex-wrap gap-3 justify-center">
+        @for (wb of whyBlocks(); track wb.id) {
+          <div
+            class="flex items-center justify-around w-[400px] bg-white p-[48px] gap-[24px] border-r border-b border-t-0 border-l-0 border-[#F3EBEB]"
+          >
+            <div class="flex flex-col">
+              @if (wb.icon) {
+                <img class="size-12" [src]="wb.icon.url | appCmsMedia" alt="" />
+              }
+              <p class="text-xl mb-2">{{ wb.title }}</p>
+              <p>{{ wb.description }}</p>
+            </div>
+
+            <a
+              [href]="wb.url"
+              class="font-bold text-sm leading-4 tracking-normal text-center underline text-primary-500 text-red hover:text-red-hovered"
+            >
+              {{ wb.link }}
+            </a>
+          </div>
+        }
+</div>

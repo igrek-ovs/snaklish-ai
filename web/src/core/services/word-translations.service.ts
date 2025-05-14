@@ -27,7 +27,6 @@ export class WordTranslationsService {
   }
 
   public addTranslation(req: AddWordTranslationRequest) {
-    console.log('addTranslation', req);
     return this.http.post<WordTranslation>(this.apiUrl, req);
   }
 }

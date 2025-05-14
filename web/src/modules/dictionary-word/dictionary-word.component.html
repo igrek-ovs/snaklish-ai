@@ -39,7 +39,7 @@
               }
               <div>
                 @if (!wordTranslation()) {
-                  <button [ngClass]="{ hidden: !isAdmin()}" title="Add translation" (click)="saveWordTranslation()">
+                  <button [ngClass]="{ hidden: !isAdmin() || currentLocale() === 'en'}" title="Add translation" (click)="saveWordTranslation()">
                     <ng-icon
                       name="tablerPlus"
                       class="mt-1.5 text-gray-400 text-lg hover:text-gray-500">

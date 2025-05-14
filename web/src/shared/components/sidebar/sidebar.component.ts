@@ -9,10 +9,8 @@ import { NgIcon } from '@ng-icons/core';
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { CdkAccordion, CdkAccordionItem } from '@angular/cdk/accordion';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { AuthenticationService } from '@core/services';
 import { AppRoutes } from '@core/enums/app-routes.enum';
 import { TranslatePipe } from "../../../core/pipes/translate.pipe";
-// import { UserRight } from '@/core/enums';
 
 export type SidebarItem = {
   title: string;
@@ -84,10 +82,7 @@ export class SidebarComponent implements OnInit {
 
   constructor(
     private readonly router: Router,
-    private readonly authService: AuthenticationService
-  ) {
-    console.log(router.url);
-  }
+  ) { }
 
   ngOnInit() {
     this.sidebarItems
@@ -106,43 +101,4 @@ export class SidebarComponent implements OnInit {
   public isAvailable(item: SidebarItem) {
     return item.isAvailable ? item.isAvailable() : true;
   }
-
-  // private isPortingAvailable() {
-  //   return [UserRight.InportsRead, UserRight.OutportsRead].some((right) =>
-  //     this.authService.hasRights(right)
-  //   );
-  // }
-
-  // private isProductCatalogAvailable() {
-  //   return [
-  //     UserRight.BusinessRulesRead,
-  //     UserRight.BundlesRead,
-  //     UserRight.SubscriptionsRead,
-  //     UserRight.OfferingsRead,
-  //     UserRight.DiscountsRead,
-  //   ].some((right) => this.authService.hasRights(right));
-  // }
-
-  // private isAdministrationAvailable() {
-  //   return [
-  //     UserRight.RolesRead,
-  //     UserRight.UsersRead,
-  //     UserRight.TemplatesEmailRead,
-  //     UserRight.TemplatesSmsRead,
-  //     UserRight.NotificationsEmailRead,
-  //     UserRight.NotificationsSmsRead,
-  //     UserRight.NotificationsKpnSmsRead,
-  //     UserRight.StockSimRead,
-  //     UserRight.StockEsimRead,
-  //   ].some((right) => this.authService.hasRights(right));
-  // }
-
-  // private isBillingAvailable() {
-  //   return [
-  //     UserRight.InvoicesRead,
-  //     UserRight.OneTimeCostsRead,
-  //     UserRight.BillingSettingsRead,
-  //     UserRight.AdditionalPricesRead,
-  //   ].some((right) => this.authService.hasRights(right));
-  // }
 }

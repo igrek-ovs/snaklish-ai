@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_shared_why_blocks",
+  "info": {
+    "displayName": "Why Block"
+  },
+  "options": {},
+  "attributes": {
+    "icon": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 <section class="p-4 bg-white pb-[22px] desktop:pb-[30px] tablet:p-5 desktop:p-6 w-[600px]">
   <h2
     class="mb-4 font-bold text-xl text-gray-900 uppercase tracking-wide border-b-2 border-gray-200 pb-2"
+    [ngClass]="{ hidden: !title() }"
   >
     {{ title() }}
   </h2>

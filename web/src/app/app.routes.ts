@@ -11,6 +11,7 @@ import { authGuard } from '../core/guards/auth.guard';
 import { DictionaryWordComponent } from '@src/modules/dictionary-word/dictionary-word.component';
 import { UsersListComponent } from '@src/modules/users-list/users-list.component';
 import { LearnWordsComponent } from '@src/modules/learn-words/learn-words.component';
+import { FaqComponent } from '@src/modules/faq/faq.component';
 
 export const routes: Routes = [
   ...authenticationRoutes,
@@ -18,6 +19,7 @@ export const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
+      { path: AppRoutes.Faq, pathMatch: 'full', component: FaqComponent },
       { path: AppRoutes.DictionaryList, component: DictionaryListComponent },
       { path: AppRoutes.DictionaryList + '/:id', component: DictionaryWordComponent },
       { path: 'account', component: AcountManagementComponent },
