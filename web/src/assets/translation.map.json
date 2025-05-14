@@ -20,7 +20,9 @@
       "chat": "Open chat",
       "chatDescription": "Connect with fellow learners.",
       "manageDictionary": "Manage dictionary",
-      "manageDictionaryDescription": "Edit your custom words and definitions."
+      "manageDictionaryDescription": "Edit your custom words and definitions.",
+      "faq": "FAQ",
+      "faqDescription": "Frequently asked questions."
     },
     "dictionaryList": {
       "addNewWordButton": "Add new word",

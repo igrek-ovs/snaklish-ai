@@ -19,7 +19,7 @@
 
 <div
   #scrollContainer
-  class="flex flex-col overflow-x-hidden h-screen"
+  class="flex flex-col overflow-x-hidden"
 >
     <div class="mt-12 space-y-6 flex flex-col mx-auto">
         <div [id]="'Overview'">
@@ -43,7 +43,7 @@
     </div>
 </div>
 
-    <div class="mx-auto wrapper flex flex-wrap gap-3 justify-center">
+<div class="mt-12 mx-auto wrapper flex flex-wrap gap-3 justify-center">
         @for (wb of whyBlocks(); track wb.id) {
           <div
             class="flex items-center justify-around w-[400px] bg-white p-[48px] gap-[24px] border-r border-b border-t-0 border-l-0 border-[#F3EBEB]"
@@ -65,3 +65,5 @@
           </div>
         }
 </div>
+
+<div class="h-16"></div>
