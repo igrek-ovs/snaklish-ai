@@ -10,7 +10,6 @@ import {
   UploadedFile,
   UseGuards,
   Query,
-  DefaultValuePipe,
   ParseIntPipe,
 } from '@nestjs/common';
 import {
@@ -19,6 +18,7 @@ import {
   ApiConsumes,
   ApiBody,
   ApiBearerAuth,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { WordService } from './word.service';
 import { CreateWordDto } from './dto/create-word.dto';
@@ -37,10 +37,20 @@ export class WordController {
   constructor(private readonly wordService: WordService) {}
 
   @ApiOperation({ summary: 'Получить все слова' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+  })
   @Get()
   async getAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ): Promise<{ items: Word[]; total: number }> {
     return this.wordService.getAll(page, limit);
   }

@@ -32,19 +32,25 @@ export class WordService {
     private categoryRepository: Repository<Category>,
   ) {}
 
-  async getAll(page = 1, limit = 10): Promise<PaginatedWords> {
-    try {
-      const [items, total] = await this.wordRepository.findAndCount({
-        relations: ['translations', 'category'],
-        skip: (page - 1) * limit,
-        take: limit,
-      });
-      this.logger.log(`Fetched page ${page} (${items.length}/${total})`);
+  async getAll(page?: number, limit?: number): Promise<PaginatedWords> {
+    const qb = this.wordRepository
+      .createQueryBuilder('word')
+      .leftJoinAndSelect('word.translations', 'translation')
+      .leftJoinAndSelect('word.category', 'category');
+
+    if (page === undefined && limit === undefined) {
+      const [items, total] = await qb.getManyAndCount();
       return { items, total };
-    } catch (error) {
-      this.logger.error(`Failed to fetch words: ${error.message}`, error.stack);
-      throw new InternalServerErrorException('Failed to fetch words');
     }
+
+    const p = page ?? 1;
+    const l = limit ?? 10;
+    const [items, total] = await qb
+      .skip((p - 1) * l)
+      .take(l)
+      .getManyAndCount();
+
+    return { items, total };
   }
 
   async getById(id: number): Promise<Word> {
