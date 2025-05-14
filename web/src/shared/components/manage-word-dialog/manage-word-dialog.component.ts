@@ -36,7 +36,7 @@ export class ManageWordDialogComponent implements OnInit {
     this.form = this.fb.group({
       word: this.fb.control<string>(data.word.word),
       transcription: this.fb.control<string>(data.word.transcription),
-      level: this.fb.control<string>(data.word.level),
+      level: this.fb.control<string>(data.word.level || 'A1'),
       examples: this.fb.control<string>(data.word.examples),
       categoryId: this.fb.control<number>(data.word.categoryId),
       image: this.fb.control<string | null>(data.img?.data ?? null),

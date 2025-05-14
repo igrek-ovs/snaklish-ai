@@ -1,6 +1,6 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { TableComponent } from '../../shared/components/table/table.component';
-import { AddNewCategoryRequest, AddWordRequest, Word, WordSearchRequest } from '../../core/models/word.model';
+import { AddNewCategoryRequest, AddWordRequest, Category, Word, WordSearchRequest } from '../../core/models/word.model';
 import { WordsService } from '../../core/services/words.service';
 import { catchError, EMPTY, filter, finalize, Observable, switchMap, tap } from 'rxjs';
 import { ActionConfig, ActionFiredEvent, ColumnDef, ColumnType } from '@shared/components/table/header-def.model';
@@ -14,17 +14,32 @@ import { CategoriesService } from '@core/services/categories.service';
 import { InputComponent } from "../../shared/components/input/input.component";
 import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from "../../core/pipes/translate.pipe";
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { WordSearchBy } from '@core/enums/word-search-by';
 import { WordActions } from '@core/enums/word-actions';
 import { Router } from '@angular/router';
 import { AppRoutes } from '@core/enums/app-routes.enum';
 import { UserRoles } from '@core/enums/user-roles.enum';
 import { UserService } from '@core/services';
+import { PaginatorComponent } from "@shared/components/paginator/paginator.component";
+import { WORDS_PER_PAGE } from '@core/constants/word.constants';
+import { PopUpFilterComponent } from "../../shared/components/pop-up-filter/pop-up-filter.component";
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-dictionary-list',
-  imports: [TableComponent, ButtonComponent, InputComponent, ReactiveFormsModule, TranslatePipe, AsyncPipe],
+    imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TableComponent,
+    ButtonComponent,
+    InputComponent,
+    PaginatorComponent,
+    TranslatePipe,
+    AsyncPipe,
+    PopUpFilterComponent,
+    OverlayModule
+],
   templateUrl: './dictionary-list.component.html',
   providers: [
     {
@@ -37,12 +52,26 @@ import { UserService } from '@core/services';
 })
 export class DictionaryListComponent implements OnInit {
   public words = signal<Word[]>([]);
+  public categories = signal<Category[]>([]);
   public isLoading = signal<boolean>(false);
+  public currentPage = signal<number>(1);
+  public totalItems = signal<number>(0);
+  public totalPages = computed(() => Math.ceil(this.totalItems() / WORDS_PER_PAGE));
 
   public form: FormGroup;
 
   public userRole$: Observable<string | null>;
   public isAdmin = signal<boolean>(true);
+
+  public get categoriesOptions() {
+    return [
+      { displayName: 'All', value: null },
+      ...this.categories().map(c => ({
+        displayName: c.name.charAt(0).toUpperCase() + c.name.slice(1),
+        value: c.id,
+      }))
+    ];
+  }
 
   public readonly wordActions: ActionConfig<Word>[] = [
     {
@@ -102,7 +131,7 @@ export class DictionaryListComponent implements OnInit {
   }
 
   public get isAnyFilterApplied() {
-    return this.form.controls['searchBy'].value !== WordSearchBy.WORD || this.form.controls['search'].value.trim();
+    return this.form.controls['searchBy'].value !== WordSearchBy.WORD || this.form.controls['search'].value.trim() || this.form.controls['category'].value;
   }
 
   constructor(private readonly wordsService: WordsService, 
@@ -116,6 +145,7 @@ export class DictionaryListComponent implements OnInit {
     this.form = this.fb.group({
       search: this.fb.control<string>(''),
       searchBy: this.fb.control<WordSearchBy>(WordSearchBy.WORD),
+      category: this.fb.control<number | null>(null),
     });
 
     this.addNewWord = this.addNewWord.bind(this);
@@ -133,28 +163,50 @@ export class DictionaryListComponent implements OnInit {
   ngOnInit(): void {
     this.loadWords();
 
-    this.form.valueChanges.pipe(
-      tap(() => this.isLoading.set(true)),
-      switchMap(({ search, searchBy }) => {
-        const req: WordSearchRequest = {};
-        (req as any)[searchBy] = search;
-  
-        return this.wordsService.searchWord(req).pipe(
-          finalize(() => this.isLoading.set(false))
-        );
-      }),
-      tap((words: Word[]) => this.words.set(words))
-    ).subscribe();
+    this.loadCategories();
+
+  this.form.valueChanges.pipe(
+    tap(() => this.isLoading.set(true)),
+    switchMap(({ search, searchBy, category }) => {
+      const req: WordSearchRequest = {
+        pageNumber: this.currentPage(),
+        pageSize: WORDS_PER_PAGE,
+      };
+      (req as any)[searchBy] = search;
+
+      if (category !== null) {
+        const c = this.categories().find(c => c.id === category)!;
+        req.category = c.name;
+      }
+
+      return this.wordsService.searchWord(req).pipe(
+          tap((resp) => {
+          this.words.set(resp.items);
+          this.totalItems.set(resp.total);
+        }),
+        finalize(() => this.isLoading.set(false))
+      );
+    }),
+  ).subscribe();
   }
 
   private loadWords() {
     this.isLoading.set(true);
   
-    this.wordsService.getWords().pipe(
-      tap(words => this.words.set(words)),
+    this.wordsService.getWords(this.currentPage()).pipe(
+      tap(res => {this.words.set(res.items); this.totalItems.set(res.total)}),
       finalize(() => {
         this.isLoading.set(false);
       })
+    ).subscribe();
+  }
+
+  private loadCategories() {
+    this.categoriesService.getCategories().pipe(
+      tap(res => {
+        console.log(res)
+        this.categories.set(res);
+      }),
     ).subscribe();
   }
 
@@ -288,6 +340,19 @@ export class DictionaryListComponent implements OnInit {
     this.form.patchValue({
       search: '',
       searchBy: WordSearchBy.WORD,
+      category: null,
     });
+  }
+
+  public onPageChanged(page: number) {
+    this.isLoading.set(true);
+    this.currentPage.set(page);
+
+    this.wordsService.getWords(page).pipe(
+      tap(res => this.words.set(res.items)),
+      finalize(() => {
+        this.isLoading.set(false);
+      })
+    ).subscribe();
   }
 }

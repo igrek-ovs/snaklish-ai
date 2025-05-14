@@ -13,9 +13,12 @@ import { LocaleService } from '../core/services/locale.service';
 import { provideStore, Store } from '@ngrx/store';
 import { AuthenticationService } from '../core/services/authentication.service';
 import { localeInterceptor } from '@core/locale.interceptor';
+import { importProvidersFrom } from '@angular/core';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    importProvidersFrom(OverlayModule),
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,

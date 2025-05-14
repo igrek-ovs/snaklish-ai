@@ -23,6 +23,16 @@
                                     formControlName="search"
                                 ></app-input>
                             </div>
+                                @if(categories().length) {
+                                    <div class="sm:w-auto self-end">
+                                        <app-pop-up-filter
+                                            name="Categories"
+                                            [options]="categoriesOptions"
+                                            [defaultOption]="categoriesOptions ? categoriesOptions[0] : undefined"
+                                            formControlName="category"
+                                        ></app-pop-up-filter>
+                                    </div>
+                                }
 
                             @if(isAnyFilterApplied) {
                                 <app-button (click)="clearFilters()" class="translate-y-1" color="outline">{{ "shared.clearFilters" | appTranslate | async }}</app-button>
@@ -62,14 +72,26 @@
         </ul>
     </nav>
 
-    <app-table 
-        (action)="handleAction($event)" 
-        [data]="words()" 
-        [headers]="headers" 
-        [extraActions]="wordActions" 
-        [isLoading]="isLoading()"
-        [isEmptyState]="true"
-        [cb]="addNewWord"
-    >
-    </app-table>
+    <div class="flex-grow flex flex-col">
+        <app-table 
+            (action)="handleAction($event)" 
+            [data]="words()" 
+            [headers]="headers" 
+            [extraActions]="wordActions" 
+            [isLoading]="isLoading()"
+            [isEmptyState]="true"
+            [cb]="addNewWord"
+        >
+        </app-table>
+    </div>
+    @if (totalPages() && totalPages() > 1 && !isLoading()) {
+        <div class="sticky bottom-0 left-0 w-full pt-4 pb-2 lg:pb-4 bg-white">
+            <app-paginator
+                [totalPages]="totalPages()"
+                [activePage]="currentPage()"
+                (activePageChange)="onPageChanged($event)"
+            >
+            </app-paginator>
+        </div>
+    }
 </div>

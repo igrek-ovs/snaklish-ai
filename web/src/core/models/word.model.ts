@@ -86,6 +86,8 @@ export interface WordSearchRequest {
   transcription?: string;
   translation?: string;
   category?: string;
+  pageNumber: number;
+  pageSize: number;
 }
 
 export interface WordSearchResponse {

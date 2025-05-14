@@ -18,13 +18,12 @@ import { SidebarComponent } from "@shared/components/sidebar/sidebar.component";
 import { SvgComponent } from '@shared/components/svg/svg.component';
 import { Observable } from 'rxjs';
 import { UserRoles } from '@core/enums/user-roles.enum';
-import { BreadcrumbsComponent } from '@shared/components/breadcrumbs/breadcrumbs.component';
 import { environment } from '@src/enviroments/enviroment';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, OverlayModule, NavbarComponent, RouterLink, TranslatePipe, AsyncPipe, SidebarComponent, OverlayModule, SvgComponent, NgIf, CommonModule, BreadcrumbsComponent],
+  imports: [OverlayModule, RouterOutlet, NavbarComponent, RouterLink, TranslatePipe, AsyncPipe, SidebarComponent, SvgComponent, NgIf, CommonModule],
   providers: [],
   templateUrl: './main-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

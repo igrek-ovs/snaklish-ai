@@ -2,7 +2,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../enviroments/enviroment';
 import { AddWordRequest, AddWordResponse, DeleteWordRequest, EditWordRequest, EditWordResponse, SetWordImageRequest, SetWordImageResponse, Word, WordSearchRequest, WordSearchResponse } from '../models/word.model';
-import { delay, Observable, tap } from 'rxjs';
+import { delay, Observable } from 'rxjs';
+import { WORDS_PER_PAGE } from '@core/constants/word.constants';
+
+interface PagedResponse<T> {
+  items: T[];
+  total: number;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -12,10 +18,14 @@ export class WordsService {
 
   constructor(private readonly http: HttpClient) {}
 
-  public getWords() {
-    return this.http.get<Word[]>(this.apiUrl).pipe(
-      delay(1500) //mock delay
-    );
+  public getWords(pageNumber: number, pageSize: number = WORDS_PER_PAGE) {
+  const params  = new HttpParams()
+    .set('page', pageNumber)
+    .set('limit', pageSize)
+
+    return this.http.get<PagedResponse<Word>>(this.apiUrl, { params }).pipe(
+      delay(500) //mock delay
+    ); 
   }
 
   public addWord(req: AddWordRequest) {
@@ -30,9 +40,11 @@ export class WordsService {
     return this.http.put<EditWordResponse>(`${this.apiUrl}/${id}`, req);
   }
 
-  public searchWord(req: WordSearchRequest): Observable<WordSearchResponse[]> {
-    let params = new HttpParams();
-  
+  public searchWord(req: WordSearchRequest) {
+    let params = new HttpParams()
+      .set('pageNumber', req.pageNumber.toString())
+      .set('pageSize',   req.pageSize.toString()); 
+
     if (req.id != null) {
       params = params.set('id', req.id.toString());
     }
@@ -50,7 +62,7 @@ export class WordsService {
     }
   
     return this.http
-      .get<WordSearchResponse[]>(`${this.apiUrl}/search`, { params });
+      .get<PagedResponse<Word>>(`${this.apiUrl}/search`, { params });
   }
 
   public getWordById(id: number) {

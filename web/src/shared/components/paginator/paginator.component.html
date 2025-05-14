@@ -1,0 +1,64 @@
+<div
+  class="flex flex-col-reverse justify-center gap-2 items-center lg:flex-row"
+>
+  <p
+    class="block lg:absolute lg:left-4 -translate-x-[8px] text-gray-500 text-sm font-semibold tracking-wide"
+  >
+    Showing page {{ activePage() }} of {{ totalPages() }}
+  </p>
+  <ul class="flex items-center -space-x-px h-10 text-base">
+    <li>
+      <button
+        class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        (click)="setPage(1)"
+      >
+        <span class="sr-only">First</span>
+        <ng-icon name="tablerChevronLeftPipe" size="1rem"></ng-icon>
+      </button>
+    </li>
+    <li>
+      <button
+        class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        (click)="setPage(activePage() - 1)"
+      >
+        <span class="sr-only">Previous</span>
+        <ng-icon name="tablerChevronLeft" size="1rem"></ng-icon>
+      </button>
+    </li>
+
+    @for (pageNumber of pages; track pageNumber) {
+      <li>
+        <button
+          class="flex items-center justify-center px-4 h-10 w-12 leading-tight border border-gray-300"
+          [ngClass]="{
+            'bg-primary-main text-white hover:bg-primary-alternative':
+              pageNumber === activePage(),
+            'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-700 ':
+              pageNumber !== activePage(),
+          }"
+          (click)="setPage(pageNumber)"
+        >
+          {{ pageNumber }}
+        </button>
+      </li>
+    }
+    <li>
+      <button
+        class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        (click)="setPage(activePage() + 1)"
+      >
+        <span class="sr-only">Next</span>
+        <ng-icon name="tablerChevronRight" size="1rem"></ng-icon>
+      </button>
+    </li>
+    <li>
+      <button
+        class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        (click)="setPage(totalPages())"
+      >
+        <span class="sr-only">Next</span>
+        <ng-icon name="tablerChevronRightPipe" size="1rem"></ng-icon>
+      </button>
+    </li>
+  </ul>
+</div>

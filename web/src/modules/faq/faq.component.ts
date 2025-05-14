@@ -71,7 +71,6 @@ export class FaqComponent implements OnInit {
       tap((content) => {
         const { whyBlocks } = content;
         this.whyBlocks.set(whyBlocks);
-        console.log(content);
       })
     ).subscribe();
   }

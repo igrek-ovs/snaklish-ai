@@ -12,7 +12,12 @@ import { WordTranslation } from '../word-translation/word-translation.entity';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
 import { Category } from '../category/category.entity';
-import {SearchWordsDto} from "./dto/search-words.dto";
+import { SearchWordsDto } from './dto/search-words.dto';
+
+interface PaginatedWords {
+  items: Word[];
+  total: number;
+}
 
 @Injectable()
 export class WordService {
@@ -27,13 +32,15 @@ export class WordService {
     private categoryRepository: Repository<Category>,
   ) {}
 
-  async getAll(): Promise<Word[]> {
+  async getAll(page = 1, limit = 10): Promise<PaginatedWords> {
     try {
-      const words = await this.wordRepository.find({
+      const [items, total] = await this.wordRepository.findAndCount({
         relations: ['translations', 'category'],
+        skip: (page - 1) * limit,
+        take: limit,
       });
-      this.logger.log(`Fetched ${words.length} words`);
-      return words;
+      this.logger.log(`Fetched page ${page} (${items.length}/${total})`);
+      return { items, total };
     } catch (error) {
       this.logger.error(`Failed to fetch words: ${error.message}`, error.stack);
       throw new InternalServerErrorException('Failed to fetch words');
@@ -181,42 +188,52 @@ export class WordService {
     }
   }
 
-  async advancedSearch(filters: SearchWordsDto): Promise<Word[]> {
+  async advancedSearch(
+    filters: Omit<SearchWordsDto, 'pageNumber' | 'pageSize'>,
+    pageNumber: number,
+    pageSize: number,
+  ): Promise<{ items: Word[]; total: number }> {
     try {
-      const query = this.wordRepository
+      const qb = this.wordRepository
         .createQueryBuilder('word')
         .leftJoinAndSelect('word.translations', 'translation')
         .leftJoinAndSelect('word.category', 'category');
 
       if (filters.id) {
-        query.andWhere('word.id = :id', { id: filters.id });
+        qb.andWhere('word.id = :id', { id: filters.id });
       }
-
       if (filters.word) {
-        query.andWhere('word.word LIKE :word', { word: `%${filters.word}%` });
+        qb.andWhere('word.word LIKE :word', { word: `%${filters.word}%` });
       }
-
       if (filters.transcription) {
-        query.andWhere('word.transcription LIKE :transcription', {
+        qb.andWhere('word.transcription LIKE :transcription', {
           transcription: `%${filters.transcription}%`,
         });
       }
-
       if (filters.translation) {
-        query.andWhere('translation.translation LIKE :translation', {
+        qb.andWhere('translation.translation LIKE :translation', {
           translation: `%${filters.translation}%`,
         });
       }
-
       if (filters.category) {
-        query.andWhere('category.name LIKE :category', {
+        qb.andWhere('category.name LIKE :category', {
           category: `%${filters.category}%`,
         });
       }
 
-      const results = await query.getMany();
-      this.logger.log(`Advanced search returned ${results.length} results`);
-      return results;
+      // Сначала общее количество
+      const total = await qb.getCount();
+
+      // Затем применяем пагинацию
+      const items = await qb
+        .skip((pageNumber - 1) * pageSize)
+        .take(pageSize)
+        .getMany();
+
+      this.logger.log(
+        `Advanced search returned ${items.length} of ${total} total`,
+      );
+      return { items, total };
     } catch (error) {
       this.logger.error(
         `Failed to perform advanced search: ${error.message}`,

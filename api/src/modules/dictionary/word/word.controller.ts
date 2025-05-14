@@ -10,6 +10,8 @@ import {
   UploadedFile,
   UseGuards,
   Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -36,15 +38,24 @@ export class WordController {
 
   @ApiOperation({ summary: 'Получить все слова' })
   @Get()
-  async getAll(): Promise<Word[]> {
-    return this.wordService.getAll();
+  async getAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ): Promise<{ items: Word[]; total: number }> {
+    return this.wordService.getAll(page, limit);
   }
 
   @ApiOperation({ summary: 'Advanced search for words' })
   @Get('search')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   async search(@Query() query: SearchWordsDto) {
-    return this.wordService.advancedSearch(query);
+    const pageNumber = Number(query.pageNumber) || 1;
+    const pageSize = Number(query.pageSize) || 10;
+    const filters = { ...query } as any;
+    delete filters.pageNumber;
+    delete filters.pageSize;
+
+    return this.wordService.advancedSearch(filters, pageNumber, pageSize);
   }
 
   @ApiOperation({ summary: 'Получить слово по ID' })
