@@ -203,10 +203,7 @@ export class DictionaryListComponent implements OnInit {
 
   private loadCategories() {
     this.categoriesService.getCategories().pipe(
-      tap(res => {
-        console.log(res)
-        this.categories.set(res);
-      }),
+      tap(res => this.categories.set(res)),
     ).subscribe();
   }
 
