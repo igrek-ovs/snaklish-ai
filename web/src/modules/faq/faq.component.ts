@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { CmsService } from '@core/services';
 import { Image } from '@core/models';
@@ -21,13 +21,11 @@ interface WhyBlock {
   imports: [NgFor, CmsMediaPipe, FaqWidgetComponent],
 })
 export class FaqComponent implements OnInit {
-  @ViewChild('scrollContainer', { static: true }) 
-  private scrollContainer!: ElementRef<HTMLElement>;
-
   public tabList = [
-    { title: 'Overview', url: '/overview' },
-    { title: 'Details',  url: '/details'  },
-    { title: 'FAQ',      url: '/faq'      },
+    { title: 'Overview', url: 'overview' },
+    { title: 'Details',  url: 'details'  },
+    { title: 'FAQ',      url: 'faq'      },
+    { title: 'Why this app',  url: 'why-blocks'  },
   ];
 
   public faqSectionOverview = {
@@ -77,25 +75,9 @@ export class FaqComponent implements OnInit {
 
   public selectTab(tab: { title: string; url: string }) {
     this.selectedTab = tab;
-  
-    const container = this.scrollContainer.nativeElement as HTMLElement;
-    const target = container.querySelector(`#${tab.title}`) as HTMLElement;
-    if (!target) return;
-  
-    const header = container.parentElement?.querySelector('.sticky') as HTMLElement;
-    const headerHeight = header?.getBoundingClientRect().height || 0;
-  
-    const containerHeight = container.clientHeight;
-    const targetHeight = target.clientHeight;
-  
-    const offsetTop =
-      target.offsetTop -
-      headerHeight -
-      (containerHeight / 2 - targetHeight / 2);
-  
-    container.scrollTo({
-      top: offsetTop,
-      behavior: 'smooth'
+    Promise.resolve().then(() => {
+      const el = document.getElementById(tab.url);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   }
 }
