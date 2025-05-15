@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -17,6 +17,7 @@ import {
 import { catchError, EMPTY, tap } from 'rxjs';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { PASSWORD_REGEX } from '../../../../core/regex/password-regex';
+import { SvgComponent } from "../../../../shared/components/svg/svg.component";
 
 interface ErrorsMessages {
   required: string;
@@ -35,12 +36,40 @@ interface SignInFormErrors {
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, InputComponent, ButtonComponent],
+  imports: [FormsModule, ReactiveFormsModule, InputComponent, ButtonComponent, SvgComponent],
   templateUrl: './sign-in.component.html',
 })
 export class SignInComponent implements OnInit {
   public form: FormGroup;
   public isLoading = signal(false);
+
+  public atLeastEightCharacters = signal(false);
+  public atMostTwentyCharacters = signal(false);
+  public atLeastOneLowerCase = signal(false);
+  public atLeastOneNumber = signal(false);
+  public atLeastOneSpecialCharacter = signal(false);
+  public passwordStrength = signal(0);
+
+  public get validationList() {
+    return [
+      {
+        label: 'At least 6 characters',
+        isValid: this.atLeastEightCharacters(),
+      },
+      {
+        label: 'At least one lowercase letter',
+        isValid: this.atLeastOneLowerCase(),
+      },
+      {
+        label: 'At least one digit',
+        isValid: this.atLeastOneNumber(),
+      },
+      {
+        label: 'At least one special character',
+        isValid: this.atLeastOneSpecialCharacter(),
+      },
+    ];
+  }
 
   constructor(
     private readonly fb: NonNullableFormBuilder,
@@ -59,8 +88,6 @@ export class SignInComponent implements OnInit {
         Validators.maxLength(20),
         Validators.pattern(PASSWORD_REGEX.onlyLatin.source),
         Validators.pattern(PASSWORD_REGEX.atLeastOneDigit.source),
-        //TODO: add this regex when the backend is ready
-        //Validators.pattern(PASSWORD_REGEX.atLeastOneUppercase.source),
         Validators.pattern(PASSWORD_REGEX.atLeastOneLowercase.source),
         Validators.pattern(PASSWORD_REGEX.atLeastOneSpecialCharacter.source),
       ]),
@@ -76,6 +103,30 @@ export class SignInComponent implements OnInit {
         passwordControl.updateValueAndValidity();
       }
     });
+
+  this.form.controls['password'].valueChanges
+    .pipe(
+      tap((value: string) => {
+        this.atLeastEightCharacters.set(value.length >= 6);
+        this.atMostTwentyCharacters.set(value.length <= 20);
+        this.atLeastOneLowerCase.set(
+          new RegExp(PASSWORD_REGEX.atLeastOneLowercase.source).test(value)
+        );
+        this.atLeastOneNumber.set(
+          new RegExp(PASSWORD_REGEX.atLeastOneDigit.source).test(value)
+        );
+        this.atLeastOneSpecialCharacter.set(
+          new RegExp(PASSWORD_REGEX.atLeastOneSpecialCharacter.source).test(value)
+        );
+
+        this.passwordStrength.set(
+          (this.validationList.filter((validation) => validation.isValid).length /
+          this.validationList.length) *
+          100
+        );
+      })
+    )
+  .subscribe();
   }
 
   public getErrorMessage(controlName: string) {
