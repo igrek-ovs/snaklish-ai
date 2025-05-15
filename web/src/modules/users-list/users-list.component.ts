@@ -2,18 +2,30 @@ import { Component, OnInit, signal } from '@angular/core';
 import { UserRoles } from '@core/enums/user-roles.enum';
 import { User } from '@core/models/user.model';
 import { UsersService } from '@core/services/users.service';
+import { provideIcons } from '@ng-icons/core';
 import { ChipColorsEnum } from '@shared/components/chip/chip.component';
-import { ColumnDef, ColumnType } from '@shared/components/table/header-def.model';
+import { ActionConfig, ColumnDef, ColumnType } from '@shared/components/table/header-def.model';
 import { TableComponent } from '@shared/components/table/table.component';
 import { tap } from 'rxjs';
+import { tablerUserOff } from '@ng-icons/tabler-icons';
 
 @Component({
   selector: 'app-users-list',
+  providers: [provideIcons({ tablerUserOff })],
   imports: [TableComponent],
   templateUrl: './users-list.component.html',
 })
 export class UsersListComponent implements OnInit {
   public users = signal<User[]>([]);
+
+  public usersActions: ActionConfig<User>[] = [
+    {
+      icon: 'tablerUserOff',
+      tooltip: 'Delete user',
+      eventName: 'Delete',
+      iconClass: 'icon-delete',
+    },
+  ];
 
   public readonly headers: ColumnDef<User>[] = [
     {
