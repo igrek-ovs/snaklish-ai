@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 // import {
 //   InitialsAvatarComponent,
@@ -6,6 +6,8 @@ import { RouterOutlet } from '@angular/router';
 //   TabNavigationItem,
 // } from '../../../../shared/components';
 import { CommonModule } from '@angular/common';
+import { UserService } from '@core/services';
+import { User } from '@core/models/user.model';
 
 @Component({
   selector: 'app-account-shell',
@@ -18,11 +20,18 @@ import { CommonModule } from '@angular/common';
   ],
   templateUrl: './acount-management.component.html',
 })
-export class AcountManagementComponent {
+export class AcountManagementComponent implements OnInit {
+  public user = signal<User | null>(null);
   // public tabs: TabNavigationItem[] = [
   //   { label: 'Profile', route: '/account/profile' },
   //   { label: 'Change Password', route: '/account/change-password' },
   // ];
 
-  constructor() {}
+  constructor(private readonly userService: UserService) {}
+
+  ngOnInit(): void {
+    this.userService.getUser().subscribe((user) => {
+      this.user.set(user);
+    });
+  }
 }

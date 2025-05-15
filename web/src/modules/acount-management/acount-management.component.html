@@ -1,4 +1,4 @@
-<!-- @if (user(); as user) { -->
+@if (user(); as user) {
 <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">
   <div
     class="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap"
@@ -6,7 +6,6 @@
     <div class="ml-4 mt-4">
       <div class="flex items-center">
         <div class="flex-shrink-0">
-          avatar
           <!-- <app-initials-avatar
                 [username]="user.userName"
                 [variant]="'xl'"
@@ -15,10 +14,9 @@
         </div>
         <div class="ml-4">
           <h3 class="text-base font-semibold leading-6 text-gray-900">
-            Mark Klepanchuk
-            <!-- {{ user.userName }} -->
+            {{ user.name }}
           </h3>
-          <p class="text-sm text-gray-500">{{ "test@gmail.com" }}</p>
+          <p class="text-sm text-gray-500">{{ user.email }}</p>
         </div>
       </div>
     </div>
@@ -69,10 +67,10 @@
 <div class="p-3">
   <router-outlet></router-outlet>
 </div>
-<!-- } -->
+}
 
 <div class="container">
-  <h1>Статическая страница</h1>
+  <!-- <h1>Статическая страница</h1>
   <p>
     Это пример статической страницы. Здесь можно разместить любой контент —
     текст, изображения, ссылки и т.д.
@@ -87,5 +85,5 @@
     Donec lacinia, erat eu suscipit porttitor, orci nisi tincidunt neque, at
     dictum nunc enim vitae ligula. Phasellus fringilla sem ac tellus vestibulum,
     sed pretium dui scelerisque.
-  </p>
+  </p> -->
 </div>
