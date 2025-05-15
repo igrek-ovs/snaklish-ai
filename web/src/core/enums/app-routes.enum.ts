@@ -5,4 +5,5 @@ export enum AppRoutes {
     UsersList = 'users-list',
     LearnWords = 'learn-words',
     Faq = 'faq',
+    ManageCategories = 'manage-categories',
 }

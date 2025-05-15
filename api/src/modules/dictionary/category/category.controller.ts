@@ -6,16 +6,21 @@ import {
   Param,
   Put,
   Delete,
-  ParseIntPipe, UseGuards,
+  ParseIntPipe,
+  UseGuards,
+  Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import {AuthGuard} from "@nestjs/passport";
-import {RolesGuard} from "../../auth/guards/roles.guard";
-import {Roles} from "../../auth/decorators/roles.decorator";
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { Roles } from '../../auth/decorators/roles.decorator';
+import { SearchCategoriesDto } from './dto/search-categories.dto';
 
 @ApiBearerAuth()
 @Controller('categories')
@@ -25,6 +30,15 @@ export class CategoryController {
   @Get()
   async findAll(): Promise<Category[]> {
     return this.categoryService.findAll();
+  }
+
+  @ApiOperation({ summary: 'Advanced search for categories' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin')
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  @Get('search')
+  async search(@Query() filters: SearchCategoriesDto): Promise<Category[]> {
+    return this.categoryService.advancedSearch(filters);
   }
 
   @Get(':id')

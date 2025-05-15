@@ -18,14 +18,25 @@ export class WordsService {
 
   constructor(private readonly http: HttpClient) {}
 
-  public getWords(pageNumber: number, pageSize: number = WORDS_PER_PAGE) {
-  const params  = new HttpParams()
-    .set('page', pageNumber)
-    .set('limit', pageSize)
+  public getAllWords() {
+    return this.http.get<Word[]>(this.apiUrl).pipe(
+      delay(500)
+    );
+  }
 
-    return this.http.get<PagedResponse<Word>>(this.apiUrl, { params }).pipe(
-      delay(500) //mock delay
-    ); 
+  public getWords(pageNumber?: number, pageSize?: number) {
+    let params = new HttpParams();
+
+    if (pageNumber != null) {
+      params = params.set('page', pageNumber.toString());
+    }
+    if (pageSize != null) {
+      params = params.set('limit', pageSize.toString());
+    }
+
+    return this.http
+      .get<PagedResponse<Word>>(this.apiUrl, { params })
+      .pipe(delay(500));
   }
 
   public addWord(req: AddWordRequest) {

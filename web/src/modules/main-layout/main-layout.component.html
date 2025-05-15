@@ -33,11 +33,11 @@
         </div>
       </div>
       <ul class="mt-10 space-y-2">
-        <li class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300">
+        <!-- <li class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300">
           <span *ngIf="userRole$ | async as role">
             Your role: {{ role }}
           </span>
-        </li>
+        </li> -->
         <li
           class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
           [routerLink]="AppRoutes.Overview"
@@ -105,6 +105,7 @@
         </li>
         <li
           class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
+          (click)="router.navigate(['/' + AppRoutes.ManageCategories])"
         >
           <div class="space-y-1">
             <p class="font-medium">

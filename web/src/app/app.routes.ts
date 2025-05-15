@@ -12,6 +12,7 @@ import { DictionaryWordComponent } from '@src/modules/dictionary-word/dictionary
 import { UsersListComponent } from '@src/modules/users-list/users-list.component';
 import { LearnWordsComponent } from '@src/modules/learn-words/learn-words.component';
 import { FaqComponent } from '@src/modules/faq/faq.component';
+import { ManageCategoriesComponent } from '@src/modules/manage-categories/manage-categories.component';
 
 export const routes: Routes = [
   ...authenticationRoutes,
@@ -27,6 +28,7 @@ export const routes: Routes = [
       { path: AppRoutes.Overview, component: OverviewComponent },
       { path: AppRoutes.UsersList, component: UsersListComponent },
       { path: AppRoutes.LearnWords, component: LearnWordsComponent },
+      { path: AppRoutes.ManageCategories, component: ManageCategoriesComponent },
     ],
     canActivate: [authGuard],
   },

@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { SearchCategoriesDto } from './dto/search-categories.dto';
 
 @Injectable()
 export class CategoryService {
@@ -105,6 +106,38 @@ export class CategoryService {
         error.stack,
       );
       throw new InternalServerErrorException('Failed to delete category');
+    }
+  }
+
+  async advancedSearch(filters: SearchCategoriesDto): Promise<Category[]> {
+    try {
+      const qb = this.categoryRepository.createQueryBuilder('category');
+
+      if (filters.id != null) {
+        qb.andWhere('category.id = :id', { id: filters.id });
+      }
+      if (filters.name) {
+        qb.andWhere('category.name LIKE :name', {
+          name: `%${filters.name}%`,
+        });
+      }
+      if (filters.description) {
+        qb.andWhere('category.description LIKE :description', {
+          description: `%${filters.description}%`,
+        });
+      }
+
+      const categories = await qb.getMany();
+      this.logger.log(`Search categories returned ${categories.length} items`);
+      return categories;
+    } catch (error) {
+      this.logger.error(
+        `Failed to perform category search: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException(
+        'Failed to perform category search',
+      );
     }
   }
 }
