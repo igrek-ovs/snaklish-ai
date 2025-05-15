@@ -8,6 +8,8 @@
         [data]="users()"
         [headers]="headers"
         [extraActions]="usersActions"
+        [isLoading]="isLoading()"
+        (action)="handleAction($event)"
     >
     </app-table>
 </div>

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '@core/models/user.model';
 import { environment } from '@src/enviroments/enviroment';
+import { delay } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,12 @@ export class UsersService {
   constructor(private readonly httpClient: HttpClient) {}
 
   public getUsers() {
-    return this.httpClient.get<User[]>(`${this.apiUrl}`);
+    return this.httpClient.get<User[]>(`${this.apiUrl}`).pipe(
+      delay(500)
+    );
+  }
+
+  public deleteUser(id: number) {
+    return this.httpClient.delete(`${this.apiUrl}/${id}`);
   }
 }
