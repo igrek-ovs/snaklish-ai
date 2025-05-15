@@ -1,15 +1,22 @@
-<div class="flex justify-center min-h-screen">
+<div class="relative flex justify-center min-h-screen">
+
+  <div class="absolute top-0 left-0 w-full h-12 border-b border-b-gray flex items-center justify-start px-4">
+    <div>
+      <span class="text-3xl font-bold text-gray-900">SNACKLISH</span>
+    </div>
+  </div>
+
+
   <div
     class="flex flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
   >
-    <div class="mx-auto w-full max-w-sm lg:w-96">
+    <div class="mx-auto w-full max-w-sm lg:w-96 space-y-10">
       <h2
-        class="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-900"
+        class="text-2xl font-bold leading-9 tracking-tight text-gray-900"
       >
         Create new account
       </h2>
 
-      <div class="mt-10">
         <div>
           <form
             class="space-y-8"
@@ -106,7 +113,12 @@
             </div>
           </form>
         </div>
-      </div>
+            <div class="w-full bg-gray-200 h-2 rounded overflow-hidden">
+              <div
+                [style.width]="progressbar() + '%'"
+                class="h-full transition-all !bg-blue-500"
+              ></div>
+            </div>
     </div>
   </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import {
   FormGroup,
@@ -22,11 +22,11 @@ import { confirmPasswordValidator } from '../../../../core/validators/confirm-pa
   selector: 'app-sign-up',
   imports: [ButtonComponent, FormsModule, ReactiveFormsModule, InputComponent],
   templateUrl: './sign-up.component.html',
-  styles: ``,
 })
-export class SignUpComponent {
+export class SignUpComponent implements OnInit {
   public form: FormGroup;
 
+  public progressbar = signal(0);
   public isLoading = signal(false);
 
   constructor(
@@ -47,8 +47,6 @@ export class SignUpComponent {
         Validators.maxLength(20),
         Validators.pattern(PASSWORD_REGEX.onlyLatin.source),
         Validators.pattern(PASSWORD_REGEX.atLeastOneDigit.source),
-        //TODO: add this regex when the backend is ready
-        //Validators.pattern(PASSWORD_REGEX.atLeastOneUppercase.source),
         Validators.pattern(PASSWORD_REGEX.atLeastOneLowercase.source),
         Validators.pattern(PASSWORD_REGEX.atLeastOneSpecialCharacter.source),
       ]),
@@ -57,6 +55,19 @@ export class SignUpComponent {
         confirmPasswordValidator('password', 'confirmPassword'),
       ]),
     });
+  }
+
+  ngOnInit(): void {
+    this.form.valueChanges.pipe(
+      tap(() => {
+        const totalFields = Object.keys(this.form.controls).length;
+        const validFields = Object.keys(this.form.controls).filter(
+          (key) => this.form.get(key)?.valid
+        ).length;
+
+        this.progressbar.set((validFields / totalFields) * 100);
+      }),
+    ).subscribe();
   }
 
   public getErrorMessage(controlName: string) {
