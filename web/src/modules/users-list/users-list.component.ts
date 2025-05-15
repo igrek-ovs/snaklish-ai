@@ -6,7 +6,7 @@ import { provideIcons } from '@ng-icons/core';
 import { ChipColorsEnum } from '@shared/components/chip/chip.component';
 import { ActionConfig, ActionFiredEvent, ColumnDef, ColumnType } from '@shared/components/table/header-def.model';
 import { TableComponent } from '@shared/components/table/table.component';
-import { finalize, tap } from 'rxjs';
+import { filter, finalize, switchMap, tap } from 'rxjs';
 import { tablerUserOff } from '@ng-icons/tabler-icons';
 import { Dialog } from '@angular/cdk/dialog';
 import { ConfirmationModalComponent } from '@shared/components/confirmation-modal/confirmation-modal.component';
@@ -74,8 +74,26 @@ export class UsersListComponent implements OnInit {
 
     if (action === 'Delete') {
       const dialogRef = this.dialog.open(ConfirmationModalComponent);
-
-      dialogRef.closed.pipe().subscribe();
+      
+      dialogRef.closed.pipe(
+        filter((response) => !!response),
+        tap(() => this.isLoading.set(true)),
+        switchMap(() =>
+          this.usersService.deleteUser(event.item.id).pipe(
+            this.hotToastService.observe({
+              loading:   'Deleting user…',
+              success: 'User deleted successfully',
+              error: 'Error deleting user',
+            }),
+            tap(() => {
+              this.usersService.getUsers().subscribe(users => {
+                this.users.set(users);
+              });
+            }),
+            finalize(() => this.isLoading.set(false)),
+          )
+        ),
+      ).subscribe();
     }
   }
 }

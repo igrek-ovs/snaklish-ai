@@ -18,7 +18,7 @@ export class UsersService {
     );
   }
 
-  public deleteUser(id: number) {
+  public deleteUser(id: string) {
     return this.httpClient.delete(`${this.apiUrl}/${id}`);
   }
 }
