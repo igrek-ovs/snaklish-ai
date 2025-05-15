@@ -58,6 +58,8 @@ export class DictionaryListComponent implements OnInit {
   public totalItems = signal<number>(0);
   public totalPages = computed(() => Math.ceil(this.totalItems() / WORDS_PER_PAGE));
 
+  public categoryCount = computed(() => this.categories().length);
+
   public form: FormGroup;
 
   public userRole$: Observable<string | null>;
@@ -70,6 +72,18 @@ export class DictionaryListComponent implements OnInit {
         displayName: c.name.charAt(0).toUpperCase() + c.name.slice(1),
         value: c.id,
       }))
+    ];
+  }
+
+  public get levelOptions() {
+    return [
+      { displayName: 'All', value: null },
+      { displayName: 'A1', value: 'A1' },
+      { displayName: 'A2', value: 'A2' },
+      { displayName: 'B1', value: 'B1' },
+      { displayName: 'B2', value: 'B2' },
+      { displayName: 'C1', value: 'C1' },
+      { displayName: 'C2', value: 'C2' },
     ];
   }
 
@@ -139,7 +153,7 @@ export class DictionaryListComponent implements OnInit {
   }
 
   public get isAnyFilterApplied() {
-    return this.form.controls['searchBy'].value !== WordSearchBy.WORD || this.form.controls['search'].value.trim() || this.form.controls['category'].value;
+    return this.form.controls['searchBy'].value !== WordSearchBy.WORD || this.form.controls['search'].value.trim() || this.form.controls['category'].value || this.form.controls['level'].value;
   }
 
   constructor(private readonly wordsService: WordsService, 
@@ -154,6 +168,7 @@ export class DictionaryListComponent implements OnInit {
       search: this.fb.control<string>(''),
       searchBy: this.fb.control<WordSearchBy>(WordSearchBy.WORD),
       category: this.fb.control<number | null>(null),
+      level: this.fb.control<string | null>(null),
     });
 
     this.addNewWord = this.addNewWord.bind(this);
@@ -185,6 +200,10 @@ export class DictionaryListComponent implements OnInit {
       if (category !== null) {
         const c = this.categories().find(c => c.id === category)!;
         req.category = c.name;
+      }
+
+      if (this.form.controls['level'].value) {
+        req.level = this.form.controls['level'].value;
       }
 
       return this.wordsService.searchWord(req).pipe(
@@ -349,6 +368,7 @@ export class DictionaryListComponent implements OnInit {
       search: '',
       searchBy: WordSearchBy.WORD,
       category: null,
+      level: null,
     });
   }
 

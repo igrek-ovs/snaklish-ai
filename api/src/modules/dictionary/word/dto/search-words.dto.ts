@@ -44,6 +44,14 @@ export class SearchWordsDto {
   category?: string;
 
   @ApiPropertyOptional({
+    description: 'Level of the word',
+    example: 'A1',
+  })
+  @IsOptional()
+  @IsString()
+  level?: string;
+
+  @ApiPropertyOptional({
     description: 'Page number',
     example: 1,
   })

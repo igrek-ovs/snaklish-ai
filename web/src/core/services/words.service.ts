@@ -60,6 +60,9 @@ export class WordsService {
     if (req.category) {
       params = params.set('category', req.category);
     }
+    if (req.level) {
+      params = params.set('level', req.level);
+    }
   
     return this.http
       .get<PagedResponse<Word>>(`${this.apiUrl}/search`, { params });

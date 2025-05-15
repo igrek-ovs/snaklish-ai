@@ -226,11 +226,12 @@ export class WordService {
           category: `%${filters.category}%`,
         });
       }
+      if (filters.level) {
+        qb.andWhere('word.level = :level', { level: filters.level });
+      }
 
-      // Сначала общее количество
       const total = await qb.getCount();
 
-      // Затем применяем пагинацию
       const items = await qb
         .skip((pageNumber - 1) * pageSize)
         .take(pageSize)

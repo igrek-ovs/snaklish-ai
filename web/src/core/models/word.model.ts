@@ -88,6 +88,7 @@ export interface WordSearchRequest {
   category?: string;
   pageNumber: number;
   pageSize: number;
+  level?: string;
 }
 
 export interface WordSearchResponse {
