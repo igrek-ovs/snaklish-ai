@@ -27,50 +27,41 @@ export class UserWordService {
 
   async addWordToUser(userId: string, dto: AddUserWordDto): Promise<UserWord> {
     try {
-      const user = await this.userRepository.findOne({ where: { id: userId } });
-      if (!user) {
-        this.logger.warn(`User with ID ${userId} not found`);
-        throw new NotFoundException(`User with ID ${userId} not found`);
-      }
-
-      const translation = await this.translationRepository.findOne({
-        where: { id: dto.translationId },
-        relations: ['word'],
+      const translation = await this.translationRepository.findOneBy({
+        id: dto.translationId,
       });
       if (!translation) {
-        this.logger.warn(`Translation with ID ${dto.translationId} not found`);
         throw new NotFoundException(
           `Translation with ID ${dto.translationId} not found`,
         );
       }
 
       let userWord = await this.userWordRepository.findOne({
-        where: { user, translation },
+        where: {
+          user: { id: userId },
+          translation: { id: dto.translationId },
+        },
       });
 
       if (!userWord) {
+        // 3) И здесь тоже userWordRepository
         userWord = this.userWordRepository.create({
-          user,
-          translation,
+          user: { id: userId } as any,
+          translation: { id: dto.translationId } as any,
           isLearnt: dto.isLearnt,
         });
-        await this.userWordRepository.save(userWord);
+        userWord = await this.userWordRepository.save(userWord);
         this.logger.log(
           `Added new word to user: userId=${userId}, translationId=${dto.translationId}`,
-        );
-      } else {
-        this.logger.log(
-          `Word already exists for user: userId=${userId}, translationId=${dto.translationId}`,
         );
       }
 
       return userWord;
-    } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-
+    } catch (err) {
+      if (err instanceof NotFoundException) throw err;
       this.logger.error(
-        `Failed to add word to userId=${userId}: ${error.message}`,
-        error.stack,
+        `Failed to add word to userId=${userId}: ${err.message}`,
+        err.stack,
       );
       throw new InternalServerErrorException('Failed to add word to user');
     }
