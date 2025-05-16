@@ -15,9 +15,13 @@ import { AuthenticationService } from '../core/services/authentication.service';
 import { localeInterceptor } from '@core/locale.interceptor';
 import { importProvidersFrom } from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { BrowserModule } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    importProvidersFrom(BrowserModule),
+    provideAnimations(), 
     importProvidersFrom(OverlayModule),
     {
       provide: APP_INITIALIZER,

@@ -1,4 +1,9 @@
-<div role="status" class="py-1">
+<div role="status" class="py-1"
+    [attr.class]="{
+      'size-48': size() === 'small',
+      'size-96': size() === 'large',
+    }"
+  >
     <svg
       aria-hidden="true"
       class="w-6 h-6 text-gray-200 animate-spin fill-primary-main"

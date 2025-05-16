@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-spinner',
@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   templateUrl: './spinner.component.html',
 })
 export class SpinnerComponent {
-
+  public size = input<string>('small');
 }

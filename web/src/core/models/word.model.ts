@@ -17,7 +17,7 @@ export interface Word {
   word: string;
   transcription: string;
   examples: string;
-  img: string | null;
+  img: any | null;
   translations: Translation[];
   categoryId: number;
   category: Category;
@@ -116,4 +116,10 @@ export interface SetWordImageResponse {
   img: string | null;
   translations: Translation[];
   categoryId: number;
+}
+
+export interface UserWord {
+  id: number;
+  isLearnt: boolean;
+  translation: Translation;
 }

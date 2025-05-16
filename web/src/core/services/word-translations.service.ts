@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AddWordTranslationRequest, EditWordTranslationRequest, WordTranslation } from '@core/models/word-translation.model';
 import { environment } from '@src/enviroments/enviroment';
-import { map, tap } from 'rxjs';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class WordTranslationsService {
   constructor(private readonly http: HttpClient) { }
 
   public getTranslations() {
-    return this.http.get<WordTranslation[]>(this.apiUrl).pipe(tap(console.log));
+    return this.http.get<WordTranslation[]>(this.apiUrl);
   }
 
   public getTranslationById(id: number) {

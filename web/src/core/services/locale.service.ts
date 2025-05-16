@@ -92,4 +92,16 @@ export class LocaleService {
   public changeLocale(localeCode: string) {
     this.locale$.next(localeCode);
   }
+
+  public convertLocaleToBackend(localeCode: string): WordLanguage {
+    if (localeCode === 'fr') {
+      return WordLanguage.FRENCH;
+    } else if (localeCode === 'de') {
+      return WordLanguage.GERMAN;
+    } else if (localeCode === 'uk') {
+      return WordLanguage.UKRAINIAN;
+    }
+
+    return WordLanguage.ENGLISH;
+  }
 }

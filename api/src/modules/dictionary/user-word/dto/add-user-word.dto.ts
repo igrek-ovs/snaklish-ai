@@ -1,9 +1,11 @@
-import { IsNotEmpty, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsInt, IsBoolean } from 'class-validator';
 
 export class AddUserWordDto {
-  @ApiProperty({ example: 123, description: 'ID слова' })
-  @IsNotEmpty()
+  @ApiProperty({ example: 123, description: 'ID перевода слова' })
+  @Type(() => Number)
+  @IsInt({ message: 'translationId must be an integer' })
   translationId: number;
 
   @ApiProperty({
@@ -11,6 +13,7 @@ export class AddUserWordDto {
     description: 'Пометить слово как изученное',
     default: false,
   })
-  @IsBoolean()
+  @Type(() => Boolean)
+  @IsBoolean({ message: 'isLearnt must be a boolean' })
   isLearnt: boolean;
 }
