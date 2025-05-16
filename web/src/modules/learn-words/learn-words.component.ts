@@ -78,16 +78,29 @@ export class LearnWordsComponent implements OnInit {
         this.allWords.set(words);
       }),
       tap((words) => {
-        this.chosenWord.set(words[Math.floor(Math.random() * words.length)]);
+        const lastWordId = localStorage.getItem('lastWord');
+
+        if (lastWordId) {
+          const lastWord = words.find(w => w.id === +lastWordId);
+          if (lastWord) {
+            this.chosenWord.set(lastWord);
+            this.cardState.set('default');
+            this.isTranslationShown.set(false);
+            return;
+          }
+        } else {
+          const randWord = words[Math.floor(Math.random() * words.length)];
+          this.chosenWord.set(randWord);
+        }
       }),
     ).subscribe();
 
-    // this.userWordsService.getUnlearnedUserWords().pipe(
-    //   tap((words) => {
-    //     this.unlearnedWords.set(words);
-    //     console.log(words)
-    //   })
-    // ).subscribe();
+    this.userWordsService.getUnlearnedUserWords().pipe(
+      tap((words) => {
+        this.unlearnedWords.set(words);
+        console.log(words)
+      })
+    ).subscribe();
   }
 
   public skipWord() {
@@ -96,6 +109,7 @@ export class LearnWordsComponent implements OnInit {
     setTimeout(() => {
       const randWord = this.allWords().at(Math.floor(Math.random() * this.allWords().length));
       this.chosenWord.set(randWord);
+      localStorage.setItem('lastWord', String(randWord!.id));
       this.cardState.set('default');
 
       this.isTranslationShown.set(false);
