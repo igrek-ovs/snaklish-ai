@@ -3,7 +3,19 @@
     @if (chosenWord()) {
         <div class="relative size-full bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <div class="m-5 space-y-4">
-                <span class="text-gray-500 dark:text-gray-400">{{ chosenWord()?.category?.name }}</span>
+                <div class="flex flex-col gap-y-1.5">
+                    <span class="flex gap-x-2 items-center">
+                        <div class="size-3 bg-new" 
+                            [ngClass]="{
+                                'bg-new': wordStatus() === 'new',
+                                'bg-unlearned': wordStatus() === 'unlearned',
+                                'bg-learned': wordStatus() === 'learned',
+                            }"
+                        ></div>
+                        <p>{{ processName(wordStatus()) }}</p>
+                    </span>
+                    <span class="text-gray-500 dark:text-gray-400">{{ chosenWord()?.category?.name }}</span>
+                </div>
                 <div class="size-28">
                     @if(getImgSrc()) {
                         <img [src]="getImgSrc()" alt="Word image" class="rounded-t-lg" />
@@ -47,6 +59,7 @@
                 }
                 <div class="w-full mx-auto absolute bottom-6 flex justify-center gap-x-16">
                     <app-button
+                        (click)="learnWord()"
                         color="text"
                     >
                         I have memorized this word

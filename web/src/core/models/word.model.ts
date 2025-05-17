@@ -121,5 +121,5 @@ export interface SetWordImageResponse {
 export interface UserWord {
   id: number;
   isLearnt: boolean;
-  translation: Translation;
+  translation: any;
 }

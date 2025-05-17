@@ -19,6 +19,7 @@ interface SignUp {
 }
 
 export const TOKEN_DATA = 'tokenData';
+export const LAST_WORD = 'lastWord';
 
 @Injectable({
   providedIn: 'root',

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../enviroments/enviroment';
 import { HttpClient } from '@angular/common/http';
-import { TOKEN_DATA } from './authentication.service';
+import { LAST_WORD, TOKEN_DATA } from './authentication.service';
 import { BehaviorSubject, tap } from 'rxjs';
 import { User } from '@core/models/user.model';
 
@@ -37,6 +37,7 @@ export class UserService {
 
   public signOut() {
     localStorage.removeItem(TOKEN_DATA);
+    localStorage.removeItem(LAST_WORD);
     this.user$.next(null);
     this.userRole$.next(null);
   }

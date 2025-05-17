@@ -29,6 +29,15 @@ module.exports = {
           DEFAULT: '#9ca3af',
           hovered: '#6b7280',
         },
+        unlearned: {
+          DEFAULT: '#de7a98',
+        },
+        learned: {
+          DEFAULT: '#4ade80',
+        },
+        new: {
+          DEFAULT: '#d1d1d1',
+        },
       },
       spacing: {
         9: '2.25rem',

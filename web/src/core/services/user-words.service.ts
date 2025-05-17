@@ -19,7 +19,7 @@ export class UserWordsService {
     return this.http.get<UserWord[]>(`${this.apiUrl}/learned`);
   }
 
-  public learnWord(wordId: number) {
-    return this.http.post(`${this.apiUrl}/learn`, { wordId });
+  public learnWord(req: { translationId: number, isLearnt: boolean }) {
+    return this.http.post(`${this.apiUrl}`, req);
   }
 }
