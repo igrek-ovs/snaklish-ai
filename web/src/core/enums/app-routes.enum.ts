@@ -1,4 +1,5 @@
 export enum AppRoutes {
+    Home = 'home',
     Overview = 'overview',
     SignIn = 'sign-in',
     DictionaryList = 'dictionary-list',

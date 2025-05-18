@@ -13,6 +13,7 @@ import { UsersListComponent } from '@src/modules/users-list/users-list.component
 import { LearnWordsComponent } from '@src/modules/learn-words/learn-words.component';
 import { FaqComponent } from '@src/modules/faq/faq.component';
 import { ManageCategoriesComponent } from '@src/modules/manage-categories/manage-categories.component';
+import { HomeComponent } from '@src/modules/home/home.component';
 
 export const routes: Routes = [
   ...authenticationRoutes,
@@ -20,6 +21,9 @@ export const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
+      { path: '', redirectTo: AppRoutes.Home, pathMatch: 'full' },
+      { path: 'AppRoutes', component: HomeComponent },
+      { path: AppRoutes.Home, component: HomeComponent },
       { path: AppRoutes.Faq, pathMatch: 'full', component: FaqComponent },
       { path: AppRoutes.DictionaryList, component: DictionaryListComponent },
       { path: AppRoutes.DictionaryList + '/:id', component: DictionaryWordComponent },

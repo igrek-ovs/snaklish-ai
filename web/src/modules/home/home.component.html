@@ -1,0 +1,120 @@
+<header class="flex items-center justify-start p-4 ml-4">
+  <div class="flex items-center space-x-4">
+    <!-- <img [src]="logoDesktopUrl()" alt="Logo" class="h-8 w-auto" /> -->
+  </div>
+  <div class="flex items-center space-x-6">
+    <div class="text-lg font-semibold text-gray-700">
+      {{ "Welcome to the account" | appTranslate | async }}, {{ (user$ | async)?.name }}!
+    </div>
+  </div>
+</header>
+
+<section class="bg-white m-8">
+  <div>
+    <div class="grid grid-cols-2 divide-x">
+      <button
+        class="py-8 tablet:pt-16 cursor-pointer"
+      >
+        <div class="flex flex-col items-center">
+          <app-svg name="globe" size="w-6 h-6"></app-svg>
+          <h3
+            class="text-mobileMd tablet:text-tabletMd text-center mb-3 text-secondaryText desktop:text-desktopMd font-normal"
+          >
+            {{ 'components.usageChart.internet'  }}
+          </h3>
+          <strong
+            class="text-mobileH2 tablet:text-tabletH2 font-headline text-center desktop:text-desktopH2 font-normal"
+          >
+            <!-- {{ usageChart().megabytesUsed }} MB -->
+          </strong>
+          <div
+            class="text-mobileMd tablet:text-tabletMd desktop:font-semibold text-center mb-3 desktop:text-desktopMd tablet:font-semibold font-semibold"
+          >
+            {{ 'shared.left'  }}
+          </div>
+        </div>
+
+        <div class="h-2 rounded-full bg-neutral-100 mx-3 mb-3 desktop:mx-6">
+          <div
+            class="rounded-full bg-gradient-to-r from-redGradientLeft to-redGradientRight h-full"
+            [style.width.%]="60"
+          ></div>
+        </div>
+
+        <div class="text-center font-extrabold font-headline text-[#949494]">
+          {{ 'shared.of'  }}
+          <!-- {{ usageChart().megabytesTotal }} MB -->
+        </div>
+      </button>
+
+      <button
+        class="py-8 tablet:pt-16 cursor-pointer"
+      >
+        <div class="flex flex-col items-center">
+          <app-svg name="phone" size="w-6 h-6"></app-svg>
+          <h3
+            class="text-mobileMd tablet:text-tabletMd text-center mb-3 text-secondaryText desktop:text-desktopMd font-normal"
+          >
+            {{ 'components.usageChart.callSms'  }}
+          </h3>
+          <strong
+            class="text-mobileH2 tablet:text-tabletH2 font-headline text-center desktop:text-desktopH2"
+          >
+            <!-- {{ usageChart().minutesUsed }} min -->
+          </strong>
+          <div
+            class="text-mobileMd tablet:text-tabletMd font-semibold desktop:font-semibold text-center mb-3 desktop:text-desktopMd tablet:font-semibold"
+          >
+            {{ 'shared.left'  }}
+          </div>
+        </div>
+
+        <div class="h-2 rounded-full bg-neutral-100 mx-3 mb-3 desktop:mx-6">
+          <div
+            class="rounded-full bg-gradient-to-r from-redGradientLeft to-redGradientRight h-full"
+            [style.width.%]="40"
+          ></div>
+        </div>
+        <div
+          class="text-center font-extrabold font-headline text-[#949494]"
+        >
+          {{ 'shared.of'  }}
+          <!-- {{ usageChart().minutesTotal }} min -->
+        </div>
+      </button>
+    </div>
+    <div class="grid grid-cols-2 divide-x border-t border-t-[#f3ebeb]">
+      <button
+        class="py-[34px] flex flex-col items-center desktop:py-[38px] cursor-pointer"
+      >
+        <app-svg name="calendar" size="w-6 h-6"></app-svg>
+        <h3
+          class="text-mobileMd tablet:text-tabletMd mb-4 text-secondaryText desktop:text-desktopMd tablet:mb-5 desktop:mb-6 font-normal"
+        >
+          {{ 'components.usageChart.untilCredit'  }}
+        </h3>
+        <strong
+          class="text-center text-mobileH2 tablet:text-tabletH2 font-headline desktop:text-desktopH2"
+        >
+          <!-- {{ usageChart().untilNewCredit }} -->
+          {{ 'components.usageChart.days'  }}
+        </strong>
+      </button>
+      <button
+        class="py-[34px] flex flex-col items-center cursor-pointer"
+      >
+        <app-svg name="euro" size="w-6 h-6"></app-svg>
+        <h3
+          class="text-mobileMd tablet:text-tabletMd mb-4 text-secondaryText desktop:text-desktopMd tablet:mb-5 desktop:mb-6 font-normal"
+        >
+          {{ 'components.usageChart.extraCosts' }}
+        </h3>
+        <strong
+          class="text-center text-mobileH2 tablet:text-tabletH2 font-headline desktop:text-desktopH2"
+        >
+          {{ 'points' }}
+        </strong>
+      </button>
+    </div>
+  </div>
+</section>
