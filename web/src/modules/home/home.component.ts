@@ -45,6 +45,13 @@ export class HomeComponent implements OnInit {
     return categories.length;
   });
 
+  public newWordsCount = computed(() => {
+    const total = this.totalWordsCount();
+    const learned = this.learnedWordsCount();
+    const unlearned = this.unlearnedWordsCount();
+    return total - learned - unlearned;
+  });
+
   public user$: Observable<User | null>;
 
   public Array = Array;

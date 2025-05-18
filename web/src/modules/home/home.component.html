@@ -125,16 +125,16 @@
         </div>
         <div>
           <apx-chart
-            [series]="[{ name:'Words', data:[unlearnedWordsCount(), learnedWordsCount(), totalWordsCount()] }]"
+            [series]="[{ name:'Words', data:[unlearnedWordsCount(), learnedWordsCount(), newWordsCount()] }]"
             [chart]="{ type:'bar', height:200 }"
-            [xaxis]="{ categories:['Unlearned', 'Learned', 'Total'] }"
+            [xaxis]="{ categories:['Unlearned', 'Learned', 'New'] }"
             [plotOptions]="{ 
               bar: { 
                 distributed: true,
                 columnWidth: '50%' 
               } 
             }"
-            [fill]="{ colors: ['#de7a98', '#4ade80', '#a1a1aa'] }"
+            [fill]="{ colors: ['#de7a98', '#4ade80', '#d1d1d1'] }"
           ></apx-chart>
         </div>
         <div>
@@ -142,7 +142,7 @@
           <div class="w-full h-1 mt-1 rounded-full overflow-hidden flex bg-gray-200">
             <div class="bg-unlearned h-full" style="width:35%"></div>
             <div class="bg-learned h-full" style="width:45%"></div>
-            <div class="bg-gray h-full flex-1"></div>
+            <div class="bg-new h-full flex-1"></div>
           </div>
           <p class="mt-1 text-[10px] text-gray-500">Keep learning words to gain success</p>
         </div>
