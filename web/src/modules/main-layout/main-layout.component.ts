@@ -67,10 +67,13 @@ export class MainLayoutComponent implements OnInit {
     const isDailyDone = +(dailyWordsCount ?? 0) <= +(currLearnedDailyWords ?? 0);
 
     if (dailyWordsCount === null || isDailyDone) {
+      localStorage.removeItem(DAILY_WORDS_LOCAL_STORAGE_KEY);
+      localStorage.removeItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY);
+
       const dialogRef = this.dialog.open(DailyWordsModalComponent, {
         data: {
           title: 'Daily Words Duty',
-          message: 'Choose how much words you want to learn today',
+          message: 'How many new words do you want to learn per day?',
         }
       });
 

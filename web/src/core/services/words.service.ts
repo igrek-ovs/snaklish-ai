@@ -19,7 +19,7 @@ export class WordsService {
   constructor(private readonly http: HttpClient) {}
 
   public getAllWords() {
-    return this.http.get<Word[]>(this.apiUrl).pipe(
+    return this.http.get<PagedResponse<Word>>(this.apiUrl).pipe(
       delay(500)
     );
   }

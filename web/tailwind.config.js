@@ -38,6 +38,9 @@ module.exports = {
         new: {
           DEFAULT: '#d1d1d1',
         },
+        total: {
+          DEFAULT: '#a1a1aa',
+        },
       },
       spacing: {
         9: '2.25rem',

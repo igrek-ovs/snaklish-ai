@@ -23,7 +23,7 @@
         <p> {{ data.message }} </p>
         <div class="flex justify-center gap-x-3 w-full">
             @for(w of wordsWork; track $index) {
-                <app-button (click)="setWords(w)" color="text">{{ w }}</app-button>
+                <app-button class="ring-1 ring-blue-600 rounded-lg" (click)="setWords(w)" color="text">{{ w }}</app-button>
             }
         </div>
       </div>

@@ -17,12 +17,14 @@ import { importProvidersFrom } from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     importProvidersFrom(BrowserModule),
     provideAnimations(), 
     importProvidersFrom(OverlayModule),
+    importProvidersFrom(NgApexchartsModule),
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
