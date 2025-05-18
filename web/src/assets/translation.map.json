@@ -27,6 +27,22 @@
     "dictionaryList": {
       "addNewWordButton": "Add new word",
       "addNewCategoryButton": "Add new category"
+    },
+    "dashboard": {
+      "dictionaryCapacity": "Dictionary capacity",
+      "categories": "Categories",
+      "words": "Words",
+      "learned": "Learned",
+      "learnedToday": "Learned today",
+      "learnedWords": "Learned words",
+      "unlearnedWords": "Unlearned words",
+      "inTheDictionary": "in the dictionary",
+      "statistics": "Statistics",
+      "progress": "Progress",
+      "clickToGoToCategories": "Click to go to categories",
+      "types": "Types",
+      "keepLearningWords": "Keep learning words to gain success", 
+      "wordsLearned": "Words learned"
     }
   },
   "shared": {
@@ -42,6 +58,9 @@
     "getStartedByCreatingNewEntry": "Get started by creating a new entry",
     "newEntry": "New entry",
     "searchBy": "Search by",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "welcomeBack": "Welcome back"
   }
 }
