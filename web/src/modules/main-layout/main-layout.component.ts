@@ -19,6 +19,9 @@ import { SvgComponent } from '@shared/components/svg/svg.component';
 import { Observable } from 'rxjs';
 import { UserRoles } from '@core/enums/user-roles.enum';
 import { environment } from '@src/enviroments/enviroment';
+import { Dialog } from '@angular/cdk/dialog';
+import { DailyWordsModalComponent } from '@shared/components/daily-words-modal/daily-words-modal.component';
+import { CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY, DAILY_WORDS_LOCAL_STORAGE_KEY } from '@core/constants/local-storage.constants';
 
 @Component({
   selector: 'app-main-layout',
@@ -46,6 +49,7 @@ export class MainLayoutComponent implements OnInit {
     private readonly localeService: LocaleService, 
     private readonly cmsService: CmsService,
     private readonly userService: UserService,
+    private readonly dialog: Dialog,
   ) {
     this.userRole$ = this.userService.userRole$;
     this.userRole$.subscribe((role) => {
@@ -58,6 +62,21 @@ export class MainLayoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const dailyWordsCount = localStorage.getItem(DAILY_WORDS_LOCAL_STORAGE_KEY);
+    const currLearnedDailyWords = localStorage.getItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY);
+    const isDailyDone = +(dailyWordsCount ?? 0) <= +(currLearnedDailyWords ?? 0);
+
+    if (dailyWordsCount === null || isDailyDone) {
+      const dialogRef = this.dialog.open(DailyWordsModalComponent, {
+        data: {
+          title: 'Daily Words Duty',
+          message: 'Choose how much words you want to learn today',
+        }
+      });
+
+      dialogRef.closed.pipe().subscribe();
+    }
+
     this.router.events.pipe(
       distinctUntilChanged(),
       map((params: any) => params['locale']),

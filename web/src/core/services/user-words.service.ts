@@ -22,4 +22,12 @@ export class UserWordsService {
   public learnWord(req: { translationId: number, isLearnt: boolean }) {
     return this.http.post(`${this.apiUrl}`, req);
   }
+
+  public memorizeWord(translationId: number) {
+    return this.http.patch(`${this.apiUrl}/${translationId}`, { isLearnt: true });
+  }
+
+  public unmemorizeWord(translationId: number) {
+    return this.http.patch(`${this.apiUrl}/${translationId}`, { isLearnt: false });
+  }
 }

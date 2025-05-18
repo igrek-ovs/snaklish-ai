@@ -1,22 +1,46 @@
-<div class="bg-white mx-6 mt-6 h-[80%] rounded-lg shadow-md" [@cardFall]="cardState()">
+<div class="flex flex-col ml-8">
+    <span class="text-gray translate-y-4">{{ currentlyLearnedWords() || 0 }} new words learned</span>
+    <div
+        *ngIf="dailyLearnedWordsCount() > 0"
+        class="w-2/3 h-8 flex space-x-3 items-end"
+    >
+        <div
+            *ngFor="let _ of progressLines(); let i = index"
+            class="flex-1 h-1 rounded-lg transition-colors duration-200"
+            [class.bg-unlearned]="i < currentlyLearnedWords()"
+            [class.bg-gray]="i >= currentlyLearnedWords()"
+        ></div>
+    </div>
+</div>
 
+<div class="bg-white mx-6 mt-6 h-[80%] rounded-lg shadow-md" [@cardFall]="cardState()">
     @if (chosenWord()) {
         <div class="relative size-full bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <div class="m-5 space-y-4">
-                <div class="flex flex-col gap-y-1.5">
-                    <span class="flex gap-x-2 items-center">
-                        <div class="size-3 bg-new" 
-                            [ngClass]="{
-                                'bg-new': wordStatus() === 'new',
-                                'bg-unlearned': wordStatus() === 'unlearned',
-                                'bg-learned': wordStatus() === 'learned',
-                            }"
-                        ></div>
-                        <p>{{ processName(wordStatus()) }}</p>
-                    </span>
-                    <span class="text-gray-500 dark:text-gray-400">{{ chosenWord()?.category?.name }}</span>
+                <div class="flex w-full justify-between">
+                    <div class="flex flex-col gap-y-1.5">
+                        <span class="flex gap-x-2 items-center">
+                            <div class="size-3 bg-new" 
+                                [ngClass]="{
+                                    'bg-new': wordStatus() === 'new',
+                                    'bg-unlearned': wordStatus() === 'unlearned',
+                                    'bg-learned': wordStatus() === 'learned',
+                                }"
+                            ></div>
+                            <p>{{ processName(wordStatus()) }}</p>
+                        </span>
+                        <span class="text-gray-500 dark:text-gray-400">{{ chosenWord()?.category?.name }}</span>
+                    </div>
+                    <div>
+                        <button (click)="openCardTools()" title="Tools">
+                            <ng-icon
+                                name="tablerDotsCircleHorizontal"
+                                class="mt-1.5 text-gray-400 text-3xl hover:text-gray-500"
+                            ></ng-icon>
+                        </button>
+                    </div>
                 </div>
-                <div class="size-28">
+                <div class="size-36">
                     @if(getImgSrc()) {
                         <img [src]="getImgSrc()" alt="Word image" class="rounded-t-lg" />
                     } @else {
@@ -30,16 +54,18 @@
             </div>
             <div class="p-5">
                 <div>
-                    <h5 class="my-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        {{ chosenWord()?.word }}
-                    </h5>
+                    <div>
+                        <h5 class="my-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                            {{ chosenWord()?.word }}
+                        </h5>
+                    </div>
+                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                        {{ chosenWord()?.transcription }}
+                    </p>
                 </div>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                    {{ chosenWord()?.transcription }}
-                </p>
                 @if (!isTranslationShown()) {
                     <div 
-                        class="w-full h-56 flex justify-center items-center"
+                        class="w-full max-h-56 flex justify-center items-center"
                         [ngClass]="{
                             hidden: chosenWord() === undefined,
                         }"
@@ -62,7 +88,7 @@
                         (click)="learnWord()"
                         color="text"
                     >
-                        I have memorized this word
+                        {{ wordStatus() === 'learned' ? 'Mastered this word' : 'I have memorized this word' }}
                     </app-button>
                     <ng-icon 
                         name="tablerMenu2"

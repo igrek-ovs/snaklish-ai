@@ -201,7 +201,7 @@ export class SignInComponent implements OnInit {
             localStorage.setItem(TOKEN_DATA, JSON.stringify(response));
           }
 
-          this.router.navigate(['/dictionary-list']);
+          this.router.navigate(['/']);
         }),
         catchError(() => {
           this.form.get('password')?.setErrors({ invalidCredentials: true });

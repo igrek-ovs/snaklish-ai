@@ -1,21 +1,25 @@
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@angular/core';
 import { UserWord, Word } from '@core/models';
 import { LAST_WORD, LocaleService, WordsService } from '@core/services';
 import { UserWordsService } from '@core/services/user-words.service';
-import { forkJoin, map, tap } from 'rxjs';
+import { filter, forkJoin, map, switchMap, tap } from 'rxjs';
 import { ButtonComponent } from "../../shared/components/button/button.component";
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { tablerMenu2 } from '@ng-icons/tabler-icons';
+import { tablerMenu2, tablerDotsCircleHorizontal } from '@ng-icons/tabler-icons';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { SvgComponent } from "../../shared/components/svg/svg.component";
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { SpinnerComponent } from "../../shared/components/spinner/spinner.component";
+import { HotToastService } from '@ngxpert/hot-toast';
+import { CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY, DAILY_WORDS_LOCAL_STORAGE_KEY } from '@core/constants/local-storage.constants';
+import { Dialog } from '@angular/cdk/dialog';
+import { CardToolsModalComponent } from '@shared/components/card-tools-modal/card-tools-modal.component';
 
 @Component({
   selector: 'app-learn-words',
-  imports: [ButtonComponent, NgIcon, SvgComponent, CommonModule, SpinnerComponent],
+  imports: [ButtonComponent, NgIcon, SvgComponent, CommonModule, SpinnerComponent, NgIf, NgFor],
   providers: [
-    provideIcons({ tablerMenu2 }),
+    provideIcons({ tablerMenu2, tablerDotsCircleHorizontal }),
   ],
   templateUrl: './learn-words.component.html',
   animations: [
@@ -36,7 +40,8 @@ import { SpinnerComponent } from "../../shared/components/spinner/spinner.compon
         ]))
       ]),
     ])
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LearnWordsComponent implements OnInit {
   public allWords = signal<Word[]>([]);
@@ -44,8 +49,15 @@ export class LearnWordsComponent implements OnInit {
   public learnedWords = signal<UserWord[]>([]);
 
   public chosenWord = signal<Word | undefined>(undefined);
+  public isChosenWordMemorized = signal<boolean>(false);
   public isTranslationShown = signal<boolean>(false);
   public localeCode = signal<string>('en');
+
+  public dailyLearnedWordsCount = signal<number>(0);
+  public currentlyLearnedWords = signal<number>(0);
+  public progressLines = computed(() =>
+    Array(this.dailyLearnedWordsCount()).fill(0)
+  );
 
   public cardState = signal<'default' | 'fall'>('default');
 
@@ -81,9 +93,17 @@ export class LearnWordsComponent implements OnInit {
     private readonly userWordsService: UserWordsService,
     private readonly wordsService: WordsService,
     private readonly localeService: LocaleService,
+    private readonly hotToastService: HotToastService,
+    private readonly dialog: Dialog,
   ) { }
 
   ngOnInit(): void {
+    const dailyWordsCount = +(localStorage.getItem(DAILY_WORDS_LOCAL_STORAGE_KEY) || '0');
+    this.dailyLearnedWordsCount.set(dailyWordsCount);
+
+    const curr = +(localStorage.getItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY) || '0');
+    this.currentlyLearnedWords.set(curr);
+
     this.localeService.locale$.subscribe(code => {
       this.localeCode.set(code);
     });
@@ -100,7 +120,6 @@ export class LearnWordsComponent implements OnInit {
       }),
       tap(({ words }) => {
         const lastWordId = localStorage.getItem(LAST_WORD);
-
         if (lastWordId) {
           const lastWord = words.find(w => w.id === +lastWordId);
           if (lastWord) {
@@ -133,10 +152,41 @@ export class LearnWordsComponent implements OnInit {
 
   public learnWord() {
     const word = this.chosenWord();
-    if (!word || !word.translations?.length) return;
+    if (!word) return;
+    else if(!word.translations?.length) {
+      this.hotToastService.close();
+      this.hotToastService.info('This word has no translations');
+      return;
+    }
 
     const locale = this.localeService.convertLocaleToBackend(this.localeCode());
     const translationId = word.translations.find(t => t.language === locale)?.id ?? word.translations[0].id;
+
+    const wordStatus = this.wordStatus();
+    if (wordStatus === 'unlearned') {
+      this.userWordsService.memorizeWord(translationId).pipe(
+        switchMap(() =>
+          forkJoin({
+            unlearned: this.userWordsService.getUnlearnedUserWords(),
+            learned:   this.userWordsService.getLearnedUserWords(),
+          })
+        ),
+        tap(({ unlearned, learned }) => {
+          this.unlearnedWords.set(unlearned);
+          this.learnedWords.set(learned);
+          this.skipWord();
+
+          const next = this.currentlyLearnedWords() + 1;
+          this.currentlyLearnedWords.set(next);
+          localStorage.setItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY, next.toString());
+        })
+      )
+      .subscribe();
+      return;
+    } else if (wordStatus === 'learned') {
+      this.skipWord();
+      return;
+    }
 
     const req = {
       translationId,
@@ -144,8 +194,20 @@ export class LearnWordsComponent implements OnInit {
     };
 
     this.userWordsService.learnWord(req).pipe(
-      tap(() => {
+      switchMap(() =>
+        forkJoin({
+          unlearned: this.userWordsService.getUnlearnedUserWords(),
+          learned:   this.userWordsService.getLearnedUserWords(),
+        })
+      ),
+      tap(({ unlearned, learned }) => {
+        this.unlearnedWords.set(unlearned);
+        this.learnedWords.set(learned);
         this.skipWord();
+
+        const next = this.currentlyLearnedWords() + 1;
+        this.currentlyLearnedWords.set(next);
+        localStorage.setItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY, next.toString());
       })
     ).subscribe();
   }
@@ -176,7 +238,7 @@ export class LearnWordsComponent implements OnInit {
   public processName(status: 'learned' | 'unlearned' | 'new') {
     switch (status) {
       case 'learned':
-        return 'Memorizing';
+        return 'Memorized';
       case 'unlearned':
         return 'Learning';
       case 'new':
@@ -185,6 +247,42 @@ export class LearnWordsComponent implements OnInit {
         return 'New';
     }
 
+  }
+
+  public openCardTools() {
+    const locale = this.localeService.convertLocaleToBackend(this.localeCode());
+
+    const word = this.chosenWord();
+    if (!word) return;
+
+    const translationId = word.translations.find(t => t.language === locale)?.id ?? word.translations[0].id;
+
+    const dialogRef = this.dialog.open(CardToolsModalComponent, {
+      data: {
+        translationId,
+      }
+    });
+
+    dialogRef.closed.pipe(
+      filter(res => !!res),
+      switchMap((res: any) => {
+        const trId = res.translationId;
+        const isLearned = res.isLearned;
+        return isLearned ? this.userWordsService.memorizeWord(trId) : this.userWordsService.unmemorizeWord(trId);
+      }),
+      switchMap(() =>
+        forkJoin({
+          words: this.wordsService.getWords().pipe(map(res => res.items)),
+          unlearnedWords: this.userWordsService.getUnlearnedUserWords(),
+          learnedWords: this.userWordsService.getLearnedUserWords(),
+        }),
+      ),
+        tap(({ words, unlearnedWords, learnedWords }) => {
+          this.allWords.set(words);
+          this.unlearnedWords.set(unlearnedWords);
+          this.learnedWords.set(learnedWords);
+      }),
+    ).subscribe();  
   }
 
   private arrayBufferToBase64(buffer: number[]): string {
