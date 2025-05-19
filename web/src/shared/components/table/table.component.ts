@@ -31,24 +31,25 @@ import {
   TextColumn,
 } from './header-def.model';
 import { RowClickEvent } from './table-row-click-event.model';
-import { NgIcon } from '@ng-icons/core';
-// import { untilDestroyed } from '@ngneat/until-destroy';
-// import { UntilDestroy } from '@ngneat/until-destroy';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { InjectionToken } from '@angular/core';
 
 const WINDOW = new InjectionToken<Window>('Global window object', {
   factory: () => window,
 });
 import { CurrencyPipe } from '@angular/common';
-import { TranslatePipe } from "../../../core/pipes/translate.pipe";
-import { ButtonComponent } from "../button/button.component";
+import { TranslatePipe } from '../../../core/pipes/translate.pipe';
+import { ButtonComponent } from '../button/button.component';
 import { ChipComponent } from '../chip/chip.component';
+import { tablerVolume2 } from '@ng-icons/tabler-icons';
+import { TranscriptionPipe } from '@core/pipes/transcription.pipe';
 
-// @UntilDestroy()
+@UntilDestroy()
 @Component({
   selector: 'app-table',
   standalone: true,
-  providers: [DatePipe, CurrencyPipe],
+  providers: [provideIcons({ tablerVolume2 }), DatePipe, CurrencyPipe],
   imports: [
     CdkTableModule,
     NgClass,
@@ -56,13 +57,15 @@ import { ChipComponent } from '../chip/chip.component';
     TranslatePipe,
     AsyncPipe,
     ButtonComponent,
-    ChipComponent
-],
+    ChipComponent,
+    TranscriptionPipe,
+  ],
   templateUrl: './table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableComponent<T> implements OnInit, AfterViewChecked {
-  @ViewChildren(ChipComponent) chips: QueryList<ChipComponent> = new QueryList();
+  @ViewChildren(ChipComponent) chips: QueryList<ChipComponent> =
+    new QueryList();
 
   @ViewChild('tableTooltip') tableTooltip: ElementRef | undefined = undefined;
 
@@ -111,17 +114,17 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
   constructor(
     @Inject(WINDOW) public readonly window: Window,
     private readonly datePipe: DatePipe,
-    private readonly currencyPipe: CurrencyPipe
+    private readonly currencyPipe: CurrencyPipe,
   ) {}
 
   ngOnInit() {
     this.tooltipVisible$
       .pipe(
-        // untilDestroyed(this),
+        untilDestroyed(this),
         switchMap((isVisible) =>
-          isVisible ? timer(1000).pipe(map(() => isVisible)) : of(isVisible)
+          isVisible ? timer(1000).pipe(map(() => isVisible)) : of(isVisible),
         ),
-        tap(this.tooltipVisible.set)
+        tap(this.tooltipVisible.set),
       )
       .subscribe();
   }
@@ -189,13 +192,13 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
     const rowField = field as keyof T;
     const cellValue = this.formatCellValue(
       this.headers()[index] as TextColumn<T>,
-      row[rowField]
+      row[rowField],
     );
 
     const regex = new RegExp(`(${strOverlap})`, 'i');
     const highlightedText = cellValue.replace(
       regex,
-      '<span class="w-fit bg-yellow-300">$1</span>'
+      '<span class="w-fit bg-yellow-300">$1</span>',
     );
 
     const columnName = this.headers()[index].displayName ?? '';
@@ -205,6 +208,14 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
       columnName.length > 0
       ? highlightedText
       : cellValue;
+  }
+
+  public playPronunciation(word: string) {
+    const utterance = new SpeechSynthesisUtterance(word);
+    const voices = window.speechSynthesis.getVoices();
+    utterance.voice = voices.find((v) => v.lang.startsWith('en')) || voices[0];
+    utterance.lang = 'en-US';
+    window.speechSynthesis.speak(utterance);
   }
 
   public isExtraActions(field: string) {
@@ -224,7 +235,7 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
   public fieldActions(fieldName: string, row: T) {
     if (fieldName === EXTRA_ACTIONS_COLUMN_NAME) {
       return this.extraActions().filter((x) =>
-        x.isAvailable ? x.isAvailable(row) : true
+        x.isAvailable ? x.isAvailable(row) : true,
       );
     }
 
@@ -238,7 +249,7 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
 
   public formatCellValue<K extends keyof T>(
     header: TextColumn<T>,
-    value: T[K]
+    value: T[K],
   ): string {
     return header.formatter
       ? header.formatter(value)
@@ -247,7 +258,7 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
 
   public composeFromCell(
     composeItem: string | ((val: T[keyof T]) => string) | undefined,
-    value: T[keyof T]
+    value: T[keyof T],
   ): string | undefined {
     return typeof composeItem === 'string' || !composeItem
       ? composeItem
@@ -256,7 +267,7 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
 
   public composeFromRow(
     composeItem: string | ((val: T) => string) | undefined,
-    value: T
+    value: T,
   ): string | undefined {
     return typeof composeItem === 'string' || !composeItem
       ? composeItem
@@ -282,7 +293,7 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
           }
           return acc + char;
         }, '');
-      }
+      },
     );
   }
 

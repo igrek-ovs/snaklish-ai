@@ -17,8 +17,7 @@
             *cdkHeaderCellDef
             class="p-4 text-nowrap whitespace-nowrap transition-colors border-y-0 border-slate-200 bg-slate-50 border-x-1"
             [ngClass]="{
-              'cursor-pointer hover:bg-slate-100':
-                !isExtraActions(field),
+              'cursor-pointer hover:bg-slate-100': !isExtraActions(field),
               'text-center':
                 headers()[$index] && headers()[$index].type === ColumnType.Chip,
             }"
@@ -26,8 +25,11 @@
             <p class="font-sans font-bold leading-none text-slate-500">
               {{
                 (isExtraActions(field)
-                  ? 'shared.actions'
-                  : headers()[$index].displayName) | appTranslate | async
+                  ? "shared.actions"
+                  : headers()[$index].displayName
+                )
+                  | appTranslate
+                  | async
               }}
             </p>
           </th>
@@ -59,9 +61,7 @@
                       [chipWidth]="maxChipWidth()"
                       variant="regular"
                       [color]="getChipColor($index, row, field)"
-                      [label]="
-                        getChipLabel($index, row, field)
-                      "
+                      [label]="getChipLabel($index, row, field)"
                     ></app-chip>
                   </div>
                 }
@@ -72,6 +72,22 @@
                 }
                 @case (ColumnType.Currency) {
                   <span>{{ handlePriceValue($index, row, field) }}</span>
+                }
+                @case (ColumnType.Transcription) {
+                  <div class="flex items-center">
+                    <span class="transcription">
+                      {{ row[field] | appTranscription }}
+                    </span>
+
+                    <button
+                      title="Play pronunciation"
+                      class="ml-2 p-1 hover:text-primary-main"
+                      aria-label="Play pronunciation"
+                      (click)="playPronunciation(row.word)"
+                    >
+                      <ng-icon name="tablerVolume2" />
+                    </button>
+                  </div>
                 }
                 @default {
                   <span
@@ -112,28 +128,28 @@
   <div class="flex justify-center items-center w-full h-full">
     <!-- <app-spinner size="xl"></app-spinner> -->
     <div
-    role="status"
-    class="flex items-center justify-center w-full translate-y-1/2"
->
-    <svg
-    aria-hidden="true"
-    class="w-16 h-16 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-    viewBox="0 0 100 101"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+      role="status"
+      class="flex items-center justify-center w-full translate-y-1/2"
     >
-    <path
-        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 
+      <svg
+        aria-hidden="true"
+        class="w-16 h-16 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+        viewBox="0 0 100 101"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 
         0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 
         0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 
         73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 
         73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 
         9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 
         9.08144 50.5908Z"
-        fill="currentColor"
-    />
-    <path
-        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 
+          fill="currentColor"
+        />
+        <path
+          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 
         97.0079 33.5539C95.2932 28.8227 92.871 24.3692 
         89.8167 20.348C85.8452 15.1192 80.8826 10.7238 
         75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 
@@ -146,13 +162,13 @@
         82.5849 25.841C84.9175 28.9121 86.7997 32.2913 
         88.1811 35.8758C89.083 38.2158 91.5421 39.6781 
         93.9676 39.0409Z"
-        fill="currentFill"
-    />
-    </svg>
-    <span class="sr-only">Loading...</span>
-</div>
+          fill="currentFill"
+        />
+      </svg>
+      <span class="sr-only">Loading...</span>
+    </div>
   </div>
-} @else if(!isEmptyState()) {
+} @else if (!isEmptyState()) {
   <div class="flex items-center justify-center h-full">
     <div class="text-center">
       <ng-icon name="tablerUserSearch" class="text-5xl text-gray-400"></ng-icon>
@@ -162,16 +178,22 @@
     </div>
   </div>
 } @else {
-    <div
-      class="flex flex-col items-center justify-center gap-y-1.5 mx-6 border border-dashed border-gray-300 rounded-lg p-6 hover:border-primary-alternative"
-    >
-      <div class="mb-3 flex flex-col items-center justify-center">
-        <h3 class="mt-2 text-sm font-semibold text-gray-900">{{ "shared.noData" | appTranslate | async }}</h3>
-        <p class="text-gray-500">{{ "shared.getStartedByCreatingNewEntry" | appTranslate | async }}</p>
-      </div>
-      <div class="mb-3">
-        <app-button (click)="cb()()">{{ "shared.newEntry" | appTranslate | async }}</app-button>
-      </div>
+  <div
+    class="flex flex-col items-center justify-center gap-y-1.5 mx-6 border border-dashed border-gray-300 rounded-lg p-6 hover:border-primary-alternative"
+  >
+    <div class="mb-3 flex flex-col items-center justify-center">
+      <h3 class="mt-2 text-sm font-semibold text-gray-900">
+        {{ "shared.noData" | appTranslate | async }}
+      </h3>
+      <p class="text-gray-500">
+        {{ "shared.getStartedByCreatingNewEntry" | appTranslate | async }}
+      </p>
+    </div>
+    <div class="mb-3">
+      <app-button (click)="cb()()">{{
+        "shared.newEntry" | appTranslate | async
+      }}</app-button>
+    </div>
   </div>
 }
 <div

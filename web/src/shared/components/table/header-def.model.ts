@@ -1,5 +1,5 @@
-import { FieldPath } from "../../../core/models/field-path";
-import { ChipColorsEnum } from "../chip/chip.component";
+import { FieldPath } from '../../../core/models/field-path';
+import { ChipColorsEnum } from '../chip/chip.component';
 
 export const EXTRA_ACTIONS_COLUMN_NAME = 'Extra actions';
 
@@ -9,6 +9,7 @@ export enum ColumnType {
   Date = 'Date',
   Currency = 'Currency',
   Chip = 'Chip',
+  Transcription = 'Transcription',
 }
 
 export enum DateFormat {
@@ -35,7 +36,7 @@ interface BasicColumn<T, K extends keyof T = keyof T> {
   actions?: ActionConfig<T>[];
   cellContentClass?: string | ((value: T[K]) => string);
   isHidden?: (
-    value: FieldPath<T> | typeof EXTRA_ACTIONS_COLUMN_NAME
+    value: FieldPath<T> | typeof EXTRA_ACTIONS_COLUMN_NAME,
   ) => boolean;
 }
 
@@ -60,11 +61,16 @@ export type CurrencyColumn<T> = BasicColumn<T> & {
   locale?: string;
 };
 
+export type TranscriptionColumn<T> = BasicColumn<T> & {
+  type: ColumnType.Transcription;
+};
+
 export type ColumnDef<T, K extends keyof T = keyof T> =
   | TextColumn<T, K>
   | DateColumn<T>
   | ChipColumn<T>
-  | CurrencyColumn<T>;
+  | CurrencyColumn<T>
+  | TranscriptionColumn<T>;
 
 export interface ActionConfig<T> {
   icon: string | ((value: T) => string);

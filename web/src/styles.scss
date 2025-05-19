@@ -6,25 +6,33 @@
 @tailwind utilities;
 
 .icon-default {
-    @apply text-gray;
-  
-    &:hover {
-      @apply text-gray-hovered;
-    }
+  @apply text-gray;
+
+  &:hover {
+    @apply text-gray-hovered;
   }
-  
-  .icon-view {
-    @apply text-success-main;
-  
-    &:hover {
-      @apply text-success-alternative;
-    }
+}
+
+.icon-view {
+  @apply text-success-main;
+
+  &:hover {
+    @apply text-success-alternative;
   }
-  
-  .icon-delete {
-    @apply text-red;
-  
-    &:hover {
-      @apply text-red-hovered;
-    }
+}
+
+.icon-delete {
+  @apply text-red;
+
+  &:hover {
+    @apply text-red-hovered;
   }
+}
+
+.transcription {
+  @apply font-mono text-gray-700 tracking-widest line-clamp-1;
+}
+
+button:disabled {
+  @apply cursor-not-allowed;
+}
