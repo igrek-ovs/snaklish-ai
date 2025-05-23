@@ -1,27 +1,31 @@
 <div
+  class="fixed inset-0 bg-black bg-opacity-50 pointer-events-none transition-opacity duration-1000 w-screen h-screen z-50 p-0 m-0"
+  [class.opacity-100]="isAnimationVisible()"
+  [class.opacity-0]="!isAnimationVisible()"
+></div>
+
+<div
   (click)="isSidebarShowed.set(false)"
   class="antialiased bg-gray-100 dark:bg-gray-900 flex flex-col min-h-screen min-w-full overflow-hidden"
 >
-<div class="relative w-full h-10 bg-white dark:bg-gray-800 flex items-center justify-center md:justify-start border-b border-gray-200 dark:border-gray-700 shadow-sm">
-  <button
-    class="absolute left-3 p-2 md:hidden text-xs flex flex-col items-center justify-center text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-    aria-label="Toggle sidebar"
-    cdkOverlayOrigin
-    #triggerSide="cdkOverlayOrigin"
-    (click)="isSidebarShowed.set(!isSidebarShowed())"
+  <div
+    class="relative w-full h-10 bg-white dark:bg-gray-800 flex items-center justify-center md:justify-start border-b border-gray-200 dark:border-gray-700 shadow-sm"
   >
-    {{ 'shared.menu' | appTranslate | async }}
-    <app-svg fill="black" name="mobile-menu"></app-svg>
-  </button>
-  <img
-    class="size-9 hidden md:block m-auto"
-    [src]="logoDesktopUrl()"
-    alt="logo"
-  />
-  <div class="block md:hidden">
-    <span>{{ 'components.sidebar.title' | appTranslate | async }}</span>
+    <button
+      class="absolute left-3 p-2 md:hidden text-xs flex flex-col items-center justify-center text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+      aria-label="Toggle sidebar"
+      cdkOverlayOrigin
+      #triggerSide="cdkOverlayOrigin"
+      (click)="isSidebarShowed.set(!isSidebarShowed())"
+    >
+      {{ 'shared.menu' | appTranslate | async }}
+      <app-svg fill="black" name="mobile-menu"></app-svg>
+    </button>
+    <img class="size-9 hidden md:block m-auto" [src]="logoDesktopUrl()" alt="logo" />
+    <div class="block md:hidden">
+      <span>{{ 'components.sidebar.title' | appTranslate | async }}</span>
+    </div>
   </div>
-</div>
   <div class="flex flex-grow h-0">
     <aside
       class="w-72 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
@@ -65,18 +69,18 @@
           </div>
         </li>
         <li
-        class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
-        (click)="router.navigate(['/' + AppRoutes.Faq])"
-      >
-        <div class="space-y-1">
-          <p class="font-medium">
-            {{ 'components.sidebar.faq' | appTranslate | async }}
-          </p>
-          <p class="text-xs text-gray-500">
-            {{ 'components.sidebar.faqDescription' | appTranslate | async }}
-          </p>
-        </div>
-      </li>
+          class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
+          (click)="router.navigate(['/' + AppRoutes.Faq])"
+        >
+          <div class="space-y-1">
+            <p class="font-medium">
+              {{ 'components.sidebar.faq' | appTranslate | async }}
+            </p>
+            <p class="text-xs text-gray-500">
+              {{ 'components.sidebar.faqDescription' | appTranslate | async }}
+            </p>
+          </div>
+        </li>
         <li
           class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
           (click)="router.navigate(['/' + AppRoutes.LearnWords])"
@@ -143,36 +147,32 @@
         </li>
         <li
           [ngClass]="{
-            'hidden': !isAdmin()
-          }"  
+            hidden: !isAdmin(),
+          }"
           class="cursor-pointer px-4 py-2 hover:bg-gray-200 transition-colors border-b border-gray-300"
           (click)="router.navigate(['/' + AppRoutes.UsersList])"
         >
           <div class="space-y-1">
-            <p class="font-medium">
-              Users
-            </p>
-            <p class="text-xs text-gray-500">
-              List of users
-            </p>
+            <p class="font-medium">Users</p>
+            <p class="text-xs text-gray-500">List of users</p>
           </div>
         </li>
       </ul>
     </aside>
 
-  <aside
-    class="fixed top-0 left-0 h-screen w-fit bg-white border-r transform transition-transform duration-200 z-50 md:hidden"
-    [class.-translate-x-full]="!isSidebarShowed()"
-    [class.translate-x-0]="isSidebarShowed()"
-  >
-    <app-sidebar></app-sidebar>
-  </aside>
+    <aside
+      class="fixed top-0 left-0 h-screen w-fit bg-white border-r transform transition-transform duration-200 z-50 md:hidden"
+      [class.-translate-x-full]="!isSidebarShowed()"
+      [class.translate-x-0]="isSidebarShowed()"
+    >
+      <app-sidebar></app-sidebar>
+    </aside>
 
     <main
       class="flex-grow flex overflow-y-auto -ml-72 transition-all md:ml-0 w-full max-w-full overflow-x-hidden"
     >
       <div class="w-full min-h-full">
-        <app-navbar></app-navbar>
+        <app-navbar (isAnimationVisible)="animateChangeLanguage()"></app-navbar>
         <router-outlet></router-outlet>
       </div>
     </main>

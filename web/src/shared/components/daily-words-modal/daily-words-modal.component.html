@@ -12,30 +12,28 @@
           (click)="dialogRef.close()"
           class="text-gray-400 hover:text-gray-900 rounded-lg w-8 h-8 flex items-center justify-center"
         >
-          <ng-icon
-            name="tablerX"
-          ></ng-icon>
+          <ng-icon name="tablerX"></ng-icon>
         </button>
       </div>
 
       <!-- Body -->
       <div class="p-4 space-y-6">
-        <p> {{ data.message }} </p>
-        <div class="flex justify-center gap-x-3 w-full">
-            @for(w of wordsWork; track $index) {
-                <app-button class="ring-1 ring-blue-600 rounded-lg" (click)="setWords(w)" color="text">{{ w }}</app-button>
-            }
+        <p>{{ data.message }}</p>
+        <div class="flex justify-center gap-x-6 w-full">
+          @for (w of wordsWork; track $index) {
+            <app-button
+              class="ring-1 ring-blue-600 rounded-lg"
+              (click)="setWords(w)"
+              color="text"
+              >{{ w === 'infinity' ? '&infin;' : w }}</app-button
+            >
+          }
         </div>
       </div>
 
       <!-- Footer -->
       <div class="flex justify-end gap-3 p-4 border-t border-gray-200 rounded-b">
-        <app-button
-          color="outline"
-          (click)="dialogRef.close()"
-        >
-          Skip
-        </app-button>
+        <app-button color="outline" (click)="dialogRef.close()"> Skip </app-button>
       </div>
     </div>
   </div>

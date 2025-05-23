@@ -1,149 +1,241 @@
 <header class="flex items-center justify-start p-4 ml-4">
   <div class="flex items-center space-x-6">
     <div class="text-lg font-semibold text-gray-700">
-      {{ "shared.welcomeBack" | appTranslate | async }}, {{ (user$ | async)?.name }}!
+      {{ 'shared.welcomeBack' | appTranslate | async }}, {{ (user$ | async)?.name }}!
     </div>
   </div>
 </header>
 
-<div class="bg-white shadow-md rounded-lg p-2 w-full max-w-2xl mx-auto"
+<div
+  class="bg-white shadow-md rounded-lg p-2 w-full max-w-2xl mx-auto"
   [ngClass]="{
-    'opacity-40': isLoading()
+    'opacity-40': isLoading(),
   }"
 >
-    <div class="grid grid-cols-2 grid-rows-2 gap-3">
-      <div class="bg-gray-50 rounded-lg flex flex-col justify-between p-3 aspect-square">
-        <div class="flex items-center justify-between">
-          <h5 class="text-xs font-medium text-gray-500">{{ "components.dashboard.dictionaryCapacity" | appTranslate | async }}</h5>
-          <div class="p-1 bg-blue-100 rounded-full text-blue-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 6v12m6-6H6" />
-            </svg>
-          </div>
-        </div>
-        <div>
-          <div class="flex gap-x-1.5 items-center">
-            <p class="text-xl font-bold text-gray-900 w-fit p-1.5">{{ dictionaryCapacity() }}</p>
-            <div class="flex flex-col">
-              <span>{{ "components.dashboard.words" | appTranslate | async }}</span>
-              <span class="text-[10px] text-gray-500"> {{ "components.dashboard.inTheDictionary" | appTranslate | async }}</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <p class="text-xl font-bold text-gray-900">{{ dictionaryCapacity() - totalLearnedWords() }} <span class="text-[10px] text-gray-500">{{ "components.dashboard.learned" | appTranslate | async }}</span></p>
-          <div class="w-full bg-gray-200 h-1 rounded-full mt-1">
-            <div class="bg-blue-500 h-1 rounded-full" [style.width]="totalLearnedWords() / dictionaryCapacity() * 100 + '%'"></div>
-          </div>
-          <p class="mt-1 text-[10px] text-gray-500">{{ (totalLearnedWords() / dictionaryCapacity() * 100).toFixed(2) }}% {{ "components.dashboard.progress" | appTranslate | async }}</p>
+  <div class="grid grid-cols-2 grid-rows-2 gap-3">
+    <div class="bg-gray-50 rounded-lg flex flex-col justify-between p-3 aspect-square">
+      <div class="flex items-center justify-between">
+        <h5 class="text-xs font-medium text-gray-500">
+          {{ 'components.dashboard.dictionaryCapacity' | appTranslate | async }}
+        </h5>
+        <div class="p-1 bg-blue-100 rounded-full text-blue-500">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6v12m6-6H6"
+            />
+          </svg>
         </div>
       </div>
-
-      <div class="bg-gray-50 rounded-lg flex flex-col justify-between p-3 aspect-square">
-        <div class="flex items-center justify-between">
-          <h5 class="text-xs font-medium text-gray-500">{{ "components.dashboard.categories" | appTranslate | async }}</h5>
-          <div class="p-1 bg-green-100 rounded-full text-green-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+      <div>
+        <div class="flex gap-x-1.5 items-center">
+          <p class="text-xl font-bold text-gray-900 w-fit p-1.5">{{ dictionaryCapacity() }}</p>
+          <div class="flex flex-col">
+            <span>{{ 'components.dashboard.words' | appTranslate | async }}</span>
+            <span class="text-[10px] text-gray-500">
+              {{ 'components.dashboard.inTheDictionary' | appTranslate | async }}</span
+            >
           </div>
         </div>
-        <div class="flex flex-col items-start justify-between gap-y-3">
-          <ul class="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
-            @for(c of categories().slice(0, showAllCategories() ? categories().length : 4); track c.id) {
-              <li>
-                {{ c.name }}
-              </li>
-            }
-          </ul>
-          @if (categories().length > 4) {
-            <button (click)="showAllCategories.set(!showAllCategories())" class="flex items-center gap-x-0.5 text-sm hover:opacity-60 hover:underline">
-              {{ (showAllCategories() ? 'shared.showLess' : 'shared.showMore') | appTranslate | async }}
-              <app-svg [class.rotate-180]="showAllCategories()" name="arrow-down" size="w-3 h-3"></app-svg>
-            </button>
+      </div>
+      <div>
+        <p class="text-xl font-bold text-gray-900">
+          {{ dictionaryCapacity() - totalLearnedWords() }}
+          <span class="text-[10px] text-gray-500">{{
+            'components.dashboard.learned' | appTranslate | async
+          }}</span>
+        </p>
+        <div class="w-full bg-gray-200 h-1 rounded-full mt-1">
+          <div
+            class="bg-blue-500 h-1 rounded-full"
+            [style.width]="(totalLearnedWords() / dictionaryCapacity()) * 100 + '%'"
+          ></div>
+        </div>
+        <p class="mt-1 text-[10px] text-gray-500">
+          {{ ((totalLearnedWords() / dictionaryCapacity()) * 100).toFixed(2) }}%
+          {{ 'components.dashboard.progress' | appTranslate | async }}
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-gray-50 rounded-lg flex flex-col justify-between p-3 aspect-square">
+      <div class="flex items-center justify-between">
+        <h5 class="text-xs font-medium text-gray-500">
+          {{ 'components.dashboard.categories' | appTranslate | async }}
+        </h5>
+        <div class="p-1 bg-green-100 rounded-full text-green-500">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-y-3">
+        <ul class="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+          @for (
+            c of categories().slice(0, showAllCategories() ? categories().length : 4);
+            track c.id
+          ) {
+            <li>
+              {{ c.name }}
+            </li>
           }
-        </div>
-        <div>
-          <p class="text-xl font-bold text-gray-900">{{ categoriesCount() }} <span class="text-[10px] text-gray-500">{{ "components.dashboard.categories" | appTranslate | async }}</span></p>
-          <div class="w-full bg-gray-200 h-1 rounded-full mt-1">
-            <div class="bg-green-500 h-1 rounded-full" style="width:100%"></div>
-          </div>
-          <p class="mt-1 text-[10px] text-gray-500">{{ "components.dashboard.clickToGoToCategories" | appTranslate | async }}</p>
-        </div>
+        </ul>
+        @if (categories().length > 4) {
+          <button
+            (click)="showAllCategories.set(!showAllCategories())"
+            class="flex items-center gap-x-0.5 text-sm hover:opacity-60 hover:underline"
+          >
+            {{
+              (showAllCategories() ? 'shared.showLess' : 'shared.showMore') | appTranslate | async
+            }}
+            <app-svg
+              [class.rotate-180]="showAllCategories()"
+              name="arrow-down"
+              size="w-3 h-3"
+            ></app-svg>
+          </button>
+        }
       </div>
-
-      <!-- Секция 3: Выучено слов -->
-      <div class="bg-gray-50 rounded-lg flex flex-col justify-between p-3 aspect-square">
-        <div class="flex items-center justify-between">
-          <h5 class="text-xs font-medium text-gray-500">{{ "components.dashboard.learned" | appTranslate | async }} <span class="font-bold">{{ currentLocale() }}</span> {{ "components.dashboard.words" | appTranslate | async }}</h5>
-          <app-svg
-            class="pointer-events-none"
-            [name]="currentLocale() + '-flag'"
-            size="size-5"
-          ></app-svg>
+      <div>
+        <p class="text-xl font-bold text-gray-900">
+          {{ categoriesCount() }}
+          <span class="text-[10px] text-gray-500">{{
+            'components.dashboard.categories' | appTranslate | async
+          }}</span>
+        </p>
+        <div class="w-full bg-gray-200 h-1 rounded-full mt-1">
+          <div class="bg-green-500 h-1 rounded-full" style="width: 100%"></div>
         </div>
-        <div class="flex items-center justify-between gap-x-6">
-          <div>
-            <div class="text-md text-nowrap">{{ "components.dashboard.learnedToday" | appTranslate | async }}</div>
-            <div>{{ dailyLearnedWordsCount }} <span class="text-gray-500">/ {{ dailyWordsCount }}</span></div>
-          </div>
+        <p class="mt-1 text-[10px] text-gray-500">
+          {{ 'components.dashboard.clickToGoToCategories' | appTranslate | async }}
+        </p>
+      </div>
+    </div>
 
-          <div class="w-full flex flex-wrap gap-4 items-center">
-            @for(_ of Array.from({ length: dailyWordsCount }); track $index; let i = $index) {
-              <div 
+    <!-- Секция 3: Выучено слов -->
+    <div class="bg-gray-50 rounded-lg flex flex-col justify-between p-3 aspect-square">
+      <div class="flex items-center justify-between">
+        <h5 class="text-xs font-medium text-gray-500">
+          {{ 'components.dashboard.learned' | appTranslate | async }}
+          <span class="font-bold">{{ currentLocale() }}</span>
+          {{ 'components.dashboard.words' | appTranslate | async }}
+        </h5>
+        <app-svg
+          class="pointer-events-none"
+          [name]="currentLocale() + '-flag'"
+          size="size-5"
+        ></app-svg>
+      </div>
+      <div class="flex items-center justify-between gap-x-6">
+        <div>
+          <div class="text-md text-nowrap">
+            {{ 'components.dashboard.learnedToday' | appTranslate | async }}
+          </div>
+          <div class="flex flex-nowrap">
+            {{ dailyLearnedWordsCount }} <span class="text-gray-500">/ {{ dailyWordsCount }}</span>
+          </div>
+        </div>
+
+        <div class="w-full flex flex-wrap gap-4 items-center">
+          @if (dailyWordsCount === 'infinity') {
+            <div class="bg-black w-fit p-1 rounded text-white font-semibold text-sm">
+              <span>{{ 'Unlimited' }}</span>
+            </div>
+          } @else {
+            @for (_ of Array.from({ length: dailyWordsCount }); track $index; let i = $index) {
+              <div
                 class="h-1 w-8 bg-gray rounded-sm"
                 [ngClass]="{
                   'bg-unlearned': i < dailyLearnedWordsCount,
-                  'bg-gray-300': i >= dailyLearnedWordsCount
+                  'bg-gray-300': i >= dailyLearnedWordsCount,
                 }"
               ></div>
             }
-          </div>
-        </div>
-        <div>
-          <p class="text-xl font-bold text-gray-900">{{ learnedWordsCount() }} <span class="text-[10px] text-gray-500">{{ currentLocale() }} {{ "components.dashboard.wordsLearned" | appTranslate | async }}</span></p>
-          <div class="w-full bg-gray-200 h-1 rounded-full mt-1">
-            <div 
-              class="bg-learned h-1 rounded-full"
-              [style.width]="learnedWordsProgress() + '%'"
-            ></div>
-          </div>
-          <p class="mt-1 text-[10px] text-gray-500">{{ learnedWordsProgress() }}% {{ currentLocale() }} {{ "components.dashboard.progress" | appTranslate | async }}</p>
+          }
         </div>
       </div>
-
-      <div class="bg-gray-50 rounded-lg flex flex-col justify-between p-3 aspect-square">
-        <div class="flex items-center justify-between">
-          <h5 class="text-xs font-medium text-gray-500">{{ "components.dashboard.statistics" | appTranslate | async }} <span class="font-bold">{{ currentLocale() }}</span></h5>
+      <button (click)="setNewPace()" color="outline" class="mx-auto text-nowrap hover:underline">
+        Set new pace
+      </button>
+      <div>
+        <p class="text-xl font-bold text-gray-900">
+          {{ learnedWordsCount() }}
+          <span class="text-[10px] text-gray-500"
+            >{{ currentLocale() }}
+            {{ 'components.dashboard.wordsLearned' | appTranslate | async }}</span
+          >
+        </p>
+        <div class="w-full bg-gray-200 h-1 rounded-full mt-1">
+          <div
+            class="bg-learned h-1 rounded-full"
+            [style.width]="learnedWordsProgress() + '%'"
+          ></div>
         </div>
-        <div>
-          <apx-chart
-            [series]="[{ name:'Words', data:[unlearnedWordsCount(), learnedWordsCount(), newWordsCount()] }]"
-            [chart]="{ type:'bar', height:200 }"
-            [xaxis]="{ categories:['Unlearned', 'Learned', 'New'] }"
-            [plotOptions]="{ 
-              bar: { 
-                distributed: true,
-                columnWidth: '50%' 
-              } 
-            }"
-            [fill]="{ colors: ['#de7a98', '#4ade80', '#d1d1d1'] }"
-          ></apx-chart>
-        </div>
-        <div>
-          <p class="text-xl font-bold text-gray-900">3 <span class="text-[10px] text-gray-500">{{ "components.dashboard.types" | appTranslate | async }}</span></p>
-          <div class="w-full h-1 mt-1 rounded-full overflow-hidden flex bg-gray-200">
-            <div class="bg-unlearned h-full" style="width:35%"></div>
-            <div class="bg-learned h-full" style="width:45%"></div>
-            <div class="bg-new h-full flex-1"></div>
-          </div>
-          <p class="mt-1 text-[10px] text-gray-500">{{ "components.dashboard.keepLearningWords" | appTranslate | async }}</p>
-        </div>
+        <p class="mt-1 text-[10px] text-gray-500">
+          {{ learnedWordsProgress() }}% {{ currentLocale() }}
+          {{ 'components.dashboard.progress' | appTranslate | async }}
+        </p>
       </div>
     </div>
-</div>
 
+    <div class="bg-gray-50 rounded-lg flex flex-col justify-between p-3 aspect-square">
+      <div class="flex items-center justify-between">
+        <h5 class="text-xs font-medium text-gray-500">
+          {{ 'components.dashboard.statistics' | appTranslate | async }}
+          <span class="font-bold">{{ currentLocale() }}</span>
+        </h5>
+      </div>
+      <div>
+        <apx-chart
+          [series]="[
+            { name: 'Words', data: [unlearnedWordsCount(), learnedWordsCount(), newWordsCount()] },
+          ]"
+          [chart]="{ type: 'bar', height: 200 }"
+          [xaxis]="{ categories: ['Unlearned', 'Learned', 'New'] }"
+          [plotOptions]="{
+            bar: {
+              distributed: true,
+              columnWidth: '50%',
+            },
+          }"
+          [fill]="{ colors: ['#de7a98', '#4ade80', '#d1d1d1'] }"
+        ></apx-chart>
+      </div>
+      <div>
+        <p class="text-xl font-bold text-gray-900">
+          3
+          <span class="text-[10px] text-gray-500">{{
+            'components.dashboard.types' | appTranslate | async
+          }}</span>
+        </p>
+        <div class="w-full h-1 mt-1 rounded-full overflow-hidden flex bg-gray-200">
+          <div class="bg-unlearned h-full" style="width: 35%"></div>
+          <div class="bg-learned h-full" style="width: 45%"></div>
+          <div class="bg-new h-full flex-1"></div>
+        </div>
+        <p class="mt-1 text-[10px] text-gray-500">
+          {{ 'components.dashboard.keepLearningWords' | appTranslate | async }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

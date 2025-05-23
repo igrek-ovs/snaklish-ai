@@ -1,10 +1,10 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, output, signal } from '@angular/core';
 import { UserService } from '../../../core/services/user.service';
 import { tap } from 'rxjs';
 import { LocaleService } from '@core/services';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { TranslatePipe } from "../../../core/pipes/translate.pipe";
-import { SvgComponent } from "../svg/svg.component";
+import { TranslatePipe } from '../../../core/pipes/translate.pipe';
+import { SvgComponent } from '../svg/svg.component';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 
 @Component({
@@ -13,11 +13,16 @@ import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent implements OnInit {
+  public isAnimationVisible = output<void>();
+
   public userInitials = signal<string>('');
   public locales: { name: string; code: string }[] = [];
   public currentLocale = signal<string>('en');
 
-  constructor(private readonly userService: UserService, private readonly localeService: LocaleService) {
+  constructor(
+    private readonly userService: UserService,
+    private readonly localeService: LocaleService
+  ) {
     this.currentLocale.set(this.localeService.currentLocale);
   }
 
@@ -32,11 +37,11 @@ export class NavbarComponent implements OnInit {
       )
       .subscribe();
 
-      this.localeService.locales$.subscribe((list) => {
-        this.locales = list;
-      });
-  
-      this.localeService.trackLocale().subscribe();
+    this.localeService.locales$.subscribe((list) => {
+      this.locales = list;
+    });
+
+    this.localeService.trackLocale().subscribe();
   }
 
   public signOut() {
@@ -48,5 +53,7 @@ export class NavbarComponent implements OnInit {
     const newLocale = select.value;
     this.currentLocale.set(newLocale);
     this.localeService.changeLocale(newLocale);
+
+    this.isAnimationVisible.emit();
   }
 }
