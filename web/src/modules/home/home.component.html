@@ -151,17 +151,18 @@
             {{ 'components.dashboard.learnedToday' | appTranslate | async }}
           </div>
           <div class="flex flex-nowrap">
-            {{ dailyLearnedWordsCount }} <span class="text-gray-500">/ {{ dailyWordsCount }}</span>
+            {{ dailyLearnedWordsCount }}
+            <span class="text-gray-500">/ {{ dailyWordsCount() }}</span>
           </div>
         </div>
 
         <div class="w-full flex flex-wrap gap-4 items-center">
-          @if (dailyWordsCount === 'infinity') {
+          @if (dailyWordsCount() === 'infinity') {
             <div class="bg-black w-fit p-1 rounded text-white font-semibold text-sm">
               <span>{{ 'Unlimited' }}</span>
             </div>
           } @else {
-            @for (_ of Array.from({ length: dailyWordsCount }); track $index; let i = $index) {
+            @for (_ of Array.from({ length: +dailyWordsCount() }); track $index; let i = $index) {
               <div
                 class="h-1 w-8 bg-gray rounded-sm"
                 [ngClass]="{

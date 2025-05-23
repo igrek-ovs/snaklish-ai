@@ -10,6 +10,7 @@ export enum ColumnType {
   Currency = 'Currency',
   Chip = 'Chip',
   Transcription = 'Transcription',
+  Level = 'Level',
 }
 
 export enum DateFormat {
@@ -35,9 +36,7 @@ interface BasicColumn<T, K extends keyof T = keyof T> {
   isSortable?: boolean;
   actions?: ActionConfig<T>[];
   cellContentClass?: string | ((value: T[K]) => string);
-  isHidden?: (
-    value: FieldPath<T> | typeof EXTRA_ACTIONS_COLUMN_NAME,
-  ) => boolean;
+  isHidden?: (value: FieldPath<T> | typeof EXTRA_ACTIONS_COLUMN_NAME) => boolean;
 }
 
 export type TextColumn<T, K extends keyof T = keyof T> = BasicColumn<T> & {
@@ -65,12 +64,18 @@ export type TranscriptionColumn<T> = BasicColumn<T> & {
   type: ColumnType.Transcription;
 };
 
+export type LevelColumn<T> = BasicColumn<T> & {
+  type: ColumnType.Level;
+  colors: any[];
+};
+
 export type ColumnDef<T, K extends keyof T = keyof T> =
   | TextColumn<T, K>
   | DateColumn<T>
   | ChipColumn<T>
   | CurrencyColumn<T>
-  | TranscriptionColumn<T>;
+  | TranscriptionColumn<T>
+  | LevelColumn<T>;
 
 export interface ActionConfig<T> {
   icon: string | ((value: T) => string);

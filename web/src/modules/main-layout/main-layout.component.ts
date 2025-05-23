@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Router } from '@angular/router';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -61,7 +67,8 @@ export class MainLayoutComponent implements OnInit {
     private readonly localeService: LocaleService,
     private readonly cmsService: CmsService,
     private readonly userService: UserService,
-    private readonly dialog: Dialog
+    private readonly dialog: Dialog,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.userRole$ = this.userService.userRole$;
     this.userRole$.subscribe((role) => {
@@ -80,10 +87,10 @@ export class MainLayoutComponent implements OnInit {
     );
     const isDailyDone = currLearnedDailyWords >= dailyWordsCount;
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = new Date().toISOString().split('T')[0];
     const lastCleared = localStorage.getItem(NEW_DAY_TO_LEARN_STORAGE_KEY);
 
-    const isNewDayToLearn = lastCleared !== today && lastCleared !== null;
+    const isNewDayToLearn = lastCleared !== today || lastCleared === null;
 
     if (dailyWordsCount === null || isDailyDone || isNewDayToLearn) {
       localStorage.removeItem(DAILY_WORDS_LOCAL_STORAGE_KEY);

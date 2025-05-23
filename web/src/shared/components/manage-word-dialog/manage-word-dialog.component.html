@@ -1,159 +1,165 @@
 <div class="fixed inset-0 bg-black bg-opacity-50 z-40"></div>
 
-<div id="static-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed inset-0 flex justify-center overflow-hidden z-50 top-1/2 transform -translate-y-1/2">
-      <div class="relative w-full max-w-2xl max-h-full rounded-lg overflow-y-auto">
-          <!-- Modal content -->
-          <div class=" bg-white shadow-sm dark:bg-gray-700">
-              <!-- Modal header -->
-              <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                  <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                      Manage word
-                  </h3>
-                  <button (click)="dialogRef.close()" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="static-modal">
-                      <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                      </svg>
-                      <span class="sr-only">Close modal</span>
-                  </button>
-              </div>
-                <!-- Modal body -->
-                <div class="p-4 md:p-5 space-y-4">
-                    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                    Input new word:
-                    </p>
-                    <form
-                        [formGroup]="form"
-                        (ngSubmit)="dialogRef.close(form.value)"
-                        class="space-y-6"
-                    >
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Word -->
-                        <div>
-                        <label for="word" class="block mb-1 font-medium text-gray-700">Word</label>
-                        <input
-                            id="word"
-                            type="text"
-                            formControlName="word"
-                            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                        </div>
-                
-                        <!-- Transcription -->
-                        <div>
-                        <label for="transcription" class="block mb-1 font-medium text-gray-700">Transcription</label>
-                        <input
-                            id="transcription"
-                            type="text"
-                            formControlName="transcription"
-                            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
-                        />
-                        </div>
-                
-                        <!-- Level -->
-                        <div>
-                            <label for="level" class="block mb-1 font-medium text-gray-700">Level</label>
-                            <select
-                                id="level"
-                                formControlName="level"
-                                class="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-300"
-                            >
-                                <option *ngFor="let lvl of ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']" [value]="lvl">
-                                {{ lvl }}
-                                </option>
-                            </select>
-                        </div>
-                
-                        <!-- Translation -->
-                        <div>
-                            <label for="examples" class="block mb-1 font-medium text-gray-700">Examples</label>
-                            <input
-                                id="examples"
-                                type="text"
-                                formControlName="examples"
-                                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
-                            />
-                        </div>
-                        <!-- Category -->
-                        <div>
-                            <label for="categoryId" class="block mb-1 font-medium text-gray-700">Category</label>
-                            <select
-                                id="categoryId"
-                                formControlName="categoryId"
-                                class="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-300"
-                            >
-                                <option *ngFor="let c of categories()" [value]="c.id">
-                                    {{ c.name }}
-                                </option>
-                            </select>
-                        </div>
-                        <!-- Image -->
-<div>
-    <div class="flex items-center justify-between">
-      <label for="image" class="block mb-1 font-medium text-gray-700">
-        Image
-      </label>
-      <button
-        type="button"
-        class="text-xs"
-        (click)="isUploadMode.set(!isUploadMode())"
+<div
+  id="static-modal"
+  data-modal-backdrop="static"
+  tabindex="-1"
+  aria-hidden="true"
+  class="fixed inset-0 flex justify-center overflow-hidden z-50 top-1/2 transform -translate-y-1/2"
+>
+  <div class="relative w-full max-w-2xl max-h-full rounded-lg overflow-y-auto">
+    <!-- Modal content -->
+    <div class="bg-white shadow-sm dark:bg-gray-700">
+      <!-- Modal header -->
+      <div
+        class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200"
       >
-        {{ isUploadMode() ? 'Back' : 'Upload' }}
-      </button>
-    </div>
-  
-    <div *ngIf="isUploadMode(); else previewTpl">
-      <input
-        type="file"
-        (change)="onFileSelected($event)"
-        class="mt-2"
-      />
-    </div>
-  
-    <ng-template #previewTpl>
-      <ng-container *ngIf="imageUrl(); else emptyTpl">
-        <div class="mb-3 mt-2">
-          <img
-            [src]="imageUrl()"
-            alt="Preview"
-            class="w-16 h-16 object-cover rounded"
-          />
-        </div>
-      </ng-container>
-  
-      <ng-template #emptyTpl>
-        <div
-          title="Empty image"
-          class="flex items-center justify-center w-16 h-16 bg-gray-300 rounded mt-2"
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Manage word</h3>
+        <button
+          (click)="dialogRef.close()"
+          type="button"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          data-modal-hide="static-modal"
         >
           <svg
-            class="w-6 h-6 text-gray-200 dark:text-gray-600"
+            class="w-3 h-3"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 20 18"
+            fill="none"
+            viewBox="0 0 14 14"
           >
             <path
-              d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
             />
           </svg>
-        </div>
-      </ng-template>
-    </ng-template>
-  </div>  
-                    </div>
-                    </form>
-                </div>
-              <!-- Modal footer -->
-              <div class="flex gap-x-3 items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                  <app-button (click)="dialogRef.close()" data-modal-hide="static-modal" color="outline">Decline</app-button>
-                  <app-button
-                  [disabled]="form.invalid"
-                  (click)="manageWord()"
-                  >
-                  Save
-                  </app-button>
-              </div>
-          </div>
+          <span class="sr-only">Close modal</span>
+        </button>
       </div>
+      <!-- Modal body -->
+      <div class="p-4 md:p-5 space-y-4">
+        <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">Input new word:</p>
+        <form [formGroup]="form" (ngSubmit)="dialogRef.close(form.value)" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Word -->
+            <div>
+              <label for="word" class="block mb-1 font-medium text-gray-700">Word</label>
+              <input
+                id="word"
+                type="text"
+                formControlName="word"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
+              />
+            </div>
+
+            <!-- Transcription -->
+            <div>
+              <label for="transcription" class="block mb-1 font-medium text-gray-700"
+                >Transcription</label
+              >
+              <input
+                id="transcription"
+                type="text"
+                formControlName="transcription"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
+              />
+            </div>
+
+            <!-- Level -->
+            <div>
+              <label for="level" class="block mb-1 font-medium text-gray-700">Level</label>
+              <select
+                id="level"
+                formControlName="level"
+                class="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-300"
+              >
+                <option *ngFor="let lvl of ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']" [value]="lvl">
+                  {{ lvl }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Translation -->
+            <div class="relative">
+              <app-input
+                [label]="'Examples'"
+                id="examples"
+                formControlName="examples"
+                [isTextarea]="true"
+              ></app-input>
+              <div class="absolute bottom-0 right-3 size-fit p-1 text-xs">
+                <span class="font-bold text-gray">divider: </span>
+                <span class="font-semibold text-gray">(\n)</span>
+              </div>
+            </div>
+            <!-- Category -->
+            <div>
+              <label for="categoryId" class="block mb-1 font-medium text-gray-700">Category</label>
+              <select
+                id="categoryId"
+                formControlName="categoryId"
+                class="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:outline-none focus:ring focus:border-blue-300"
+              >
+                <option *ngFor="let c of categories()" [value]="c.id">
+                  {{ c.name }}
+                </option>
+              </select>
+            </div>
+            <!-- Image -->
+            <div>
+              <div class="flex items-center justify-between">
+                <label for="image" class="block mb-1 font-medium text-gray-700"> Image </label>
+                <button type="button" class="text-xs" (click)="isUploadMode.set(!isUploadMode())">
+                  {{ isUploadMode() ? 'Back' : 'Upload' }}
+                </button>
+              </div>
+
+              <div *ngIf="isUploadMode(); else previewTpl">
+                <input type="file" (change)="onFileSelected($event)" class="mt-2" />
+              </div>
+
+              <ng-template #previewTpl>
+                <ng-container *ngIf="imageUrl(); else emptyTpl">
+                  <div class="mb-3 mt-2">
+                    <img [src]="imageUrl()" alt="Preview" class="w-16 h-16 object-cover rounded" />
+                  </div>
+                </ng-container>
+
+                <ng-template #emptyTpl>
+                  <div
+                    title="Empty image"
+                    class="flex items-center justify-center w-16 h-16 bg-gray-300 rounded mt-2"
+                  >
+                    <svg
+                      class="w-6 h-6 text-gray-200 dark:text-gray-600"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 20 18"
+                    >
+                      <path
+                        d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"
+                      />
+                    </svg>
+                  </div>
+                </ng-template>
+              </ng-template>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- Modal footer -->
+      <div
+        class="flex gap-x-3 items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600"
+      >
+        <app-button (click)="dialogRef.close()" data-modal-hide="static-modal" color="outline"
+          >Decline</app-button
+        >
+        <app-button [disabled]="form.invalid" (click)="manageWord()"> Save </app-button>
+      </div>
+    </div>
+  </div>
 </div>
-  

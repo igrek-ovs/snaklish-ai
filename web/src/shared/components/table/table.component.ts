@@ -44,6 +44,7 @@ import { ButtonComponent } from '../button/button.component';
 import { ChipComponent } from '../chip/chip.component';
 import { tablerVolume2 } from '@ng-icons/tabler-icons';
 import { TranscriptionPipe } from '@core/pipes/transcription.pipe';
+import { LevelEnum } from '@core/enums/level.enum';
 
 @UntilDestroy()
 @Component({
@@ -64,8 +65,7 @@ import { TranscriptionPipe } from '@core/pipes/transcription.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableComponent<T> implements OnInit, AfterViewChecked {
-  @ViewChildren(ChipComponent) chips: QueryList<ChipComponent> =
-    new QueryList();
+  @ViewChildren(ChipComponent) chips: QueryList<ChipComponent> = new QueryList();
 
   @ViewChild('tableTooltip') tableTooltip: ElementRef | undefined = undefined;
 
@@ -98,6 +98,8 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
   public tableTooltipWidth = 0;
   public tableTooltipHeight = 0;
 
+  public LevelEnum = LevelEnum;
+
   public get isDataEmpty() {
     return this.data() ? this.data().length === 0 : true;
   }
@@ -114,7 +116,7 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
   constructor(
     @Inject(WINDOW) public readonly window: Window,
     private readonly datePipe: DatePipe,
-    private readonly currencyPipe: CurrencyPipe,
+    private readonly currencyPipe: CurrencyPipe
   ) {}
 
   ngOnInit() {
@@ -122,18 +124,16 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
       .pipe(
         untilDestroyed(this),
         switchMap((isVisible) =>
-          isVisible ? timer(1000).pipe(map(() => isVisible)) : of(isVisible),
+          isVisible ? timer(1000).pipe(map(() => isVisible)) : of(isVisible)
         ),
-        tap(this.tooltipVisible.set),
+        tap(this.tooltipVisible.set)
       )
       .subscribe();
   }
 
   ngAfterViewChecked() {
     if (this.chips && this.chips.length) {
-      const widths = this.chips
-        .toArray()
-        .map((chip) => chip.chipElement.nativeElement.offsetWidth);
+      const widths = this.chips.toArray().map((chip) => chip.chipElement.nativeElement.offsetWidth);
       const maxChipWidth = Math.max(...widths);
       this.maxChipWidth.set(`${maxChipWidth}px`);
     }
@@ -190,22 +190,15 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
   public highlightSubstring(index: number, row: T, field: string) {
     const strOverlap = this.strOverlap() || '';
     const rowField = field as keyof T;
-    const cellValue = this.formatCellValue(
-      this.headers()[index] as TextColumn<T>,
-      row[rowField],
-    );
+    const cellValue = this.formatCellValue(this.headers()[index] as TextColumn<T>, row[rowField]);
 
     const regex = new RegExp(`(${strOverlap})`, 'i');
-    const highlightedText = cellValue.replace(
-      regex,
-      '<span class="w-fit bg-yellow-300">$1</span>',
-    );
+    const highlightedText = cellValue.replace(regex, '<span class="w-fit bg-yellow-300">$1</span>');
 
     const columnName = this.headers()[index].displayName ?? '';
     const searchedColumn = this.searchedColumn() ?? '';
 
-    return columnName.toLowerCase() === searchedColumn.toLowerCase() &&
-      columnName.length > 0
+    return columnName.toLowerCase() === searchedColumn.toLowerCase() && columnName.length > 0
       ? highlightedText
       : cellValue;
   }
@@ -234,44 +227,32 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
 
   public fieldActions(fieldName: string, row: T) {
     if (fieldName === EXTRA_ACTIONS_COLUMN_NAME) {
-      return this.extraActions().filter((x) =>
-        x.isAvailable ? x.isAvailable(row) : true,
-      );
+      return this.extraActions().filter((x) => (x.isAvailable ? x.isAvailable(row) : true));
     }
 
     return (
       this.headers()
         .find((f) => f.fieldName === fieldName)
-        ?.actions?.filter((x) => (x.isAvailable ? x.isAvailable(row) : true)) ||
-      []
+        ?.actions?.filter((x) => (x.isAvailable ? x.isAvailable(row) : true)) || []
     );
   }
 
-  public formatCellValue<K extends keyof T>(
-    header: TextColumn<T>,
-    value: T[K],
-  ): string {
-    return header.formatter
-      ? header.formatter(value)
-      : `${value ? value : '-'}`;
+  public formatCellValue<K extends keyof T>(header: TextColumn<T>, value: T[K]): string {
+    return header.formatter ? header.formatter(value) : `${value ? value : '-'}`;
   }
 
   public composeFromCell(
     composeItem: string | ((val: T[keyof T]) => string) | undefined,
-    value: T[keyof T],
+    value: T[keyof T]
   ): string | undefined {
-    return typeof composeItem === 'string' || !composeItem
-      ? composeItem
-      : composeItem(value);
+    return typeof composeItem === 'string' || !composeItem ? composeItem : composeItem(value);
   }
 
   public composeFromRow(
     composeItem: string | ((val: T) => string) | undefined,
-    value: T,
+    value: T
   ): string | undefined {
-    return typeof composeItem === 'string' || !composeItem
-      ? composeItem
-      : composeItem(value);
+    return typeof composeItem === 'string' || !composeItem ? composeItem : composeItem(value);
   }
 
   public emitClickEvent(item: T) {
@@ -284,25 +265,19 @@ export class TableComponent<T> implements OnInit, AfterViewChecked {
 
   public formatTooltipContent(content: string) {
     const maxCharsInRow = 18;
-    return content.replace(
-      new RegExp(`(\\b\\w{${maxCharsInRow},}\\b)`),
-      (longWord) => {
-        return longWord.split('').reduce((acc, char, index) => {
-          if (index % maxCharsInRow === 0 && index > 0) {
-            return `${acc}-\n${char}`;
-          }
-          return acc + char;
-        }, '');
-      },
-    );
+    return content.replace(new RegExp(`(\\b\\w{${maxCharsInRow},}\\b)`), (longWord) => {
+      return longWord.split('').reduce((acc, char, index) => {
+        if (index % maxCharsInRow === 0 && index > 0) {
+          return `${acc}-\n${char}`;
+        }
+        return acc + char;
+      }, '');
+    });
   }
 
   private isTextTruncated(e: MouseEvent) {
     const target = e.target as HTMLElement;
-    return (
-      target.offsetHeight < target.scrollHeight ||
-      target.offsetWidth < target.scrollWidth
-    );
+    return target.offsetHeight < target.scrollHeight || target.offsetWidth < target.scrollWidth;
   }
 }
 
@@ -319,6 +294,6 @@ class TableDataSource<T> extends DataSource<T> {
   }
 
   disconnect() {
-    this.data.unsubscribe();
+    //this.data.unsubscribe();
   }
 }

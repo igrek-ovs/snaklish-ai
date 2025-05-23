@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@angular/core';
 import { SvgComponent } from '../../shared/components/svg/svg.component';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -32,6 +32,7 @@ import { DailyWordsModalComponent } from '@shared/components/daily-words-modal/d
   ],
   providers: [provideIcons({ tablerChartBar })],
   templateUrl: './home.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent implements OnInit {
   public totalWordsCount = signal<number>(0);
@@ -45,14 +46,17 @@ export class HomeComponent implements OnInit {
   public showAllCategories = signal<boolean>(false);
   public isLoading = signal<boolean>(true);
 
-  public dailyWordsCount: number | 'infinity' = (() => {
-    const raw = localStorage.getItem(DAILY_WORDS_LOCAL_STORAGE_KEY);
-    if (raw === 'infinity') {
-      return 'infinity';
-    }
-    const parsed = Number(raw);
-    return isNaN(parsed) ? 0 : parsed;
-  })();
+  public dailyWordsCount = signal<number | 'infinity'>(
+    (() => {
+      const raw = localStorage.getItem(DAILY_WORDS_LOCAL_STORAGE_KEY);
+      if (raw === 'infinity') {
+        return 'infinity';
+      }
+      const parsed = Number(raw);
+      return isNaN(parsed) ? 0 : parsed;
+    })()
+  );
+
   public dailyLearnedWordsCount = +(
     localStorage.getItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY) ?? 0
   );
@@ -133,11 +137,26 @@ export class HomeComponent implements OnInit {
   }
 
   public setNewPace() {
-    this.dialog.open(DailyWordsModalComponent, {
+    const dialogRef = this.dialog.open(DailyWordsModalComponent, {
       data: {
         title: 'Daily Words Duty',
         message: 'How many new words do you want to learn per day?',
       },
     });
+
+    dialogRef.closed
+      .pipe(
+        tap(() => {
+          console.log(123);
+
+          this.dailyWordsCount.update(() => {
+            const raw = localStorage.getItem(DAILY_WORDS_LOCAL_STORAGE_KEY);
+            if (raw === 'infinity') return 'infinity';
+            const parsed = Number(raw);
+            return isNaN(parsed) ? 0 : parsed;
+          });
+        })
+      )
+      .subscribe();
   }
 }

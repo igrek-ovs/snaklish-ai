@@ -19,15 +19,14 @@
             [ngClass]="{
               'cursor-pointer hover:bg-slate-100': !isExtraActions(field),
               'text-center':
-                headers()[$index] && headers()[$index].type === ColumnType.Chip,
+                headers()[$index] &&
+                (headers()[$index].type === ColumnType.Chip ||
+                  headers()[$index].type === ColumnType.Level),
             }"
           >
             <p class="font-sans font-bold leading-none text-slate-500">
               {{
-                (isExtraActions(field)
-                  ? "shared.actions"
-                  : headers()[$index].displayName
-                )
+                (isExtraActions(field) ? 'shared.actions' : headers()[$index].displayName)
                   | appTranslate
                   | async
               }}
@@ -66,9 +65,7 @@
                   </div>
                 }
                 @case (ColumnType.Date) {
-                  <span class="text-nowrap">{{
-                    transformToDate($index, row, field)
-                  }}</span>
+                  <span class="text-nowrap">{{ transformToDate($index, row, field) }}</span>
                 }
                 @case (ColumnType.Currency) {
                   <span>{{ handlePriceValue($index, row, field) }}</span>
@@ -89,17 +86,29 @@
                     </button>
                   </div>
                 }
+                @case (ColumnType.Level) {
+                  <div class="flex justify-around w-full">
+                    <span
+                      class="text-nowrap bg-black text-white font-semibold size-fit p-1"
+                      [ngClass]="{
+                        'bg-level-a1': row[field] === LevelEnum.A1,
+                        'bg-level-a2': row[field] === LevelEnum.A2,
+                        'bg-level-b1': row[field] === LevelEnum.B1,
+                        'bg-level-b2': row[field] === LevelEnum.B2,
+                        'bg-level-c1': row[field] === LevelEnum.C1,
+                        'bg-level-c2': row[field] === LevelEnum.C2,
+                      }"
+                    >
+                      {{ row[field] }}
+                    </span>
+                  </div>
+                }
                 @default {
                   <span
                     class="break-words line-clamp-2"
                     (mouseenter)="showTooltip($event, row, field)"
                     (mouseleave)="hideTooltip()"
-                    [ngClass]="
-                      composeFromCell(
-                        headers()[$index].cellContentClass,
-                        row[field]
-                      )
-                    "
+                    [ngClass]="composeFromCell(headers()[$index].cellContentClass, row[field])"
                     [innerHTML]="highlightSubstring($index, row, field)"
                   >
                   </span>
@@ -127,10 +136,7 @@
 } @else if (isLoading()) {
   <div class="flex justify-center items-center w-full h-full">
     <!-- <app-spinner size="xl"></app-spinner> -->
-    <div
-      role="status"
-      class="flex items-center justify-center w-full translate-y-1/2"
-    >
+    <div role="status" class="flex items-center justify-center w-full translate-y-1/2">
       <svg
         aria-hidden="true"
         class="w-16 h-16 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -173,7 +179,7 @@
     <div class="text-center">
       <ng-icon name="tablerUserSearch" class="text-5xl text-gray-400"></ng-icon>
       <h3 class="mt-2 text-sm font-semibold text-gray-900">
-        {{ "shared.thereIsNothingToDisplay" | appTranslate | async }}
+        {{ 'shared.thereIsNothingToDisplay' | appTranslate | async }}
       </h3>
     </div>
   </div>
@@ -183,16 +189,14 @@
   >
     <div class="mb-3 flex flex-col items-center justify-center">
       <h3 class="mt-2 text-sm font-semibold text-gray-900">
-        {{ "shared.noData" | appTranslate | async }}
+        {{ 'shared.noData' | appTranslate | async }}
       </h3>
       <p class="text-gray-500">
-        {{ "shared.getStartedByCreatingNewEntry" | appTranslate | async }}
+        {{ 'shared.getStartedByCreatingNewEntry' | appTranslate | async }}
       </p>
     </div>
     <div class="mb-3">
-      <app-button (click)="cb()()">{{
-        "shared.newEntry" | appTranslate | async
-      }}</app-button>
+      <app-button (click)="cb()()">{{ 'shared.newEntry' | appTranslate | async }}</app-button>
     </div>
   </div>
 }

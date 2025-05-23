@@ -8,15 +8,7 @@ import {
   WordSearchRequest,
 } from '../../core/models/word.model';
 import { WordsService } from '../../core/services/words.service';
-import {
-  catchError,
-  EMPTY,
-  filter,
-  finalize,
-  Observable,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { catchError, EMPTY, filter, finalize, Observable, switchMap, tap } from 'rxjs';
 import {
   ActionConfig,
   ActionFiredEvent,
@@ -31,11 +23,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { CategoriesModalComponent } from '@shared/components/categories-modal/categories-modal.component';
 import { CategoriesService } from '@core/services/categories.service';
 import { InputComponent } from '../../shared/components/input/input.component';
-import {
-  FormGroup,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { WordSearchBy } from '@core/enums/word-search-by';
@@ -79,9 +67,7 @@ export class DictionaryListComponent implements OnInit {
   public isLoading = signal<boolean>(false);
   public currentPage = signal<number>(1);
   public totalItems = signal<number>(0);
-  public totalPages = computed(() =>
-    Math.ceil(this.totalItems() / WORDS_PER_PAGE),
-  );
+  public totalPages = computed(() => Math.ceil(this.totalItems() / WORDS_PER_PAGE));
 
   public categoryCount = computed(() => this.categories().length);
 
@@ -156,7 +142,8 @@ export class DictionaryListComponent implements OnInit {
     {
       fieldName: 'level',
       displayName: 'Level',
-      type: ColumnType.Text,
+      type: ColumnType.Level,
+      colors: ['red', 'blue', 'green', 'yellow', 'purple', 'orange'],
     },
     {
       fieldName: 'category',
@@ -193,7 +180,7 @@ export class DictionaryListComponent implements OnInit {
     private readonly categoriesService: CategoriesService,
     private readonly fb: NonNullableFormBuilder,
     private readonly router: Router,
-    private readonly userService: UserService,
+    private readonly userService: UserService
   ) {
     this.form = this.fb.group({
       search: this.fb.control<string>(''),
@@ -243,9 +230,9 @@ export class DictionaryListComponent implements OnInit {
               this.words.set(resp.items);
               this.totalItems.set(resp.total);
             }),
-            finalize(() => this.isLoading.set(false)),
+            finalize(() => this.isLoading.set(false))
           );
-        }),
+        })
       )
       .subscribe();
   }
@@ -262,7 +249,7 @@ export class DictionaryListComponent implements OnInit {
         }),
         finalize(() => {
           this.isLoading.set(false);
-        }),
+        })
       )
       .subscribe();
   }
@@ -300,15 +287,15 @@ export class DictionaryListComponent implements OnInit {
               loading: 'Adding word…',
               success: 'Word added successfully',
               error: 'Error adding word',
-            }),
-          ),
+            })
+          )
         ),
         tap(() => this.isLoading.set(false)),
         tap(() => this.loadWords()),
         catchError(() => {
           this.loadWords();
           return EMPTY;
-        }),
+        })
       )
       .subscribe();
   }
@@ -321,7 +308,7 @@ export class DictionaryListComponent implements OnInit {
         finalize(() => {
           this.isLoading.set(false);
         }),
-        tap(() => this.loadWords()),
+        tap(() => this.loadWords())
       )
       .subscribe();
   }
@@ -342,11 +329,11 @@ export class DictionaryListComponent implements OnInit {
                 loading: 'Deleting word…',
                 success: 'Word deleted successfully',
                 error: 'Error deleting word',
-              }),
-            ),
+              })
+            )
           ),
           tap(() => this.isLoading.set(false)),
-          tap(() => this.loadWords()),
+          tap(() => this.loadWords())
         )
         .subscribe();
     } else if (action === WordActions.EDIT) {
@@ -368,15 +355,15 @@ export class DictionaryListComponent implements OnInit {
                 loading: 'Editing word…',
                 success: 'Word edited successfully',
                 error: 'Error editing word',
-              }),
-            ),
+              })
+            )
           ),
           tap(() => this.isLoading.set(false)),
           tap(() => this.loadWords()),
           catchError(() => {
             this.loadWords();
             return EMPTY;
-          }),
+          })
         )
         .subscribe();
     } else if (action === WordActions.VIEW) {
@@ -407,9 +394,9 @@ export class DictionaryListComponent implements OnInit {
               loading: 'Adding category…',
               success: 'Category added successfully',
               error: 'Error adding category',
-            }),
-          ),
-        ),
+            })
+          )
+        )
       )
       .subscribe();
   }
@@ -433,7 +420,7 @@ export class DictionaryListComponent implements OnInit {
         tap((res) => this.words.set(res.items)),
         finalize(() => {
           this.isLoading.set(false);
-        }),
+        })
       )
       .subscribe();
   }

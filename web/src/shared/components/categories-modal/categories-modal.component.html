@@ -12,9 +12,7 @@
           (click)="dialogRef.close()"
           class="text-gray-400 hover:text-gray-900 rounded-lg w-8 h-8 flex items-center justify-center"
         >
-          <ng-icon
-            name="tablerX"
-          ></ng-icon>
+          <ng-icon name="tablerX"></ng-icon>
         </button>
       </div>
 
@@ -27,6 +25,9 @@
               <app-input
                 formControlName="name"
                 [label]="'Name'"
+                [error]="getErrorMessage('name')"
+                [loverBoundary]="CategoryConstants.nameMinLength"
+                [upperBoundary]="CategoryConstants.nameMaxLength"
               ></app-input>
             </div>
             <!-- Description -->
@@ -35,7 +36,14 @@
                 formControlName="description"
                 [label]="'Description'"
                 [isTextarea]="true"
+                [error]="getErrorMessage('description')"
+                [loverBoundary]="CategoryConstants.descriptionMinLength"
+                [upperBoundary]="CategoryConstants.descriptionMaxLength"
               ></app-input>
+            </div>
+            <div class="flex items-end gap-x-4 text-sm">
+              <label for="toUpperCaseName"> Capitalize Name </label>
+              <input id="toUpperCaseName" type="checkbox" formControlName="toUpperCaseName" />
             </div>
           </div>
         </form>
@@ -43,18 +51,8 @@
 
       <!-- Footer -->
       <div class="flex justify-end gap-3 p-4 border-t border-gray-200 rounded-b">
-        <app-button
-          (click)="dialogRef.close()"
-          color="outline"
-        >
-          Decline
-        </app-button>
-        <app-button
-          [disabled]="form.invalid"
-          (click)="save()"
-        >
-          Save
-        </app-button>
+        <app-button (click)="dialogRef.close()" color="outline"> Decline </app-button>
+        <app-button [disabled]="form.invalid" (click)="save()"> Save </app-button>
       </div>
     </div>
   </div>

@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@angular/core';
 import { UserWord, Word } from '@core/models';
 import { LAST_WORD, LocaleService, WordsService } from '@core/services';
 import { UserWordsService } from '@core/services/user-words.service';
@@ -15,15 +9,9 @@ import {
   tablerMenu2,
   tablerDotsCircleHorizontal,
   tablerVolume2,
+  tablerPlayerPlay,
 } from '@ng-icons/tabler-icons';
-import {
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
-  keyframes,
-} from '@angular/animations';
+import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { SvgComponent } from '../../shared/components/svg/svg.component';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
@@ -49,7 +37,7 @@ import { TranscriptionPipe } from '../../core/pipes/transcription.pipe';
     TranscriptionPipe,
   ],
   providers: [
-    provideIcons({ tablerMenu2, tablerDotsCircleHorizontal, tablerVolume2 }),
+    provideIcons({ tablerMenu2, tablerDotsCircleHorizontal, tablerVolume2, tablerPlayerPlay }),
   ],
   templateUrl: './learn-words.component.html',
   animations: [
@@ -59,14 +47,14 @@ import { TranscriptionPipe } from '../../core/pipes/transcription.pipe';
         style({
           transform: 'translate(0, 0) rotate(0)',
           opacity: 1,
-        }),
+        })
       ),
       state(
         'fall',
         style({
           transform: 'translate(300px, 100vh) rotate(30deg)',
           opacity: 0,
-        }),
+        })
       ),
       transition('default => fall', [
         animate(
@@ -87,7 +75,7 @@ import { TranscriptionPipe } from '../../core/pipes/transcription.pipe';
               transform: 'translate(300px, 100vh) rotate(30deg)',
               opacity: 0,
             }),
-          ]),
+          ])
         ),
       ]),
     ]),
@@ -106,9 +94,7 @@ export class LearnWordsComponent implements OnInit {
 
   public dailyLearnedWordsCount = signal<number>(0);
   public currentlyLearnedWords = signal<number>(0);
-  public progressLines = computed(() =>
-    Array(this.dailyLearnedWordsCount()).fill(0),
-  );
+  public progressLines = computed(() => Array(this.dailyLearnedWordsCount()).fill(0));
 
   public reviewMode = signal<boolean>(false);
 
@@ -134,16 +120,14 @@ export class LearnWordsComponent implements OnInit {
 
     if (
       this.learnedWords().some(
-        (uw) =>
-          uw.translation.word.id === w.id && uw.translation.language === locale,
+        (uw) => uw.translation.word.id === w.id && uw.translation.language === locale
       )
     ) {
       return 'learned';
     }
     if (
       this.unlearnedWords().some(
-        (uw) =>
-          uw.translation.word.id === w.id && uw.translation.language === locale,
+        (uw) => uw.translation.word.id === w.id && uw.translation.language === locale
       )
     ) {
       return 'unlearned';
@@ -152,71 +136,41 @@ export class LearnWordsComponent implements OnInit {
     return 'new';
   });
 
+  public wordExamples = computed(() => {
+    const examples = this.chosenWord()?.examples;
+    if (!examples) return [];
+
+    const parsedExamples = examples.split('\n');
+    return parsedExamples;
+  });
+
   constructor(
     private readonly userWordsService: UserWordsService,
     private readonly wordsService: WordsService,
     private readonly localeService: LocaleService,
     private readonly hotToastService: HotToastService,
-    private readonly dialog: Dialog,
+    private readonly dialog: Dialog
   ) {}
 
   ngOnInit(): void {
-    const dailyWordsCount = +(
-      localStorage.getItem(DAILY_WORDS_LOCAL_STORAGE_KEY) || '0'
-    );
+    const dailyWordsCount = +(localStorage.getItem(DAILY_WORDS_LOCAL_STORAGE_KEY) || '0');
     this.dailyLearnedWordsCount.set(dailyWordsCount);
 
-    const curr = +(
-      localStorage.getItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY) || '0'
-    );
+    const curr = +(localStorage.getItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY) || '0');
     this.currentlyLearnedWords.set(curr);
 
     this.localeService.locale$.subscribe((code) => {
       this.localeCode.set(code);
     });
 
-    forkJoin({
-      words: this.wordsService.getWords().pipe(map((res) => res.items)),
-      unlearnedWords: this.userWordsService.getUnlearnedUserWords(),
-      learnedWords: this.userWordsService.getLearnedUserWords(),
-    })
-      .pipe(
-        tap(({ words, unlearnedWords, learnedWords }) => {
-          const learnedWordIds = new Set(
-            learnedWords.map((uw) => uw.translation.word.id),
-          );
-          const filteredAll = words.filter((w) => !learnedWordIds.has(w.id));
-
-          this.allWords.set(filteredAll);
-          this.unlearnedWords.set(unlearnedWords);
-          this.learnedWords.set(learnedWords);
-        }),
-        tap(({ words }) => {
-          const lastWordId = localStorage.getItem(LAST_WORD);
-          if (lastWordId) {
-            const lastWord = words.find((w) => w.id === +lastWordId);
-            if (lastWord) {
-              this.chosenWord.set(lastWord);
-              this.cardState.set('default');
-              this.isTranslationShown.set(false);
-              return;
-            }
-          } else {
-            const randWord = words[Math.floor(Math.random() * words.length)];
-            this.chosenWord.set(randWord);
-          }
-        }),
-      )
-      .subscribe();
+    this.learnNewWords();
   }
 
   public skipWord() {
     this.cardState.set('fall');
 
     setTimeout(() => {
-      const randWord = this.allWords().at(
-        Math.floor(Math.random() * this.allWords().length),
-      );
+      const randWord = this.allWords().at(Math.floor(Math.random() * this.allWords().length));
       this.chosenWord.set(randWord);
       localStorage.setItem(LAST_WORD, String(randWord!.id));
       this.cardState.set('default');
@@ -236,8 +190,7 @@ export class LearnWordsComponent implements OnInit {
 
     const locale = this.localeService.convertLocaleToBackend(this.localeCode());
     const translationId =
-      word.translations.find((t) => t.language === locale)?.id ??
-      word.translations[0].id;
+      word.translations.find((t) => t.language === locale)?.id ?? word.translations[0].id;
 
     const wordStatus = this.wordStatus();
     if (wordStatus === 'unlearned') {
@@ -248,7 +201,7 @@ export class LearnWordsComponent implements OnInit {
             forkJoin({
               unlearned: this.userWordsService.getUnlearnedUserWords(),
               learned: this.userWordsService.getLearnedUserWords(),
-            }),
+            })
           ),
           tap(({ unlearned, learned }) => {
             this.unlearnedWords.set(unlearned);
@@ -257,11 +210,8 @@ export class LearnWordsComponent implements OnInit {
 
             const next = this.currentlyLearnedWords() + 1;
             this.currentlyLearnedWords.set(next);
-            localStorage.setItem(
-              CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY,
-              next.toString(),
-            );
-          }),
+            localStorage.setItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY, next.toString());
+          })
         )
         .subscribe();
       return;
@@ -282,7 +232,7 @@ export class LearnWordsComponent implements OnInit {
           forkJoin({
             unlearned: this.userWordsService.getUnlearnedUserWords(),
             learned: this.userWordsService.getLearnedUserWords(),
-          }),
+          })
         ),
         tap(({ unlearned, learned }) => {
           this.unlearnedWords.set(unlearned);
@@ -291,11 +241,8 @@ export class LearnWordsComponent implements OnInit {
 
           const next = this.currentlyLearnedWords() + 1;
           this.currentlyLearnedWords.set(next);
-          localStorage.setItem(
-            CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY,
-            next.toString(),
-          );
-        }),
+          localStorage.setItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY, next.toString());
+        })
       )
       .subscribe();
   }
@@ -343,8 +290,7 @@ export class LearnWordsComponent implements OnInit {
     if (!word) return;
 
     const translationId =
-      word.translations.find((t) => t.language === locale)?.id ??
-      word.translations[0].id;
+      word.translations.find((t) => t.language === locale)?.id ?? word.translations[0].id;
 
     const dialogRef = this.dialog.open(CardToolsModalComponent, {
       data: {
@@ -367,13 +313,13 @@ export class LearnWordsComponent implements OnInit {
             words: this.wordsService.getWords().pipe(map((res) => res.items)),
             unlearnedWords: this.userWordsService.getUnlearnedUserWords(),
             learnedWords: this.userWordsService.getLearnedUserWords(),
-          }),
+          })
         ),
         tap(({ words, unlearnedWords, learnedWords }) => {
           this.allWords.set(words);
           this.unlearnedWords.set(unlearnedWords);
           this.learnedWords.set(learnedWords);
-        }),
+        })
       )
       .subscribe();
   }
@@ -387,8 +333,69 @@ export class LearnWordsComponent implements OnInit {
   }
 
   public reviewWords() {
-    this.reviewMode.set(!this.reviewMode());
-    this.skipWord();
+    const locale = this.localeService.convertLocaleToBackend(this.localeCode());
+
+    forkJoin({
+      words: this.wordsService.getWords().pipe(map((res) => res.items)),
+      learnedWords: this.userWordsService.getLearnedUserWords(),
+    })
+      .pipe(
+        tap(({ words, learnedWords }) => {
+          const onlyLearned = words.filter((w) =>
+            learnedWords.some(
+              (uw) => uw.translation.word.id === w.id && uw.translation.language === locale
+            )
+          );
+
+          this.allWords.set(onlyLearned);
+          this.reviewMode.set(true);
+
+          const randWord = onlyLearned[Math.floor(Math.random() * onlyLearned.length)];
+          this.chosenWord.set(randWord);
+          this.skipWord();
+        })
+      )
+      .subscribe();
+  }
+
+  public learnNewWords() {
+    forkJoin({
+      words: this.wordsService.getWords().pipe(map((res) => res.items)),
+      unlearnedWords: this.userWordsService.getUnlearnedUserWords(),
+      learnedWords: this.userWordsService.getLearnedUserWords(),
+    })
+      .pipe(
+        tap(({ words, unlearnedWords, learnedWords }) => {
+          const locale = this.localeService.convertLocaleToBackend(this.localeCode());
+
+          const unlearned: Word[] = words.filter(
+            (word) =>
+              !learnedWords.some(
+                (uw) => uw.translation.word.id === word.id && uw.translation.language === locale
+              )
+          );
+
+          this.allWords.set(unlearned);
+          this.unlearnedWords.set(unlearnedWords);
+          this.learnedWords.set(learnedWords);
+        }),
+        tap(({ words }) => {
+          const lastWordId = localStorage.getItem(LAST_WORD);
+          if (lastWordId) {
+            const lastWord = words.find((w) => w.id === +lastWordId);
+            if (lastWord) {
+              this.chosenWord.set(lastWord);
+              this.cardState.set('default');
+              this.isTranslationShown.set(false);
+              return;
+            }
+          } else {
+            const randWord = words[Math.floor(Math.random() * words.length)];
+            this.chosenWord.set(randWord);
+          }
+        })
+      )
+      .subscribe();
   }
 
   private arrayBufferToBase64(buffer: number[]): string {

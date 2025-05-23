@@ -6,6 +6,7 @@ import { AddWordRequest, Category, EditWordRequest } from '@core/models';
 import { ButtonComponent } from '../button/button.component';
 import { CategoriesService } from '@core/services/categories.service';
 import { WordsService } from '@core/services';
+import { InputComponent } from '../input/input.component';
 
 interface ManageWordDialogData {
   word: AddWordRequest | EditWordRequest;
@@ -15,7 +16,7 @@ interface ManageWordDialogData {
 
 @Component({
   selector: 'app-manage-word-dialog',
-  imports: [ReactiveFormsModule, NgFor, NgIf, ButtonComponent],
+  imports: [ReactiveFormsModule, NgFor, NgIf, ButtonComponent, InputComponent],
   templateUrl: './manage-word-dialog.component.html',
 })
 export class ManageWordDialogComponent implements OnInit {
@@ -31,7 +32,7 @@ export class ManageWordDialogComponent implements OnInit {
     @Inject(DIALOG_DATA) public readonly data: ManageWordDialogData,
     private readonly fb: NonNullableFormBuilder,
     private readonly categoryService: CategoriesService,
-    private readonly wordsService: WordsService,
+    private readonly wordsService: WordsService
   ) {
     this.form = this.fb.group({
       word: this.fb.control<string>(data.word.word),
@@ -57,30 +58,29 @@ export class ManageWordDialogComponent implements OnInit {
 
   public manageWord() {
     if (!this.form.valid) return;
-  
+
     const payload: EditWordRequest = {
       ...this.data.word,
       ...this.form.getRawValue(),
     };
     delete (payload as any).image;
     delete (payload as any).img;
-  
+
     this.dialogRef.close(payload);
   }
 
   public onFileSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
- 
+
     this.selectedFile = file;
     const reader = new FileReader();
-   reader.onload = () => {
-     this.imageUrl.set(reader.result as string);
-     this.wordsService.uploadWordImage(file, this.data.wordId!)
-       .subscribe(() => {
-          this.isUploadMode.set(false);
-       });
-   };
+    reader.onload = () => {
+      this.imageUrl.set(reader.result as string);
+      this.wordsService.uploadWordImage(file, this.data.wordId!).subscribe(() => {
+        this.isUploadMode.set(false);
+      });
+    };
     reader.readAsDataURL(file);
   }
 }

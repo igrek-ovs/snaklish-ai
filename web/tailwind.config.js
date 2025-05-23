@@ -41,6 +41,14 @@ module.exports = {
         total: {
           DEFAULT: '#a1a1aa',
         },
+        level : {
+          a1: '#10B981',
+          a2: '#059669',  
+          b1: '#F59E0B',  
+          b2: '#D97706',   
+          c1: '#EF4444',  
+          c2: '#B91C1C',  
+        }
       },
       spacing: {
         9: '2.25rem',

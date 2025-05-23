@@ -6,6 +6,7 @@ import { tablerX } from '@ng-icons/tabler-icons';
 import {
   CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY,
   DAILY_WORDS_LOCAL_STORAGE_KEY,
+  NEW_DAY_TO_LEARN_STORAGE_KEY,
 } from '@core/constants/local-storage.constants';
 
 @Component({
@@ -26,12 +27,18 @@ export class DailyWordsModalComponent {
     if (count === 'infinity') {
       localStorage.setItem(DAILY_WORDS_LOCAL_STORAGE_KEY, 'infinity');
       localStorage.setItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY, '0');
+
+      const today = new Date().toISOString().split('T')[0];
+      localStorage.setItem(NEW_DAY_TO_LEARN_STORAGE_KEY, today);
       this.dialogRef.close();
       return;
     }
 
     localStorage.setItem(DAILY_WORDS_LOCAL_STORAGE_KEY, count.toString());
     localStorage.setItem(CURRENTLY_LEARNED_WORDS_LOCAL_STORAGE_KEY, '0');
+
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem(NEW_DAY_TO_LEARN_STORAGE_KEY, today);
     this.dialogRef.close();
   }
 }
