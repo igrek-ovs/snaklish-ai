@@ -147,8 +147,6 @@ export class HomeComponent implements OnInit {
     dialogRef.closed
       .pipe(
         tap(() => {
-          console.log(123);
-
           this.dailyWordsCount.update(() => {
             const raw = localStorage.getItem(DAILY_WORDS_LOCAL_STORAGE_KEY);
             if (raw === 'infinity') return 'infinity';

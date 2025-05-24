@@ -14,6 +14,8 @@ import { LearnWordsComponent } from '@src/modules/learn-words/learn-words.compon
 import { FaqComponent } from '@src/modules/faq/faq.component';
 import { ManageCategoriesComponent } from '@src/modules/manage-categories/manage-categories.component';
 import { HomeComponent } from '@src/modules/home/home.component';
+import { adminGuard } from '@core/guards/admin.guard';
+import { SupportComponent } from '@src/modules/support/support.component';
 
 export const routes: Routes = [
   ...authenticationRoutes,
@@ -30,9 +32,10 @@ export const routes: Routes = [
       { path: 'account', component: AcountManagementComponent },
       { path: 'profile', component: ProfileComponent },
       { path: AppRoutes.Overview, component: OverviewComponent },
-      { path: AppRoutes.UsersList, component: UsersListComponent },
+      { path: AppRoutes.UsersList, component: UsersListComponent, canActivate: [adminGuard] },
       { path: AppRoutes.LearnWords, component: LearnWordsComponent },
       { path: AppRoutes.ManageCategories, component: ManageCategoriesComponent },
+      { path: AppRoutes.Support, component: SupportComponent },
     ],
     canActivate: [authGuard],
   },
