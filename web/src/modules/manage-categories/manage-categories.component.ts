@@ -20,6 +20,7 @@ import {
   filter,
   finalize,
   map,
+  Observable,
   of,
   switchMap,
   tap,
@@ -31,8 +32,10 @@ import { PopUpFilterComponent } from '../../shared/components/pop-up-filter/pop-
 import { InputComponent } from '../../shared/components/input/input.component';
 import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { CategorySearchBy } from '@core/enums/category-search-by.enum';
-import { WordsService } from '@core/services';
+import { UserService, WordsService } from '@core/services';
 import { WordsListModalComponent } from '@shared/components/words-list-modal/words-list-modal.component';
+import { BasicPageWrapperComponent } from '../../shared/components/basic-page-wrapper/basic-page-wrapper.component';
+import { UserRoles } from '@core/enums/user-roles.enum';
 
 @Component({
   selector: 'app-manage-categories',
@@ -44,6 +47,7 @@ import { WordsListModalComponent } from '@shared/components/words-list-modal/wor
     PopUpFilterComponent,
     InputComponent,
     ReactiveFormsModule,
+    BasicPageWrapperComponent,
   ],
   templateUrl: './manage-categories.component.html',
 })
@@ -52,6 +56,9 @@ export class ManageCategoriesComponent implements OnInit {
   public isLoading = signal(true);
   public wordsInSelectedCategory = signal(0);
   public selectedCategory = signal<string | null>(null);
+
+  public userRole$: Observable<string | null>;
+  public isAdmin = signal<boolean>(true);
 
   public form: FormGroup;
 
@@ -73,16 +80,18 @@ export class ManageCategoriesComponent implements OnInit {
       tooltip: 'Edit category',
       eventName: CategoryActions.EDIT,
       iconClass: 'icon-default',
+      isAvailable: () => this.isAdmin(),
     },
     {
       icon: 'tablerTrash',
       tooltip: 'Delete category',
       eventName: CategoryActions.DELETE,
       iconClass: 'icon-delete',
+      isAvailable: () => this.isAdmin(),
     },
     {
       icon: 'tablerEye',
-      tooltip: 'Delete category',
+      tooltip: 'View words in category',
       eventName: CategoryActions.VIEW,
       iconClass: 'icon-view',
     },
@@ -111,12 +120,22 @@ export class ManageCategoriesComponent implements OnInit {
     private readonly hotToastService: HotToastService,
     private readonly dialog: Dialog,
     private readonly fb: NonNullableFormBuilder,
-    private readonly wordsService: WordsService
+    private readonly wordsService: WordsService,
+    private readonly userService: UserService
   ) {
     this.form = this.fb.group({
       search: this.fb.control<string>(''),
       searchBy: this.fb.control<CategorySearchBy>(CategorySearchBy.NAME),
       category: this.fb.control<number | null>(null),
+    });
+
+    this.userRole$ = this.userService.userRole$;
+    this.userRole$.subscribe((role) => {
+      if (role === UserRoles.Admin) {
+        this.isAdmin.set(true);
+      } else {
+        this.isAdmin.set(false);
+      }
     });
   }
 

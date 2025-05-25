@@ -14,7 +14,9 @@
         <span class="text-xs text-white">{{ learnedWordsByLocale().length }}</span>
       </div>
       <div class="flex gap-x-1.5">
-        <app-button (click)="learnNewWords()" color="outline">Learn new words</app-button>
+        <app-button (click)="learnNewWords(selectedIds())" color="outline"
+          >Learn new words</app-button
+        >
         <app-button (click)="reviewWords()" color="outline">Review words</app-button>
       </div>
     </div>
