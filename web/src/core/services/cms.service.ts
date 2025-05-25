@@ -4,25 +4,33 @@ import { environment } from '../../enviroments/enviroment';
 import { map, tap } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CmsService {
   private cmsApiUrl: string = environment.cms.apiUrl;
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
   public getOverviewPageContent() {
-    return this.http.get(`${this.cmsApiUrl}/api/overview-page?` +
-         `populate[Faq][populate]=faqList&` +
-         `populate[linkWidget][populate]=linkList`).pipe(
-      map((res: any) => res.data)
-    )
+    return this.http
+      .get(
+        `${this.cmsApiUrl}/api/overview-page?` +
+          `populate[Faq][populate]=faqList&` +
+          `populate[linkWidget][populate]=linkList`
+      )
+      .pipe(map((res: any) => res.data));
   }
 
   public getFaqPageContent() {
-    return this.http.get(`${this.cmsApiUrl}/api/faq-page?populate[whyBlocks][populate]=icon`).pipe(
-      map((res: any) => res.data)
-    )
+    return this.http
+      .get(`${this.cmsApiUrl}/api/faq-page?populate[whyBlocks][populate]=icon`)
+      .pipe(map((res: any) => res.data));
+  }
+
+  public getSupportPageContent() {
+    return this.http
+      .get(`${this.cmsApiUrl}/api/support-page?populate=*`)
+      .pipe(map((res: any) => res.data));
   }
 
   public getLocaleList() {
@@ -39,8 +47,8 @@ export class CmsService {
   }
 
   public getHeaderLogo() {
-    return this.http.get(`${this.cmsApiUrl}/api/header-logo?populate=*`).pipe(
-      map((res: any) => res.data)
-    )
+    return this.http
+      .get(`${this.cmsApiUrl}/api/header-logo?populate=*`)
+      .pipe(map((res: any) => res.data));
   }
 }

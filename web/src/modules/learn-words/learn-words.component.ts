@@ -144,6 +144,11 @@ export class LearnWordsComponent implements OnInit {
     return parsedExamples;
   });
 
+  public learnedWordsByLocale = computed(() => {
+    const locale = this.localeService.convertLocaleToBackend(this.localeCode());
+    return this.learnedWords().filter((uw) => uw.translation.language === locale);
+  });
+
   constructor(
     private readonly userWordsService: UserWordsService,
     private readonly wordsService: WordsService,

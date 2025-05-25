@@ -32,7 +32,11 @@ export const routes: Routes = [
       { path: 'account', component: AcountManagementComponent },
       { path: 'profile', component: ProfileComponent },
       { path: AppRoutes.Overview, component: OverviewComponent },
-      { path: AppRoutes.UsersList, component: UsersListComponent, canActivate: [adminGuard] },
+      {
+        path: AppRoutes.UsersList,
+        component: UsersListComponent,
+        canActivate: [adminGuard],
+      },
       { path: AppRoutes.LearnWords, component: LearnWordsComponent },
       { path: AppRoutes.ManageCategories, component: ManageCategoriesComponent },
       { path: AppRoutes.Support, component: SupportComponent },

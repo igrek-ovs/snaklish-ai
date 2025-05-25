@@ -537,6 +537,37 @@ export interface ApiOverviewPageOverviewPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiSupportPageSupportPage extends Struct.SingleTypeSchema {
+  collectionName: 'support_pages';
+  info: {
+    description: '';
+    displayName: 'Support Page';
+    pluralName: 'support-pages';
+    singularName: 'support-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::support-page.support-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    supportImg: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiTranslationMapTranslationMap
   extends Struct.SingleTypeSchema {
   collectionName: 'translation_maps';
@@ -1089,6 +1120,7 @@ declare module '@strapi/strapi' {
       'api::faq-page.faq-page': ApiFaqPageFaqPage;
       'api::header-logo.header-logo': ApiHeaderLogoHeaderLogo;
       'api::overview-page.overview-page': ApiOverviewPageOverviewPage;
+      'api::support-page.support-page': ApiSupportPageSupportPage;
       'api::translation-map.translation-map': ApiTranslationMapTranslationMap;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

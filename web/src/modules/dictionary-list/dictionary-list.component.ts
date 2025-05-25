@@ -36,6 +36,7 @@ import { PaginatorComponent } from '@shared/components/paginator/paginator.compo
 import { WORDS_PER_PAGE } from '@core/constants/word.constants';
 import { PopUpFilterComponent } from '../../shared/components/pop-up-filter/pop-up-filter.component';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { BasicPageWrapperComponent } from '../../shared/components/basic-page-wrapper/basic-page-wrapper.component';
 
 @Component({
   selector: 'app-dictionary-list',
@@ -50,6 +51,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     AsyncPipe,
     PopUpFilterComponent,
     OverlayModule,
+    BasicPageWrapperComponent,
   ],
   templateUrl: './dictionary-list.component.html',
   providers: [
@@ -241,7 +243,7 @@ export class DictionaryListComponent implements OnInit {
     this.isLoading.set(true);
 
     this.wordsService
-      .getWords(this.currentPage())
+      .getAllWords()
       .pipe(
         tap((res) => {
           this.words.set(res.items);

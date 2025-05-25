@@ -1,0 +1,27 @@
+<div class="flex flex-col gap-y-6 p-6 h-full overflow-hidden">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-2xl font-semibold leading-6 text-gray-900">
+        {{ header }}
+      </h1>
+      @if (description) {
+        <p class="mt-2 text-sm text-gray-500">
+          {{ description }}
+        </p>
+      }
+    </div>
+    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+      @if (actionsTemplate) {
+        <ng-template [ngTemplateOutlet]="actionsTemplate"></ng-template>
+      }
+    </div>
+  </div>
+  <div
+    [ngClass]="
+      cardClasses ??
+      'relative bg-white shadow-md dark:bg-gray-800 rounded-lg flex-grow flex flex-col overflow-hidden'
+    "
+  >
+    <ng-content></ng-content>
+  </div>
+</div>

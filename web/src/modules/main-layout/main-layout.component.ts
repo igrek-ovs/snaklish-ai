@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Router } from '@angular/router';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -67,8 +61,7 @@ export class MainLayoutComponent implements OnInit {
     private readonly localeService: LocaleService,
     private readonly cmsService: CmsService,
     private readonly userService: UserService,
-    private readonly dialog: Dialog,
-    private readonly cdr: ChangeDetectorRef
+    private readonly dialog: Dialog
   ) {
     this.userRole$ = this.userService.userRole$;
     this.userRole$.subscribe((role) => {

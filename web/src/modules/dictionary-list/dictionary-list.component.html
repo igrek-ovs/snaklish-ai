@@ -1,109 +1,127 @@
-<div>
-    <nav class="p-1.5 bg-white border-y border-gray-200 dark:bg-gray-800 dark:border-gray-700 flex flex-col gap-y-3">
-        @if (isAdmin()) {
-            <ul class="flex gap-x-6 flex-wrap items-center -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-                    <li>
-                        <app-button (click)="addNewWord()">{{ "components.dictionaryList.addNewWordButton" | appTranslate | async }}</app-button>
-                    </li>
-                    <li>
-                        <app-button (click)="addNewCategory()">{{ "components.dictionaryList.addNewCategoryButton" | appTranslate | async }}</app-button>
-                    </li>
-            </ul>
-            <div class="h-[1px] w-full bg-gray-200"></div>
-        }
-        <ul>
-            <li>
-                <div class="w-full my-2 h-fit">
-                    <form [formGroup]="form">
-                        <div class="flex items-center gap-x-4 text-sm">
-                            <div class="w-48">
-                                <app-input
-                                    [isSearchable]="true"
-                                    [placeholder]="('shared.search' | appTranslate | async) + '...' "
-                                    formControlName="search"
-                                ></app-input>
-                            </div>
-                                @if(categories().length) {
-                                    <div class="sm:w-auto self-end">
-                                        <app-pop-up-filter
-                                            name="Categories"
-                                            [options]="categoriesOptions"
-                                            [defaultOption]="categoriesOptions ? categoriesOptions[0] : undefined"
-                                            formControlName="category"
-                                        ></app-pop-up-filter>
-                                    </div>
-
-                                    <div class="sm:w-auto self-end">
-                                        <app-pop-up-filter
-                                            name="Level"
-                                            [options]="levelOptions"
-                                            [defaultOption]="levelOptions ? levelOptions[0] : undefined"
-                                            formControlName="level"
-                                        ></app-pop-up-filter>
-                                    </div>
-                                }
-
-                            @if(isAnyFilterApplied) {
-                                <app-button (click)="clearFilters()" class="translate-y-1" color="outline">{{ "shared.clearFilters" | appTranslate | async }}</app-button>
-                            }
-                        </div>
-
-                        <div class="h-[1px] mt-6 w-full bg-gray-200"></div>
-
-                        <div class="w-full flex gap-4 items-center p-4 text-sm">
-                            <p class="text-sm text-nowrap font-medium text-gray-900 dark:text-white">
-                              {{ "shared.searchBy" | appTranslate | async }}:
-                            </p>
-                      
-                            <div class="flex items-center">
-                              @for (option of searchByOptions; track option[1]) {
-                                <div class="flex items-center me-7">
-                                  <input
-                                    type="radio"
-                                    [id]="option[1]"
-                                    [value]="option[1]"
-                                    formControlName="searchBy"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                  />
-                                  <label
-                                    [for]="option + '-radio'"
-                                    class="ms-2 text-md font-medium text-gray-900 dark:text-gray-300"
-                                  >
-                                    {{ option[1] }}
-                                  </label>
-                                </div>
-                              }
-                            </div>
-
-                            <span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300">Words in category: {{totalItems()}}</span>
-                            <span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-yellow-900 dark:text-yellow-300"> Categories: {{categoryCount()}}</span>
-                        </div>
-                    </form>
+<app-basic-page-wrapper header="Dictionary manager" [actionsTemplate]="addNewWordOrCategory">
+  <div class="divide-y flex flex-col h-full text-sm overflow-y-auto relative">
+    <nav
+      class="p-1.5 bg-white border-y border-gray-200 dark:bg-gray-800 dark:border-gray-700 flex flex-col gap-y-3"
+    >
+      <ul>
+        <li>
+          <div class="w-full my-2 h-fit">
+            <form [formGroup]="form">
+              <div class="flex items-center gap-x-4 text-sm">
+                <div class="w-48">
+                  <app-input
+                    [isSearchable]="true"
+                    [placeholder]="('shared.search' | appTranslate | async) + '...'"
+                    formControlName="search"
+                  ></app-input>
                 </div>
-            </li>
-        </ul>
+                @if (categories().length) {
+                  <div class="sm:w-auto self-end">
+                    <app-pop-up-filter
+                      name="Categories"
+                      [options]="categoriesOptions"
+                      [defaultOption]="categoriesOptions ? categoriesOptions[0] : undefined"
+                      formControlName="category"
+                    ></app-pop-up-filter>
+                  </div>
+
+                  <div class="sm:w-auto self-end">
+                    <app-pop-up-filter
+                      name="Level"
+                      [options]="levelOptions"
+                      [defaultOption]="levelOptions ? levelOptions[0] : undefined"
+                      formControlName="level"
+                    ></app-pop-up-filter>
+                  </div>
+                }
+
+                @if (isAnyFilterApplied) {
+                  <app-button (click)="clearFilters()" class="translate-y-1" color="outline">{{
+                    'shared.clearFilters' | appTranslate | async
+                  }}</app-button>
+                }
+              </div>
+
+              <div class="h-[1px] mt-6 w-full bg-gray-200"></div>
+
+              <div class="w-full flex gap-4 items-center p-4 text-sm">
+                <p class="text-sm text-nowrap font-medium text-gray-900 dark:text-white">
+                  {{ 'shared.searchBy' | appTranslate | async }}:
+                </p>
+
+                <div class="flex items-center">
+                  @for (option of searchByOptions; track option[1]) {
+                    <div class="flex items-center me-7">
+                      <input
+                        type="radio"
+                        [id]="option[1]"
+                        [value]="option[1]"
+                        formControlName="searchBy"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      />
+                      <label
+                        [for]="option + '-radio'"
+                        class="ms-2 text-md font-medium text-gray-900 dark:text-gray-300"
+                      >
+                        {{ option[1] }}
+                      </label>
+                    </div>
+                  }
+                </div>
+
+                <span
+                  class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300"
+                  >Words in category: {{ totalItems() }}</span
+                >
+                <span
+                  class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-yellow-900 dark:text-yellow-300"
+                >
+                  Categories: {{ categoryCount() }}</span
+                >
+              </div>
+            </form>
+          </div>
+        </li>
+      </ul>
     </nav>
 
     <div class="flex-grow flex flex-col">
-        <app-table 
-            (action)="handleAction($event)" 
-            [data]="words()" 
-            [headers]="headers" 
-            [extraActions]="wordActions" 
-            [isLoading]="isLoading()"
-            [isEmptyState]="true"
-            [cb]="addNewWord"
-        >
-        </app-table>
+      <app-table
+        class="flex-grow"
+        (action)="handleAction($event)"
+        [data]="words()"
+        [headers]="headers"
+        [extraActions]="wordActions"
+        [isLoading]="isLoading()"
+        [isEmptyState]="true"
+        [cb]="addNewWord"
+      >
+      </app-table>
     </div>
     @if (totalPages() && totalPages() > 1 && !isLoading()) {
-        <div class="sticky bottom-0 left-0 w-full pt-4 pb-2 lg:pb-4 bg-white">
-            <app-paginator
-                [totalPages]="totalPages()"
-                [activePage]="currentPage()"
-                (activePageChange)="onPageChanged($event)"
-            >
-            </app-paginator>
-        </div>
+      <div
+        class="sticky bottom-0 left-0 w-full pt-4 pb-2 lg:pb-4 bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+      >
+        <app-paginator
+          [totalPages]="totalPages()"
+          [activePage]="currentPage()"
+          (activePageChange)="onPageChanged($event)"
+        >
+        </app-paginator>
+      </div>
     }
-</div>
+  </div>
+</app-basic-page-wrapper>
+
+<ng-template #addNewWordOrCategory>
+  @if (isAdmin()) {
+    <div class="flex gap-x-2">
+      <app-button (click)="addNewWord()">{{
+        'components.dictionaryList.addNewWordButton' | appTranslate | async
+      }}</app-button>
+      <app-button (click)="addNewCategory()">{{
+        'components.dictionaryList.addNewCategoryButton' | appTranslate | async
+      }}</app-button>
+    </div>
+  }
+</ng-template>

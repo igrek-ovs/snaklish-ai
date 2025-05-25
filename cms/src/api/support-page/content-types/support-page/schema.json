@@ -1,0 +1,27 @@
+{
+  "kind": "singleType",
+  "collectionName": "support_pages",
+  "info": {
+    "singularName": "support-page",
+    "pluralName": "support-pages",
+    "displayName": "Support Page",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "supportImg": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  }
+}

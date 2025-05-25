@@ -1,7 +1,18 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../enviroments/enviroment';
-import { AddWordRequest, AddWordResponse, DeleteWordRequest, EditWordRequest, EditWordResponse, SetWordImageRequest, SetWordImageResponse, Word, WordSearchRequest, WordSearchResponse } from '../models/word.model';
+import {
+  AddWordRequest,
+  AddWordResponse,
+  DeleteWordRequest,
+  EditWordRequest,
+  EditWordResponse,
+  SetWordImageRequest,
+  SetWordImageResponse,
+  Word,
+  WordSearchRequest,
+  WordSearchResponse,
+} from '../models/word.model';
 import { delay, Observable } from 'rxjs';
 import { WORDS_PER_PAGE } from '@core/constants/word.constants';
 
@@ -19,12 +30,10 @@ export class WordsService {
   constructor(private readonly http: HttpClient) {}
 
   public getAllWords() {
-    return this.http.get<PagedResponse<Word>>(this.apiUrl).pipe(
-      delay(500)
-    );
+    return this.http.get<PagedResponse<Word>>(this.apiUrl).pipe(delay(500));
   }
 
-  public getWords(pageNumber?: number, pageSize?: number) {
+  public getWords(pageNumber?: number, pageSize: number = WORDS_PER_PAGE) {
     let params = new HttpParams();
 
     if (pageNumber != null) {
@@ -34,9 +43,7 @@ export class WordsService {
       params = params.set('limit', pageSize.toString());
     }
 
-    return this.http
-      .get<PagedResponse<Word>>(this.apiUrl, { params })
-      .pipe(delay(500));
+    return this.http.get<PagedResponse<Word>>(this.apiUrl, { params }).pipe(delay(500));
   }
 
   public addWord(req: AddWordRequest) {
@@ -54,7 +61,7 @@ export class WordsService {
   public searchWord(req: WordSearchRequest) {
     let params = new HttpParams()
       .set('pageNumber', req.pageNumber.toString())
-      .set('pageSize',   req.pageSize.toString()); 
+      .set('pageSize', req.pageSize.toString());
 
     if (req.id != null) {
       params = params.set('id', req.id.toString());
@@ -74,9 +81,8 @@ export class WordsService {
     if (req.level) {
       params = params.set('level', req.level);
     }
-  
-    return this.http
-      .get<PagedResponse<Word>>(`${this.apiUrl}/search`, { params });
+
+    return this.http.get<PagedResponse<Word>>(`${this.apiUrl}/search`, { params });
   }
 
   public getWordById(id: number) {

@@ -11,7 +11,7 @@
       <div
         class="absolute -top-1.5 -right-1.5 rounded-full p-1 min-size-fit size-5 bg-red-600 flex items-center justify-center z-50"
       >
-        <span class="text-xs text-white">{{ learnedWords().length }}</span>
+        <span class="text-xs text-white">{{ learnedWordsByLocale().length }}</span>
       </div>
       <div class="flex gap-x-1.5">
         <app-button (click)="learnNewWords()" color="outline">Learn new words</app-button>

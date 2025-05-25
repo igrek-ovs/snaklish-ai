@@ -19,6 +19,9 @@ export const adminGuard: CanActivateFn = (route, state) => {
     queryParams: {
       returnUrl: state.url,
     },
+    state: {
+      returnUrl: state.url,
+    },
   });
 
   return false;
