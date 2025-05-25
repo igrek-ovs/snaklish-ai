@@ -10,6 +10,8 @@ import {
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../button/button.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { tablerX } from '@ng-icons/tabler-icons';
 
 export interface Category {
   id: number;
@@ -25,7 +27,8 @@ export interface CategorySelectResult {
 @Component({
   selector: 'app-select-categories-modal',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, ButtonComponent],
+  imports: [ReactiveFormsModule, CommonModule, ButtonComponent, NgIcon],
+  providers: [provideIcons({ tablerX })],
   templateUrl: './select-categories-modal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

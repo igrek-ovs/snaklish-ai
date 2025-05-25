@@ -1,5 +1,5 @@
-@use "@ngxpert/hot-toast/src/styles/styles.scss";
-@import "@angular/cdk/overlay-prebuilt.css";
+@use '@ngxpert/hot-toast/src/styles/styles.scss';
+@import '@angular/cdk/overlay-prebuilt.css';
 
 @tailwind base;
 @tailwind components;
@@ -35,4 +35,8 @@
 
 button:disabled {
   @apply cursor-not-allowed;
+}
+
+.modal-dialog {
+  @apply max-w-xs max-h-[90vh] sm:max-h-[90vh] sm:max-w-[80vw] sm:w-[80vw] md:max-h-[80vh] md:max-w-[70vw] md:w-[70vw] lg:max-h-[80vh] lg:max-w-[60vw] lg:w-[60vw];
 }
