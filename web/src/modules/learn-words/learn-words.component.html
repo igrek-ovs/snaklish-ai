@@ -44,7 +44,7 @@
             </span>
             <span class="text-gray-500 dark:text-gray-400">{{ chosenWord()?.category?.name }}</span>
           </div>
-          <div>
+          <div class="relative">
             <button
               [disabled]="wordTranslation() === 'No translation'"
               (click)="openCardTools()"
@@ -59,6 +59,9 @@
                 class="mt-1.5 text-gray-400 text-3xl hover:text-gray-500"
               ></ng-icon>
             </button>
+            <app-button class="text-nowrap absolute -bottom-24 -left-20" (click)="reviewWord()"
+              >Review word</app-button
+            >
           </div>
         </div>
         <div class="size-36">

@@ -22,6 +22,14 @@ import {
   NEW_DAY_TO_LEARN_STORAGE_KEY,
 } from '@core/constants/local-storage.constants';
 
+interface NavLink {
+  title: string;
+  subtitle: string;
+  url: string;
+}
+
+const linkList = [];
+
 @Component({
   selector: 'app-main-layout',
   standalone: true,

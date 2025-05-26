@@ -8,4 +8,6 @@ export enum AppRoutes {
   Faq = 'faq',
   ManageCategories = 'manage-categories',
   Support = 'support',
+  UserUnlearnedWords = 'user-unlearned-words',
+  UserLearnedWords = 'user-learned-words',
 }

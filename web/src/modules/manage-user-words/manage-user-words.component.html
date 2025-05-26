@@ -1,0 +1,20 @@
+<app-basic-page-wrapper header="User words list">
+  <div class="divide-y flex flex-col h-full text-sm overflow-y-auto relative">
+    <div class="flex-grow flex flex-col">
+      <app-table class="flex-grow" [data]="words()" [headers]="headers" [isLoading]="isLoading()">
+      </app-table>
+    </div>
+    <!-- @if (totalPages() && totalPages() > 1 && !isLoading()) {
+      <div
+        class="sticky bottom-0 left-0 w-full pt-4 pb-2 lg:pb-4 bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+      >
+        <app-paginator
+          [totalPages]="totalPages()"
+          [activePage]="currentPage()"
+          (activePageChange)="onPageChanged($event)"
+        >
+        </app-paginator>
+      </div>
+    } -->
+  </div>
+</app-basic-page-wrapper>

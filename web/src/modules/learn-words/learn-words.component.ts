@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@a
 import { UserWord, Word } from '@core/models';
 import { LAST_WORD, LocaleService, WordsService } from '@core/services';
 import { UserWordsService } from '@core/services/user-words.service';
-import { filter, forkJoin, map, switchMap, take, tap } from 'rxjs';
+import { filter, finalize, forkJoin, map, switchMap, take, tap } from 'rxjs';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -25,6 +25,7 @@ import { CardToolsModalComponent } from '@shared/components/card-tools-modal/car
 import { TranscriptionPipe } from '../../core/pipes/transcription.pipe';
 import { SelectCategoriesModalComponent } from '@shared/components/select-categories-modal/select-categories-modal.component';
 import { CategoriesService } from '@core/services/categories.service';
+import { ReviewWordModalComponent } from '@shared/components/review-word-modal/review-word-modal.component';
 
 @Component({
   selector: 'app-learn-words',
@@ -472,6 +473,23 @@ export class LearnWordsComponent implements OnInit {
   //     )
   //     .subscribe();
   // }
+
+  public reviewWord() {
+    const dialogRef = this.dialog.open(ReviewWordModalComponent, {
+      data: {
+        word: this.chosenWord()!,
+        title: 'Review word',
+      },
+    });
+
+    dialogRef.closed
+      .pipe(
+        filter((isApproved) => !!isApproved),
+        tap(() => this.hotToastService.success('You have successfully mastered the word!')),
+        tap(() => this.skipWord())
+      )
+      .subscribe();
+  }
 
   private arrayBufferToBase64(buffer: number[]): string {
     let binary = '';

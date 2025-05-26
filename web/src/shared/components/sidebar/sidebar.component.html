@@ -1,96 +1,92 @@
 <div>
-    <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
-      <ul class="space-y-2">
-        <cdk-accordion>
-          @for (
-            sidebarItem of sidebarItems;
-            track sidebarItem.title;
-            let index = $index
-          ) {
-            @if (isAvailable(sidebarItem)) {
-              <li>
-                <a
-                  [routerLink]="sidebarItem.href"
-                  routerLinkActive="text-primary-main font-semibold"
-                  *ngIf="!sidebarItem.children?.length; else group"
-                  class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+  <div class="overflow-y-auto py-5 px-3 h-full bg-white dark:bg-gray-800">
+    <ul class="space-y-2">
+      <cdk-accordion>
+        @for (sidebarItem of sidebarItems; track sidebarItem.title; let index = $index) {
+          @if (isAvailable(sidebarItem)) {
+            <li>
+              <a
+                [routerLink]="sidebarItem.href"
+                routerLinkActive="text-primary-main font-semibold"
+                *ngIf="!sidebarItem.children?.length; else group"
+                class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <ng-icon
+                  class="text-2xl text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  [name]="sidebarItem.icon"
+                ></ng-icon>
+                <span class="ml-3">{{ sidebarItem.title | appTranslate | async }}</span>
+              </a>
+              <ng-template #group>
+                <cdk-accordion-item
+                  #accordionItem="cdkAccordionItem"
+                  class="example-accordion-item"
+                  role="button"
+                  tabindex="0"
+                  [attr.id]="'accordion-header-' + index"
+                  [attr.aria-expanded]="accordionItem.expanded"
+                  [attr.aria-controls]="'accordion-body-' + index"
                 >
-                  <ng-icon
-                    class="text-2xl text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                    [name]="sidebarItem.icon"
-                  ></ng-icon>
-                  <span class="ml-3">{{ sidebarItem.title | appTranslate | async }}</span>
-                </a>
-                <ng-template #group>
-                  <cdk-accordion-item
-                    #accordionItem="cdkAccordionItem"
-                    class="example-accordion-item"
-                    role="button"
-                    tabindex="0"
-                    [attr.id]="'accordion-header-' + index"
-                    [attr.aria-expanded]="accordionItem.expanded"
-                    [attr.aria-controls]="'accordion-body-' + index"
+                  <button
+                    type="button"
+                    class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                    (click)="accordionItem.toggle()"
                   >
-                    <button
-                      type="button"
-                      class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                      (click)="accordionItem.toggle()"
+                    <ng-icon
+                      class="text-2xl text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                      [name]="sidebarItem.icon"
+                    ></ng-icon>
+                    <span
+                      class="ml-3 text-start whitespace-nowrap overflow-hidden text-ellipsis max-w-32"
+                      >{{ sidebarItem.title }}</span
                     >
-                      <ng-icon
-                        class="text-2xl text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                        [name]="sidebarItem.icon"
-                      ></ng-icon>
-                      <span
-                        class="ml-3 text-start whitespace-nowrap overflow-hidden text-ellipsis max-w-32"
-                        >{{ sidebarItem.title }}</span
-                      >
-                      <div class="flex-grow"></div>
-                      <ng-icon
-                        class="text-2xl text-gray-500 transition duration-100 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                        [ngClass]="{
-                          'transform rotate-180': accordionItem.expanded,
-                        }"
-                        name="tablerChevronDown"
-                      ></ng-icon>
-                    </button>
-                    <div
-                      class="example-accordion-item-body"
-                      role="region"
-                      [style.display]="accordionItem.expanded ? '' : 'none'"
-                      [attr.id]="'accordion-body-' + index"
-                      [attr.aria-labelledby]="'accordion-header-' + index"
-                    >
-                      @for (
-                        subItem of sidebarItem.children;
-                        track subItem.href;
-                        let subItemIndex = $index
-                      ) {
-                        @if (isAvailable(subItem)) {
-                          <li>
-                            <a
-                              [routerLink]="subItem.href"
-                              routerLinkActive="text-primary-main font-semibold"
-                              class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            >
-                              <ng-icon
-                                class="text-2xl transition duration-75"
-                                [name]="subItem.icon"
-                              ></ng-icon>
-                              <span class="ml-3">{{ subItem.title }}</span>
-                            </a>
-                          </li>
-                        }
+                    <div class="flex-grow"></div>
+                    <ng-icon
+                      class="text-2xl text-gray-500 transition duration-100 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                      [ngClass]="{
+                        'transform rotate-180': accordionItem.expanded,
+                      }"
+                      name="tablerChevronDown"
+                    ></ng-icon>
+                  </button>
+                  <div
+                    class="example-accordion-item-body"
+                    role="region"
+                    [style.display]="accordionItem.expanded ? '' : 'none'"
+                    [attr.id]="'accordion-body-' + index"
+                    [attr.aria-labelledby]="'accordion-header-' + index"
+                  >
+                    @for (
+                      subItem of sidebarItem.children;
+                      track subItem.href;
+                      let subItemIndex = $index
+                    ) {
+                      @if (isAvailable(subItem)) {
+                        <li>
+                          <a
+                            [routerLink]="subItem.href"
+                            routerLinkActive="text-primary-main font-semibold"
+                            class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                          >
+                            <ng-icon
+                              class="text-2xl transition duration-75"
+                              [name]="subItem.icon"
+                            ></ng-icon>
+                            <span class="ml-3">{{ subItem.title }}</span>
+                          </a>
+                        </li>
                       }
-                    </div>
-                  </cdk-accordion-item>
-                </ng-template>
-              </li>
-            }
+                    }
+                  </div>
+                </cdk-accordion-item>
+              </ng-template>
+            </li>
           }
-        </cdk-accordion>
-      </ul>
-    </div>
-    <!-- <div
+        }
+      </cdk-accordion>
+    </ul>
+  </div>
+  <!-- <div
       class="absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full flex bg-white dark:bg-gray-800 z-20"
     >
       <a
@@ -137,4 +133,4 @@
         <div class="tooltip-arrow" data-popper-arrow></div>
       </div>
     </div> -->
-  </div>
+</div>

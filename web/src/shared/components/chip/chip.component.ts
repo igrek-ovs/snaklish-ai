@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  Input,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { variants } from 'classname-variants';
 import { NgClass } from '@angular/common';
 
@@ -29,6 +23,8 @@ const CHIP_COLORS = {
   warning: 'bg-yellow-500 text-yellow-500 border-yellow-500',
   success: 'bg-success-alternative text-success-main border-success-main',
   muted: 'bg-gray-500 text-gray-500 border-gray-500',
+  learned: 'bg-learned text-learned border-learned',
+  unlearned: 'bg-unlearned text-unlearned border-unlearned',
 };
 const CHIP_VARIANTS_MERGE = variants({
   base: 'border',
@@ -45,6 +41,8 @@ export enum ChipColorsEnum {
   Warning = 'warning',
   Success = 'success',
   Muted = 'muted',
+  Learned = 'learned',
+  Unlearned = 'unlearned',
 }
 
 export type ChipColors = keyof typeof CHIP_COLORS;

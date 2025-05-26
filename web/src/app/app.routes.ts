@@ -16,6 +16,7 @@ import { ManageCategoriesComponent } from '@src/modules/manage-categories/manage
 import { HomeComponent } from '@src/modules/home/home.component';
 import { adminGuard } from '@core/guards/admin.guard';
 import { SupportComponent } from '@src/modules/support/support.component';
+import { ManageUserWordsComponent } from '@src/modules/manage-user-words/manage-user-words.component';
 
 export const routes: Routes = [
   ...authenticationRoutes,
@@ -40,6 +41,7 @@ export const routes: Routes = [
       { path: AppRoutes.LearnWords, component: LearnWordsComponent },
       { path: AppRoutes.ManageCategories, component: ManageCategoriesComponent },
       { path: AppRoutes.Support, component: SupportComponent },
+      { path: AppRoutes.UserUnlearnedWords, component: ManageUserWordsComponent },
     ],
     canActivate: [authGuard],
   },
