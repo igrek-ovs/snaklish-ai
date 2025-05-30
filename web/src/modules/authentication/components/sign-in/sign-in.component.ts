@@ -17,7 +17,7 @@ import {
 import { catchError, EMPTY, tap } from 'rxjs';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { PASSWORD_REGEX } from '../../../../core/regex/password-regex';
-import { SvgComponent } from "../../../../shared/components/svg/svg.component";
+import { SvgComponent } from '../../../../shared/components/svg/svg.component';
 
 interface ErrorsMessages {
   required: string;
@@ -78,10 +78,7 @@ export class SignInComponent implements OnInit {
     private readonly hotToastService: HotToastService
   ) {
     this.form = this.fb.group({
-      email: this.fb.control<string>('', [
-        Validators.required,
-        Validators.email,
-      ]),
+      email: this.fb.control<string>('', [Validators.required, Validators.email]),
       password: this.fb.control<string>('', [
         Validators.required,
         Validators.minLength(6),
@@ -104,29 +101,27 @@ export class SignInComponent implements OnInit {
       }
     });
 
-  this.form.controls['password'].valueChanges
-    .pipe(
-      tap((value: string) => {
-        this.atLeastEightCharacters.set(value.length >= 6);
-        this.atMostTwentyCharacters.set(value.length <= 20);
-        this.atLeastOneLowerCase.set(
-          new RegExp(PASSWORD_REGEX.atLeastOneLowercase.source).test(value)
-        );
-        this.atLeastOneNumber.set(
-          new RegExp(PASSWORD_REGEX.atLeastOneDigit.source).test(value)
-        );
-        this.atLeastOneSpecialCharacter.set(
-          new RegExp(PASSWORD_REGEX.atLeastOneSpecialCharacter.source).test(value)
-        );
+    this.form.controls['password'].valueChanges
+      .pipe(
+        tap((value: string) => {
+          this.atLeastEightCharacters.set(value.length >= 6);
+          this.atMostTwentyCharacters.set(value.length <= 20);
+          this.atLeastOneLowerCase.set(
+            new RegExp(PASSWORD_REGEX.atLeastOneLowercase.source).test(value)
+          );
+          this.atLeastOneNumber.set(new RegExp(PASSWORD_REGEX.atLeastOneDigit.source).test(value));
+          this.atLeastOneSpecialCharacter.set(
+            new RegExp(PASSWORD_REGEX.atLeastOneSpecialCharacter.source).test(value)
+          );
 
-        this.passwordStrength.set(
-          (this.validationList.filter((validation) => validation.isValid).length /
-          this.validationList.length) *
-          100
-        );
-      })
-    )
-  .subscribe();
+          this.passwordStrength.set(
+            (this.validationList.filter((validation) => validation.isValid).length /
+              this.validationList.length) *
+              100
+          );
+        })
+      )
+      .subscribe();
   }
 
   public getErrorMessage(controlName: string) {
@@ -167,9 +162,7 @@ export class SignInComponent implements OnInit {
         return PASSWORD_REGEX.atLeastOneLowercase.errorMessage;
       }
 
-      if (
-        regex === PASSWORD_REGEX.atLeastOneSpecialCharacter.source.toString()
-      ) {
+      if (regex === PASSWORD_REGEX.atLeastOneSpecialCharacter.source.toString()) {
         return PASSWORD_REGEX.atLeastOneSpecialCharacter.errorMessage;
       }
 
@@ -189,7 +182,6 @@ export class SignInComponent implements OnInit {
     const formData = this.form.value;
     this.authenticationService
       .login(formData)
-
       .pipe(
         this.hotToastService.observe({
           loading: 'Authenticating...',

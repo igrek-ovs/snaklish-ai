@@ -1,6 +1,5 @@
 import { Pipe, type PipeTransform } from '@angular/core';
 import { map, Observable } from 'rxjs';
-//import { replaceSubstitution, Substitutions } from '../models';
 import { LocaleService } from '../services';
 
 @Pipe({
@@ -10,11 +9,7 @@ import { LocaleService } from '../services';
 export class TranslatePipe implements PipeTransform {
   constructor(private localeService: LocaleService) {}
 
-  transform(
-    path: string,
-    // substitution?: Substitutions,
-    // subValue?: string | number
-  ): Observable<string> {
+  transform(path: string): Observable<string> {
     return this.localeService.translations$.pipe(
       map((localeMap: any) => {
         if (!path.trim().length) {
@@ -33,9 +28,6 @@ export class TranslatePipe implements PipeTransform {
           return currentValue[nextValue];
         }, localeMap);
 
-        // if (substitution && subValue) {
-        //   return replaceSubstitution(translation, substitution, subValue);
-        // }
         return translation;
       })
     );
